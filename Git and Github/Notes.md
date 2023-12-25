@@ -134,7 +134,7 @@ $ git clone <remote repository url>
     - Does it provide flexibility for changes and easiness in understanding the workflow
         - ********Centralized workflow********
             
-            ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/d5c9e806-9c39-4a9f-9ae1-9c96ec1b9fd7/Untitled.png)
+            ![Centralized workflow](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/git/Centralized%20workflow.png)
             
         
         ************************************How does it work ?************************************
@@ -149,7 +149,7 @@ $ git clone <remote repository url>
         
         **************************************Integration Manager Workflow**************************************
         
-        ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/0c220c1b-d70a-41b4-81b6-e403993a11e1/Untitled.png)
+        ![Integration Manager workflow](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/git/Integration-Manager-Workflow.png)
         
         - There are multiple repositories
         - Each developer has write access to their public  directory and read access to other developer’s repositories
@@ -165,7 +165,7 @@ $ git clone <remote repository url>
         
         ******************************************************************Dictator and Lieutenants Workflow******************************************************************
         
-        ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/765c80c8-7526-41c4-8ef3-19e2b6eb15f8/Untitled.png)
+        ![Dictator and Lieutenants Workflow](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/git/Dictator%20workflow.png)
         
         ************************************How does it work :************************************
         
@@ -368,7 +368,6 @@ Git repository exists entirely in a single ".git" directory
 
 ### GIT Repository Structure
 
-https://github.com/Charan-happy/MyTechskillimprovement/assets/89054489/af0fe859-7ec0-4f3f-9e58-63c98bdd2e31
 
 > git log --oneline --decorate --graph --all --> To visualize the logs in graph format.
 > 
