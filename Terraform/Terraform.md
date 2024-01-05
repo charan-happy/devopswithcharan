@@ -80,13 +80,15 @@ Key2 = value2
 
 # local.tf
 
-resource "local-file" "pet" {
+```
+ resource "local-file" "pet" {
 
 filename = "/root/pet.txt"
 
 content = "I love pets"
 
 }
+```
 
 Here "resource" -> Block Name
 
@@ -144,7 +146,7 @@ Providers=plugins
 | Outputs.tf | Contains outputs from resources |
 | Provider.tf | Contains provider definition |
 
-```mermaid
+```
 **Input variables ;**
 
 **# variables.tf**
@@ -185,6 +187,7 @@ length = var.length
 
 # variables.tf
 
+```
 variable "filename" {
 
 default = "/root/pets.txt"
@@ -214,9 +217,11 @@ variable "length" {
 default = "1"
 
 }
+```
 
 # main.tf
 
+```
 resource "local_file" "pet" {
 
 filename = var.filename
@@ -234,6 +239,7 @@ separator = var.separator
 length = var.length
 
 }
+```
 
 **Basic Variable Types :**
 
@@ -362,16 +368,19 @@ By default in terraform if we wanted to create a new configuration file for the 
 
 What if we wanted to keep both files or we wanted to destroy old file only after new file created. These can be achieved with the help of lifecycle rules in terraform.
 
+```
 lifecycle {
 
 prevent-destory = true
 
 }
+```
 
 These rule will not applicable if you use $ terraform destroy command.
 
 - > These rule only useful in preventing from changes that are made to the configuration & subsequent apply
 
+```
 lifecycle {
 
 ignore-changes = all
@@ -387,11 +396,12 @@ tags, ami etc.
 }
 
 }
-
+```
 **EX :**
 
 # main.tf
 
+```
 resource "local_file" "pet" {
 
 filename = "/root/pets.txt"
@@ -407,7 +417,7 @@ create_before_destroy = true
 }
 
 }
-
+```
 **Lifecycle rules**
 
 | Order | Option | Description |
@@ -443,6 +453,7 @@ create_before_destroy = true
 
 # main.tf
 
+```
 resource "local_file" "animal" {
 
 filename = var.filename[count.index]
@@ -450,9 +461,10 @@ filename = var.filename[count.index]
 count = length(var.filename)
 
 }
-
+```
 # variable.tf
 
+```
 variable "filename" {
 
 default = [
@@ -470,11 +482,12 @@ default = [
 ]
 
 }
-
+```
 **For each :**
 
 # main.tf
 
+```
 resource "local_file" "pet" {
 
 filename = each.value
@@ -488,9 +501,11 @@ output "pets" {
 value = local_file.pet
 
 }
+```
 
 # variable.tf
 
+```
 variable "filename" {
 
 type = list(string)
@@ -504,11 +519,12 @@ default = [
 ]
 
 }
-
+```
 **Note :** when we use "for each" as a meta argument instead of "count" then we can see the values are converted into map & an ordered list
 
 **Version constraints :**
 
+```
 terraform {
 
 required_providers {
@@ -532,7 +548,7 @@ filename = "/root/pet.txt"
 content = "we love animals"
 
 }
-
+```
 Version ="~>1.2" --> specific version or any incremental version
 
 # Heredoc syntax
@@ -551,6 +567,7 @@ DELIMETER
 
 # main.tf
 
+```
 resource "aws_iam_user" "admin-user" {
 
 name = "charan"
@@ -562,7 +579,7 @@ Description = "Systems Associate"
 }
 
 }
-
+```
 # To add credentials
 
 .aws/config/credentials
@@ -587,6 +604,7 @@ $ export aws_region=xxx
 
 # main.tf
 
+```
 resource "aws_iam_user" "admin_user" {
 
 name = "charan"
@@ -610,9 +628,10 @@ policy = <<EOF
 EOF
 
 }
-
+```
 # To attach policy to the user
 
+```
 resource "aws_iam_user_policy_attachment" "charan_admin_access" {
 
 user = aws_iam_user.admin_user.name
@@ -644,11 +663,12 @@ policy=file("admin-policy.json")
 ]
 
 }
-
+```
 **S3 with terraform :**
 
 # main.tf
 
+```
 resource "aws_s3_bucket" "finance" {
 
 bucket = "finance-21092020"
@@ -688,11 +708,12 @@ policy = <<EOF
 EOF
 
 }
-
+```
 **DynamoDB with Terraform :**
 
 # main.tf
 
+```
 resource "aws_dynamodb_table" "cars" {       create table
 
 name = "cars"
@@ -724,7 +745,7 @@ item = <<EOF
 <<EOF
 
 }
-
+```
 **Remote state :**
 
 **What is remote state and remote locking ?**
@@ -757,6 +778,7 @@ The process of blocking the one operation while two or more operations are runni
 
 # main.tf
 
+```
 resource "local_file" "pet" {
 
 filename = "/root/pets.txt"
@@ -764,9 +786,11 @@ filename = "/root/pets.txt"
 content = "we love animals"
 
 }
+```
 
 # terraform.tf
 
+```
 terraform {
 
 backend "s3" {
@@ -782,11 +806,12 @@ dynamodb-table = "state-locking"
 }
 
 }
-
+```
 **AWS EC2 with terraform**
 
 # main.tf
 
+```
 resource "aws_instance" "webserver" {
 
 ami = "ami-ae89djf03"
@@ -860,7 +885,7 @@ provider "aws" {
 region = "us-west-1"
 
 }
-
+```
 **Provisioners:**
 
 Provisioners provide us a way to carryout tasks such as running commands, scripts on remote resources or running locally on the machine where terraform is installed.
@@ -872,6 +897,7 @@ Provisioners provide us a way to carryout tasks such as running commands, script
 
 **1. Remote exec**
 
+```
 resource "aws_instance" "web-server" {
 
 ami = "ami-09r78930953"
@@ -921,13 +947,14 @@ resource "aws_security_group" "ssh-access" {
 <<code hidden>>
 
 }
-
+```
 **1. Local exec**
 
 Used to run the tasks on the local machine where we are running terraform binary but not on resources created by terraform.
 
 # main.tf
 
+```
 resource "aws_instance" "webserver" {
 
 ami = "ami-00iut87870"
@@ -941,13 +968,14 @@ command = "echo ${aws_instance.webserver.public-ip} >> /tmp/ips.txt"
 }
 
 }
-
+```
 # cat /tmp/ips.txt
 
 **1. Destroy time provisioner**
 
 # main.tf
 
+```
 resource "aws_instance" "webserver" {
 
 ami = "ami-00iut87870"
@@ -969,13 +997,14 @@ command = "echo instance ${aws_instance.webserver.public-ip}destroyed ! > /tmp/i
 }
 
 }
-
+```
 # cat /tmp/instance_state.txt
 
 **1. Failure behaviour**
 
 # main.tf
 
+```
 resource "aws_instance" "webserver" {
 
 ami = "ami-00iut87870"
@@ -999,7 +1028,7 @@ command = "echo instance ${aws_instance.webserver.public-ip}destroyed ! > /tmp/i
 }
 
 }
-
+```
 **Provisioner behaviour :**
 
 - **->** With terraform exec & local-exec, we saw run tasks when resource is created. This is default behaviour and we known this as "**creation time provisioner"**
@@ -1069,12 +1098,13 @@ Once import done then we can update **main.tf** file.
 
 # main.tf
 
+```
 resource "aws_instance" "webserver-2" {
 
 #(resource arguments)
 
 }
-
+```
 Problems with multiple configuration files :
 
 Complex configuration files
@@ -1093,12 +1123,13 @@ Limits reusability
 
 # main.tf
 
+```
 module "dev-webserver" {
 
 source = "../aws-instance"
 
 }
-
+```
 <image >
 
 **Creating and using a module :**
@@ -1109,6 +1140,7 @@ source = "../aws-instance"
 
 # main.tf
 
+```
 module "uk-payroll" {
 
 source = "../modules/payroll-app"
@@ -1118,15 +1150,16 @@ app-region = "us-west-2"
 ami = "ami-079j3878"
 
 }
-
+```
 # provider.tf
 
+```
 provider "aws" {
 
 region = "us-west-2"
 
 }
-
+```
 **Using modules from terraform registry**
 
 **$ terraform get --> To download module from the registry**
@@ -1185,6 +1218,7 @@ region = "us-west-2"
 
 # variable.tf
 
+```
 variable "num" {
 
 type = set(number)
@@ -1194,11 +1228,12 @@ default = [ 250,10,11,5 ]
 description = "A set of numbers"
 
 }
-
+```
 **2.String functions :**
 
 # variables.tf
 
+```
 variable "ami" {
 
 type = string
@@ -1208,11 +1243,12 @@ default = "ami-xyz, ami-abc, ami-efg"
 description = "a string containing ami ids"
 
 }
-
+```
 **3.collection functions :**
 
 # variables.tf
 
+```
 variable "ami" {
 
 type = list
@@ -1222,7 +1258,7 @@ default = ["ami-xyz, ami-abc, ami-efg"]
 description = "a list of numbers"
 
 }
-
+```
 $ length(var.ami) #3
 
 $ index(var.ami, "ami-abc") #1
@@ -1237,6 +1273,7 @@ $ contains(var.ami,"ami-xyz") #false
 
 # variables.tf
 
+```
 variable "ami" {
 
 type = map
@@ -1246,7 +1283,7 @@ default = {"us-east-1"="ami-xyz", "us-central-1"="ami-abc", "ap-south-1"="ami-ef
 description = "a map of AMI Id's for specific regions"
 
 }
-
+```
 **$ Keys(var.ami) [**
 
 **"ap-south-1",**
@@ -1291,6 +1328,7 @@ fi
 
 # main.tf
 
+```
 resource "random_password" "password-generation" {
 
 length = var.length <8 ? 8: var.length
@@ -1304,9 +1342,10 @@ output "password" {
 value = random_password.password-generation.result
 
 }
-
+```
 # variables.tf
 
+```
 variable "length" {
 
 type = number
@@ -1314,7 +1353,7 @@ type = number
 description = "the length of the password"
 
 }
-
+```
 $ terraform apply -var=length=5
 
 **Terraform workspaces :**
@@ -1345,6 +1384,7 @@ $ terraform workspace select project A --> To switch to project A
 
 # main.tf
 
+```
 resource "aws_instance" "web" {
 
 ami = "ami-9uuljkfj88yiou"
@@ -1374,7 +1414,7 @@ department  = "finance"
 }
 
 }
-
+```
 **Splat expressions :**
 
 **A splat expression** provides a more concise way to express common operation that could otherwise be performed with a far expression. If var.list is a list of objects that all have an attribute id, then a list of ids could be produced with the following for expression :
