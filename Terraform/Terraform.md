@@ -1,4 +1,5 @@
 Contents:
+------------
 
 Introduction to Terraform
 
@@ -57,10 +58,7 @@ Secrets Management with vault.
 - Cloud/provider Agnostic
 - Free & opensource
 - TF uses hashi corp configuration language (**HCL)** with "**.tf"** extension
-- Terraform works in 3 phases.
-    - 1.init
-    - 2. plan
-    - 3. Apply
+
 - Every object managed by terraform is called **Resource. EX:** file, s3 service etc
 - Terraform records the state of the infrastructure.
 - **State** is the blueprint of the infrastructure deployed by terraform
