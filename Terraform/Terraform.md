@@ -22,7 +22,8 @@ Secrets Management with vault.
 - Human Errors
 - Wasted Resources and inconsistency Provision, configure , update & delete the infrastructure via code is called as **Infrastructure as code (IAC)**
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9604ffb4-a300-4ded-8958-5780de62d423/Untitled.png)
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/5386a069-1e13-4aaa-be25-d8f7566e66c1)
+
 
 **Types of IAC tools :**
 
