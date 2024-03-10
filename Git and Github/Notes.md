@@ -1,8 +1,10 @@
-# Git and Github
+[]# Git and Github
 
 # what is version control system ? & why we have to use it ?
 
 # Centralised version control vs distributed version control system
+
+For More Surprises, visit last part of these page
 
 # why git ?
 #  Git installation
@@ -886,5 +888,4 @@ Reference : https://git-scm.com/docs
 ![Local repository stages](![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/2b993808-2ddb-4a49-af52-417528546bce)
 
 
-)
-)
+[Practical Git](https://gitimmersion.com/lab_01.html)
