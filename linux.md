@@ -312,6 +312,17 @@ There are two types of links :
 | Shortcut file | Backup file |
 | ln -s <source file> <destination> | ln <source file> <destination> |
 
+
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/96e3a38c-6a18-4aed-8c41-fd02eb8d7ede)
+
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/71de6a4a-214f-4b14-bc3f-95d560daa88c)
+
+
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/7a73ba41-4bfe-425e-9aae-7b9acbbe3a41)
+
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/700bcf90-7c84-41e2-8788-6ef91b0a0e6e)
+
+
 ************************************************************************Regular expression, Pipelines & I/O Redirections************************************************************************
 
 **Grep :**
