@@ -13,10 +13,11 @@ jobs:
     - name: Execute Cowsay CMD
       run: cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" >> dragon.txt
 
-    - name: Sleep for 30 Seconds
-      run: sleep 30
+    - name: Sleep for 10 Seconds
+      run: sleep 10
     
   test_job_2:
+    needs: build_job_1
     runs-on: ubunntu:latest
     steps:
     - name: sleep for 10 seconds
@@ -26,6 +27,7 @@ jobs:
       run: grep -i "dragon" dragon.txt
 
   deploy_job_3:
+    needs: test_job_2
     runs-on: ubunntu:latest
     steps:
     - name: Read File
@@ -34,4 +36,3 @@ jobs:
     - name: Deploy 
       run: echo Deploying
     
-      
