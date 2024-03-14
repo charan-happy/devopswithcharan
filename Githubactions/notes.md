@@ -70,3 +70,10 @@ Continuous Delivery/Deployment :
 
 
 ![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/144e2312-955b-4492-a921-dd847eacfdd1)
+
+
+**Actions:**
+
+- Actions within github workflows are prebuilt, reusable automation components designed for specific tasks and these actions can be created by you or by the members of the community making it easy to share and reuse automation logic.
+
+- 
