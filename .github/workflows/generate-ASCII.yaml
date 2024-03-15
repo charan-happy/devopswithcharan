@@ -1,7 +1,7 @@
 name: Generate ASCII Workflow
 
-on:
-    push
+
+on: push
 
 jobs: 
   build_job_1:
