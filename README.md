@@ -1,5 +1,7 @@
 # Learn_Devops_tools
 
+some-random text
+
 ![Devops Tools](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/Devops_intro/all_devops_tools.png)
 
 
