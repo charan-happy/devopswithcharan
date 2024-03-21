@@ -77,3 +77,5 @@ Continuous Delivery/Deployment :
 - Actions within github workflows are prebuilt, reusable automation components designed for specific tasks and these actions can be created by you or by the members of the community making it easy to share and reuse automation logic.
 
 - 
+
+![image](https://github.com/charan-happy/Learn_Devops_tools/assets/89054489/de200b06-8af9-4e5c-85f8-dd32a521b8e7)
