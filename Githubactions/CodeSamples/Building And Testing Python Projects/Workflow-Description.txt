@@ -1,0 +1,23 @@
+Runners hosted by GitHub have Python and PyPy built-in. There is also a Python starter workflow that works for most Python projects.The user can paste the starter workflow in a file in the .github/workflows directory and add configuration per the project requirements.
+
+The onstatement specifies the event that will trigger the workflow. For this example, a push to any branch from the repository will run the workflow. The strategy.matrix.python-version syntax specifies the version of the Python project this workflow builds and tests.
+
+There are five steps of the workflow:
+
+Check out the code from the repository.
+Set up the correct Python version for the workflow runner, depending on the project’s version.
+Install the right project dependencies on the runner. In this case, the workflow runs these actions:
+upgrade the Python package installer pip
+install the flake8library for linting and PyTest for testing the project
+look for a requirements.txt, and if present, install dependencies in the file
+Run flake8 and catch any linting errors.
+Run the tests in tests.py with pytest and pytest-cov and store results in JUnit format.
+The workflow can be customized in different ways.
+
+To configure the workflow for a semantic version range of Python automatically, remove the strategy.matrix.python-version from the above workflow. Next, replace the python-version line in the Set up Set up Python for Demo step with the following line:
+python-version: '3.x'
+To cache the dependencies, add the following line below the python-version line in the Set up Python for Demo step:
+cache: 'pip'
+To prevent the workflow from stopping because of a linting error, add the following line after the runaction in the Linting project with flake8step:
+continue-on-error: true
+
