@@ -106,6 +106,18 @@ Continuous Delivery/Deployment :
 
  - It has 3 core components. 1. Workflow 2. Jobs 3. Steps
 
+   Events: A specific activity that triggers a workflow run. For example, activity can originate from GitHub when someone pushes a commit to a repository or when an issue or pull request is created.
+   
+Workflows: A configurable automated process that you can set up in your repository to build, test, package, release, or deploy any project on GitHub. Workflows are made up of one or more jobs and can be scheduled or activated by an event.
+
+Jobs: A set of steps that execute on the same runner. You can define the dependency rules for how jobs run in a workflow file. Jobs can run at the same time in parallel or run sequentially depending on the status of a previous job. For example, a workflow can have two sequential jobs build and test code, where the test job is dependent on the status of the build job. If the build job fails, the test job will not run.
+
+Step: A step is an individual task that can run commands or actions. A job configures one or more steps. Each step in a job executes on the same runner, allowing the actions in that job to share information using the filesystem.
+
+Action: Individual tasks that you combine as steps to create a job. Actions are the smallest portable building block of a workflow. You can create your own actions, use actions shared from the GitHub community, and customize public actions. To use an action in a workflow, you must include it as a step.
+
+Runner: A runner waits for available jobs. When a runner picks up a job, it runs the job's actions and reports the progress, logs, and final results back to GitHub. Runners run one job at a time.
+
 **Workflow :** 
 
 
