@@ -1,0 +1,7 @@
+The workflow above uses the Buildx Docker CLI plugin that gives users extended container build options with the BuildKit toolkit. The docker job has five steps:
+
+1. Check out the repository code.
+2. Use setup-qemu-action to add support for emulation and enable building against a wider range of platforms.
+3. Use setup-buildx-action to install and set up Buildx
+4. Login to DockerHub with login-action and fetch the login username and password from the secrets created in the Dockerfile
+5. Build and push the Docker image while showing the output in the registry.

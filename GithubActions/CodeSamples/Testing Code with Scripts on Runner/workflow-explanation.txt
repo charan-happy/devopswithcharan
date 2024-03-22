@@ -1,0 +1,17 @@
+GitHub Actions workflows can run external scripts on their runners
+The on code block specifies that this workflow should run on the following events:
+
+workflow_dispatch: when manually triggered from the Actions UI
+push.branches.main: when a commit gets pushed to the mainbranch
+pull_request: when any event related to a pull request occurs
+The permissions code block specifies that the workflow has file reading permissions. The concurrency code block specifies the concurrency group and uses cancel-in-progress to terminate any other workflows or jobs using the concurrency group.
+
+The check-links job runs in seven steps:
+
+1. Check out the repository code
+2. Set up and install Node.js while caching npm’s dependencies
+3. Use npm to install the ci library
+4. Use a specific version of file-changes-action to log exact changes in a JSON file named files.json after a push or pull request
+5. Print the contents of files.json for the user’s review
+6. Run the demo-link-checker-script.mjs file and pass it all the parameters listed
+7. Run the demo-link-checker-script.mjs file and pass it different parameters
