@@ -8,6 +8,7 @@ Ansible Topics to Learn
 4. YAML - Yet Ain't markup Language
 5. Variables, Loops, conditions, templates and error-handling
 6. Ansible Playbooks
+
 7. Introduction to Ansible roles and Ansible galaxy
 8. Ansible Tags
 9. Ansible vault
