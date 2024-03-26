@@ -6,16 +6,16 @@ for((i=0;i<=5;i++)){
 touch $dirname$i
 }
 
-----------------------------
-output :
+# ----------------------------
+# output :
 
-Enter your file name
+# Enter your file name
 
-charan
+# charan
 
-charan1
-charan2
-charan3
-charan4
-charan5
+# charan1
+# charan2
+# charan3
+#charan4
+#charan5
 
