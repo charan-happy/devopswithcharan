@@ -118,3 +118,46 @@ Dictionary: {A: key A, B: key B, C: Key C}
 Dictionary in a list
 
 [{A: keyA, B: KeyB, C: KeyC}, {D: keyD, E: KeyE, F: KeyF}]
+
+Format to store configuration data
+Key Value¶
+There must be a blank space after the colon to separate the key and value
+
+name: Nagacharan
+age: 23
+
+List¶
+The - indicates that the item is a part of the list
+Fruits:
+- Apple
+- Banana
+- Mango
+
+Cities:
+- Bengaluru
+- Chennai
+- Mumbai
+  
+Dictionary¶
+Equal spacing for nesting
+Unequal spacing will lead to unwanted nesting
+Student:
+    name: Nagacharan
+    age: 23
+    location: Bengaluru
+
+Employee:
+    dept: Computer Science
+    company: Google
+
+List of Dictionaries
+
+-  People:
+ -  - Student:
+        name: Nagacharan
+        age: 23
+        location: Bengaluru
+
+    - Employee:
+        dept: Computer Science
+        company: Google
