@@ -25,6 +25,6 @@ some-random text
 | [Prometheus](https://github.com/Charan-happy/Learn_Devops_tools/tree/main/Monitoring)
 | [Python](https://github.com/Charan-happy/Learn_Devops_tools/tree/main/python)
 | [go](https://github.com/Charan-happy/Learn_Devops_tools/tree/main/Go%20Language)
-| Cloud <br> [AWS](https://github.com/Charan-happy/AWS-Devops_Zero-to-Hero) <br> [Azure](https://github.com/Charan-happy/Azure_learning)|
+| Cloud <br> [AWS](https://github.com/Charan-happy/AWS-Devops_Zero-to-Hero) <br> [Azure](https://github.com/charan-happy/charan-happy.github.io/tree/main/Azure)|
 | Projects <br> [source1](https://github.com/Charan-happy/Devops_Realtime-Projects) <br> [source2](https://github.com/Charan-happy/My_Devops_Projects)
 
