@@ -2,24 +2,96 @@
 
 Ansible Topics to Learn
 
-1. Basic Introduction to Ansible
-2. Ansible Architecture
-3. Ansible Commands
-4. YAML - Yet Ain't markup Language
-5. Variables, Loops, conditions, templates and error-handling
-6. Ansible Playbooks
+step by step) 🎯
 
-7. Introduction to Ansible roles and Ansible galaxy
-8. Ansible Tags
-9. Ansible vault
-10. Privilege escalation
-11. Ansible facts
-12. Ansible Handlers
-13. Order of playbook execution
-14. Ansible Templates
-15. Ansible Tower
-16. organizations in Tower
-17. Different Deployment strategies
+If Ansible is in your learning plan then these topics can help you to start today itself & make you 92% ready👇
+
+Introduction<br>
+→ What is Ansible?<br>
+→ Why Use Ansible? <br>
+
+Installation
+→ Operating System Requirements <br>
+→ Installation Methods <br>
+   - Package Managers<br>
+   - Python PIP
+
+Inventory <br>
+→ Hosts<br>
+→ Groups<br>
+→ Variables
+
+Playbooks <br>
+→ Syntax<br>
+→ Tasks<br>
+   - Modules<br>
+   - Parameters<br>
+→ Handlers<br>
+→ Variables<br>
+   - Facts<br>
+   - Custom Variables<br>
+
+Roles
+→ Structure<br>
+→ Main Tasks<br>
+→ Handlers<br>
+→ Variables<br>
+
+Playbook Execution<br>
+→ Ad-hoc Commands<br>
+→ ansible-playbook Command<br>
+   - Options<br>
+   - Tags<br>
+   - Limiting Playbook Execution
+
+Variables<br>
+→ Precedence<br>
+→ Variable Types<br>
+   - Global Variables<br>
+   - Play Variables<br>
+   - Host Variables
+     
+Conditionals<br>
+→ When Statement<br>
+→ Loops<br>
+   - With_items<br>
+   - Loop Controls
+
+Templates<br>
+→ Jinja2 Templating Engine<br>
+→ Template Files
+
+Inventory Management<br>
+→ Dynamic Inventory<br>
+→ Static Inventory
+
+Modules<br>
+→ Common Modules<br>
+→ Module Options
+
+Debugging<br>
+→ Verbose Mode<br>
+→ Debug Module<br>
+→ Error Handling
+
+Best Practices<br>
+→ Directory Structure<br>
+→ Security Considerations<br>
+→ Documentation
+
+Advanced Topics<br>
+→ Vault <br>
+→ Callbacks <br>
+→ Dynamic Includes
+
+Community and Resources<br>
+→ Ansible Galaxy<br>
+→ Ansible Documentation<br>
+→ Online Forums<br>
+   - Reddit<br>
+   - Stack Overflow
+
+
 
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/e53ea1d6-7adf-42e2-a26a-84f0191990db/Untitled.png)
 
@@ -28,9 +100,8 @@ Ansible Topics to Learn
 3. Code Coverage                                               7. Deployment to pre-production
 4. Build                                                                8. Release Management
 
-                                                                              9. Environment provisioning for production
-
-                                                                             10. Deployment and release to production
+    9. Environment provisioning for production
+                                  10. Deployment and release to production
 
 ******************************what does environment consist of ?******************************
 
