@@ -16,3 +16,4 @@ what is Helm ?
 **Helm Release:**
   -  $ helm install [release-name][chart-name]
   - we can release multiple releases based on single chart
+
