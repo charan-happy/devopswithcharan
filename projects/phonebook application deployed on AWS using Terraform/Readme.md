@@ -206,3 +206,5 @@ Python Flask Example
 Terraform AWS Provider Documentaion
 
 AWS CLI Command Reference
+
+[Reference](https://github.com/rumeysakdogan/DevOps_Workshop/tree/master/projects/202-Terraform-Phonebook-Application-deployed-on-AWS)

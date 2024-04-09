@@ -1,0 +1,1 @@
+Resources, Resources groups & Azure resource manager
