@@ -1,0 +1,16 @@
+Azure IAM
+--------------
+- Authentication Services in Azure
+- Identity Access Management
+- Implementing RBAC
+- Best Practices of RBAC
+    - Authenticatio --> Users & groupsn
+    - Authorisation --> Roles
+
+      users & groups, Resources  = Identities
+
+
+- Azure Entra Id (new name) and AD/Azure Active Directory (AAD) [old name]
+- Users have roles and Resources have two things named Service Principle and Managed Identities
+- 
+
