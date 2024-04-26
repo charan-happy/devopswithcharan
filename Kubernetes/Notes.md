@@ -89,3 +89,6 @@ Statefulsets and more
 - A pod encapsulates one or more containers, storage resources, network configurations, and other options required to run a specific set of containers together.
 - pods are typically created and managed using higher-level abstractions such as Deployments, Replicasets or statefulsets, which provide additional features like scaling, rolling updates, and self-healing capabilities.
 - Pods provide several benefits, include resource isolation, flexible deployment strategies, easy scaling and enhanced Reliability.
+- 
+
+[Troubleshooting](https://www.prodevopsguy.site/100-Kubernetes-Errors-With-Solution)
