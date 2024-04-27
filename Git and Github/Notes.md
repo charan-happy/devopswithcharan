@@ -880,6 +880,17 @@ Reference : https://git-scm.com/docs
 |checkout | The command that helps you in visiting a different version of the same project in terms of a file, a commit or even a branch | It can be used in 3 instances <br>You need to have a look at a previous version of a file <br>You need to have a look at that version of the project existing when a particular commit was the HEAD of the repository <br> You need to compare files and folders with a different branch of the same repository. | Helps to switch between branches |
 | amend |  It is a history re-writing command |you have made a local commit which is incorrect in terms of the commit content or the commit message  |This will overlap your incorrect ( and the most recent) commit with the current one. In this way, the incorrect commit gets completely removed from the repo history. |
 
+commits per date ---> git log --pretty=format:"%ai"  | awk '{print ": "$1}'  | sort -r | uniq -c
+
+total number of commmits --> git log --pretty=oneline | wc -l
+
+find all local git repositories --> find $HOME -type d -name ".git" or locate .git | grep git$
+
+show total number of commits per author --> git shortlog -s
+
+To remove tracking between local and deleted remote branches use `git fetch -p` and `git branch -vv` 
+
+git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
 
 
 
