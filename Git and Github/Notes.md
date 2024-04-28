@@ -159,15 +159,131 @@ git init is a command in the Git version control system that is used to create a
 
 It's important to note that git init only needs to be run once in a directory to create a Git repository. If you run it again in the same directory, it will overwrite the existing Git repository, which could result in data loss.
 
-Running `git init` command creates `.git` folder
+Running `git init` command creates a `.git` folder
+
+## How git differ from other version control systems out there in the market?
+- The only difference between git and other VCs like SVN, perforce, Bazar etc is the way 
+they think about data
+
+- Most other VCS store data as a list of file-based changes. these systems think of the information they keep as a set of files and changes made to each file over time.
+
+![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/a883f359-047b-4991-b0ff-c411ecf036f1)
+
+- But, git thinks of it as a set of snapshots of a mini file system. Every time you save or commit the state of your project in Git. It basically takes a picture of what all your files look like at the moment and stores a reference to that snapshot.
+- To be efficient, if files have not changed, Git doesn’t store the file again—just a link to the previous identical file it has already stored.
+  ![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/555fc743-eade-4ce6-9d27-8ee901917c62)
+
 
 Git repository exists entirely in a single ".git" directory
+
+Note: .git is also hidden in Windows (msysgit).
+You would have to do a dir /AH to see it.
+
+## GIT Internals
+
+**Repos**
+- A git repository is an on-disk data structure [self-contained directory ]  that stores metadata [the file's name, size, modification date, and content. ] for a set of files and directories.
+- This metadata allows Git to track changes and efficiently manage the project's history
+- It lives in your `.git/folder` every time you commit data to git. It gets stored here. Inversly .git/ contains every single commit
+- It's basic structure like this
+
+   	.git/<br>
+    		objects/   refs/
+  		
+### objects
+- Git is fundamentally a key-value store. when you add data to git. It builds an object and stores SHA-1 of a hash of the object content as a key. and pointer as a value
+- Therefore any content in git is looked up as hash
+
+  `$ git cat-file -p <hash-id>`
+
+  
+There are 4 types of objects, Blobs, tags, trees, commit
+
+**HEAD Ref**
+- Head is a special ref that always points to the current object
+- we can see where it is currently pointing by checking the .git/HEAD file
+- cat .git/HEAD you get some value. you can notice that it is known as `detached head` because it does not pointing to any ref instead directly pointing to an object.
+
+### ref
+- The ref is essentially a pointer. It's a name that points to an object. ![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/62f20acd-6602-4b87-8d0d-7f6f12d074eb)
+They are stored in `.git/refs/heads/main`
+
+### commit object
+- the `commit` does not directly contain any changed files or data. Rather, it contains mostly metadata and pointers to other objects that contain the actual contents of the commit.
+- A commit contains a few things
+  	- hash of a tree
+  	- hash of a parent commit
+  	- author name/email, committer name/email
+  	- commit message
+
+  Tree:
+
+  - Tree object stores every file in your project, and it stores whole files, not diffs. This means that each commit contains a snapshot of the entire project.
+ 
+  parent :
+- the parent line contains a hash of another `commit` object and can be thought of as a "parent pointer" that points to the "previous commit" This implicitly forms a graph of commits known as the **commit-graph**
+
+**TREE Object**
+- A tree basically represents a folder in a traditional filesystem; nested container for files or other folders.
+
+  A tree contains :
+  - 0 or more blob objects
+  - 0 or more tree objects
+
+- just as you can use ls or dir to list the contents of a folder, you can list the contents of a tree object.
+- you can lookup the files in a commit by first finding the hash of the tree in the commit and then looking at that tree.
+
+### Blob Object
+- A blob contains arbitrary binary file contents. commonly, it will be raw text such as source code or a blog article. But, it could just as easily be the bytes of a PNG file or anything else.
+
+- if you have the hash of a blob, you can look at its contents.
+
+**creating new commit**
+- the `git commit` command does a few things:
+  1. Create blobs and trees to represent your project directory. stored in .git/objects
+  2. Create a new commit object with your author information, commit message, and the root tree from step 1 - also stored in .git/objects
+  3. updates the HEAD ref in .git/HEAD to the hash of the newly-created `commit`
+
+  - This results in a new snapshot of your project being added to git that is connected to the previous state.
+
+**Moving HEAD**
+- when you run `git checkout` on a commit (specially by hash or ref) you are telling git to make your working directory look like how it did when the snapshot was taken
+  	1. Update the files in the working directory to match the tree inside the commit
+  	2. update HEAD to point to the specified hash or ref
+
+**Moving refs around**
+- running `git reset --hard` moves refs to the specified hash/ref
+
+**creating new refs**
+  - running `git checkout -b <refname>` will create a new ref that points to the current commit.
+
+
+
+  🔑 Understanding Git's Key-Value Store and Its Objects
+Git, at its core, operates like a key-value store. When you add data to Git, it creates an object and stores the SHA-1 hash of that object's content as the key. This means:
+
+Key: The key is the SHA-1 hash, a unique identifier generated from the object's content.
+Value: The value is the actual object itself, containing the data you added (e.g., file contents, commit message).
+This approach ensures data integrity and efficient retrieval.
+
+🔎 Exploring Git Objects
+Git objects come in various types, each serving a specific purpose:
+
+Blob: Stores the raw content of files.
+Tree: Represents a directory structure, linking together blobs and other trees.
+Commit: Captures a snapshot of your project at a specific point in time, referencing a tree and containing metadata like author and commit message.
+Tag: Annotates a specific commit with a descriptive name.
+💡 Key Takeaways
+Git uses a key-value store to manage data efficiently.
+The key is the SHA-1 hash of the object's content, ensuring uniqueness and integrity.
+The value is the actual object, containing the data you added.
+Different types of Git objects serve specific purposes, like storing files, representing directories, capturing project snapshots, and annotating commits.
 
 ### GIT Object Model :
 
 Git is a distributed version control system that stores the content of a project as a set of snapshots or commits. The Git object model is the way Git internally represents and stores the content and history of a project.
 
-- GIT object Model consists of four types of objects .
+- The GIT object Model consists of four types of objects.
 - 
 1. **BLOB :**
 - BLOB stands for binary large object.
