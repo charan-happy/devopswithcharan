@@ -1,10 +1,8 @@
-[]# Git and Github
+# Git and Github
 
 # what is version control system ? & why we have to use it ?
 
 # Centralised version control vs distributed version control system
-
-For More Surprises, visit last part of these page
 
 # why git ?
 #  Git installation
@@ -29,24 +27,9 @@ For More Surprises, visit last part of these page
 # Remote
 # git reflog
 
+For More Surprises, visit last part of these page
 
-- What is version control system ? why we need them and what are different types of VCS ?
-- How to Install git ?
-- Git Key concepts
-    - init
-    - GIT Repository Structure
-    - Git Object Model
-    - GIT Working Tree
-    - GIT Clone
-    - GIT BRANCH
-    - GIT CHECKOUT
-    - Staging Area
-    - ADD
-    - commit
-    - push
-    - pull
-    - stash
-    - tags
+
 
 ### what is version control system ?
 
@@ -112,6 +95,7 @@ For More Surprises, visit last part of these page
      > Fully distributed
 
     > largely Scalable
+    ```
 
 ### GIT Repository Structure
 
@@ -119,13 +103,61 @@ For More Surprises, visit last part of these page
 > `git log --oneline --decorate --graph --all` --> To visualize the logs in graph format.
 
 
-- A Git repository is a version control system that stores all the files and information related to a project. It contains all the files that make up a project, as well as the metadata that tracks changes to those files over time. The structure of a Git repository is divided into two main areas: the working directory and the Git directory
+💡 Key Takeaways
+Git uses a key-value store to manage data efficiently.
+The key is the SHA-1 hash of the object's content, ensuring uniqueness and integrity.
+The value is the actual object, containing the data you added.
+Different types of Git objects serve specific purposes, like storing files, representing directories, capturing project snapshots, and annotating commits.
+.
 
-**1. Working directory:** The working directory is the place where you create, edit, and modify your files. It is the directory that you are currently working in, and it contains all the files that you are currently working on. You can think of the working directory as your local copy of the repository. **2. Git directory:** The Git directory is the place where Git stores all the metadata and version control information for the project. It is located inside the working directory and is hidden from view by default. The Git directory contains all the information necessary to manage the repository, including the commit history, branches, and tags.
+**hooks:** This directory contains scripts that Git can run before or after certain actions, such as committing or pushing changes
 
+Overall, the Git repository structure is designed to allow for efficient version control and collaboration on projects, while keeping track of all the changes made to files over time.
+
+### Initiate a project
+
+**Init**
+- if we have project in our local system (ex; laptop) to kept it under git we have to initialize git by using `$ git init`
+
+- if we are cloning the repo from remote repository then it will automatically create a `.git` folder
+
+git init is a command in the Git version control system that is used to create a new Git repository. When you run git init in a directory, it creates a new Git repository in that directory, which enables version control of your files. Here's how you can use git init:
+
+1. Open your terminal or command prompt.
+2. Navigate to the directory where you want to create your new Git repository.
+3. Run the command git init.
+4. Git will create a new directory called .git in your current directory. This directory contains all the files and folders needed to manage your repository.
+5. You can now start adding files to your repository and using Git commands to manage them.
+
+It's important to note that git init only needs to be run once in a directory to create a Git repository. If you run it again in the same directory, it will overwrite the existing Git repository, which could result in data loss.
+
+Running `git init` command creates a `.git` folder
+
+- under `.git` you have two folders named `objects` and `refs`
+
+## GIT Internals
+
+**Repos**
+- A git repository is an on-disk data structure [self-contained directory ]  that stores metadata [the file's name, size, modification date, and content. ] for a set of files and directories.
+- This metadata allows Git to track changes and efficiently manage the project's history
+- It lives in your `.git/folder` every time you commit data to git. It gets stored here. Inversly .git/ contains every single commit
+- It's basic structure like this
+
+   	.git/<br>
+    		objects/   refs/
+    
+Git repository exists entirely in a single ".git" directory
+
+Note: .git is also hidden in Windows (msysgit).
+You would have to do a dir /AH to see it.
+  		
 The Git directory contains several important files and directories, including :
 
-**HEAD:** This file points to the current branch that you are working on. **Objects:** This directory contains all the objects that Git uses to store the content of your files, including blobs (file contents) and trees (directory structures). **refs:** This directory contains all the references to branches, tags, and other Git objects. config: This file contains configuration information for the repository.
+**HEAD:** This file points to the current branch that you are working on. 
+
+**Objects:** This directory contains all the objects that Git uses to store the content of your files, including blobs (file contents) and trees (directory structures). 
+
+**refs:** This directory contains all the references to branches, tags, and other Git objects. config: This file contains configuration information for the repository.
 
 which are points to a single object(usually a commit or a tag object
 
@@ -141,55 +173,6 @@ which are points to a single object(usually a commit or a tag object
 
 `$ git rev-parse master`
 
-**hooks:** This directory contains scripts that Git can run before or after certain actions, such as committing or pushing changes
-
-Overall, the Git repository structure is designed to allow for efficient version control and collaboration on projects, while keeping track of all the changes made to files over time.
-
-### Initiate a project
-
-**Init**
-
-git init is a command in the Git version control system that is used to create a new Git repository. When you run git init in a directory, it creates a new Git repository in that directory, which enables version control of your files. Here's how you can use git init:
-
-1. Open your terminal or command prompt.
-2. Navigate to the directory where you want to create your new Git repository.
-3. Run the command git init.
-4. Git will create a new directory called .git in your current directory. This directory contains all the files and folders needed to manage your repository.
-5. You can now start adding files to your repository and using Git commands to manage them.
-
-It's important to note that git init only needs to be run once in a directory to create a Git repository. If you run it again in the same directory, it will overwrite the existing Git repository, which could result in data loss.
-
-Running `git init` command creates a `.git` folder
-
-## How git differ from other version control systems out there in the market?
-- The only difference between git and other VCs like SVN, perforce, Bazar etc is the way 
-they think about data
-
-- Most other VCS store data as a list of file-based changes. these systems think of the information they keep as a set of files and changes made to each file over time.
-
-![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/a883f359-047b-4991-b0ff-c411ecf036f1)
-
-- But, git thinks of it as a set of snapshots of a mini file system. Every time you save or commit the state of your project in Git. It basically takes a picture of what all your files look like at the moment and stores a reference to that snapshot.
-- To be efficient, if files have not changed, Git doesn’t store the file again—just a link to the previous identical file it has already stored.
-  ![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/555fc743-eade-4ce6-9d27-8ee901917c62)
-
-
-Git repository exists entirely in a single ".git" directory
-
-Note: .git is also hidden in Windows (msysgit).
-You would have to do a dir /AH to see it.
-
-## GIT Internals
-
-**Repos**
-- A git repository is an on-disk data structure [self-contained directory ]  that stores metadata [the file's name, size, modification date, and content. ] for a set of files and directories.
-- This metadata allows Git to track changes and efficiently manage the project's history
-- It lives in your `.git/folder` every time you commit data to git. It gets stored here. Inversly .git/ contains every single commit
-- It's basic structure like this
-
-   	.git/<br>
-    		objects/   refs/
-  		
 ### objects
 - Git is fundamentally a key-value store. when you add data to git. It builds an object and stores SHA-1 of a hash of the object content as a key. and pointer as a value
 - Therefore any content in git is looked up as hash
@@ -236,7 +219,21 @@ They are stored in `.git/refs/heads/main`
 ### Blob Object
 - A blob contains arbitrary binary file contents. commonly, it will be raw text such as source code or a blog article. But, it could just as easily be the bytes of a PNG file or anything else.
 
-- if you have the hash of a blob, you can look at its contents.
+- if you have the hash of a blob, you can look at its contents
+
+## How git differ from other version control systems out there in the market?
+- The only difference between git and other VCs like SVN, perforce, Bazar etc is the way 
+they think about data
+
+- Most other VCS store data as a list of file-based changes. these systems think of the information they keep as a set of files and changes made to each file over time.
+
+![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/a883f359-047b-4991-b0ff-c411ecf036f1)
+
+- But, git thinks of it as a set of snapshots of a mini file system. Every time you save or commit the state of your project in Git. It basically takes a picture of what all your files look like at the moment and stores a reference to that snapshot.
+- To be efficient, if files have not changed, Git doesn’t store the file again—just a link to the previous identical file it has already stored.
+  ![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/555fc743-eade-4ce6-9d27-8ee901917c62)
+
+
 
 **creating new commit**
 - the `git commit` command does a few things:
@@ -273,7 +270,9 @@ Blob: Stores the raw content of files.
 Tree: Represents a directory structure, linking together blobs and other trees.
 Commit: Captures a snapshot of your project at a specific point in time, referencing a tree and containing metadata like author and commit message.
 Tag: Annotates a specific commit with a descriptive name.
+
 💡 Key Takeaways
+
 Git uses a key-value store to manage data efficiently.
 The key is the SHA-1 hash of the object's content, ensuring uniqueness and integrity.
 The value is the actual object, containing the data you added.
@@ -284,7 +283,7 @@ Different types of Git objects serve specific purposes, like storing files, repr
 Git is a distributed version control system that stores the content of a project as a set of snapshots or commits. The Git object model is the way Git internally represents and stores the content and history of a project.
 
 - The GIT object Model consists of four types of objects.
-- 
+
 1. **BLOB :**
 - BLOB stands for binary large object.
 - It is a binary representation of a file. This is the object type which is used to store the contents of each file in a directory.These are most basic datatypes in git.
@@ -293,13 +292,6 @@ Git is a distributed version control system that stores the content of a project
 - It represents the hierarchy of files and directories in a project.
 - root tree object is essentially a snapshot of your repository at a given time. When git refers to the tree it means it is root tree object.
   
-1. **Commit objects :**
-- A commit is an object that represents a particular version of a project.
-- These points to a single tree object. And contain some meta data including the commit author and any parent commits.
-- Even if we give partial hash, it gives us complete hash value because it's unique.
-1. **Tag objects :**
-- A tag is a lightweight object that points to a particular commit. Tags are often used to mark releases or other important points in a project's history
-- which points to a single commit object and contain some meta data.
 
 Git uses a content-addressable storage system, which means that each object is identified by a unique SHA-1 hash of its contents. This allows Git to easily verify the integrity of objects and detect any changes. The Git object model is key to understanding how Git tracks changes in a project and allows users to navigate the history of a project
 
@@ -316,15 +308,15 @@ The working process of git as follows : working area ---> staging area --> local
 
 **Clone**
 
-- git clone is a command used in Git, to create a copy of a repository. When you clone a repository, you create a copy of the entire project, including all its files and the full revision history on your local machine. This allows you to work on the project locally, make changes, and then push those changes back to the original repository
+- `git clone` is a command used in Git, to create a copy of a repository. When you clone a repository, you create a copy of the entire project, including all its files and the full revision history on your local machine. This allows you to work on the project locally, make changes, and then push those changes back to the original repository
 
-Example: git clone
+Example: git clone <remote repo url>
 
 - By default, git clone will create a local copy of the entire repository. However, you can also specify a particular branch or tag to clone using the -b or --branch option, or clone only a specific directory or subdirectory of the repository using the --depth option.
 
 - ### clone a remote respository
 
-= clone copies entire history commits
+ clone copies entire history commits
 
 - Remote tracking branches are created
 - Default branch will be checkout to local dir
@@ -353,27 +345,27 @@ Example: git clone
 
 Some common usage examples of git branch are:
 
-git branch: List all local branches
+`git branch:` List all local branches
 
-git branch new-branch: Create a new branch called "new-branch"
+`git branch new-branch:` Create a new branch called "new-branch"
 
-git branch -d branch-to-delete: Delete the local branch called "branch�to-delete"
+`git branch -d branch-to-delete:` Delete the local branch called "branch�to-delete"
 
-git branch -m old-branch new-branch: Rename the branch "old-branch" to "new-branch"
+`git branch -m old-branch new-branch:` Rename the branch "old-branch" to "new-branch"
 
-git branch -a: List all local and remote branches
+`git branch -a:` List all local and remote branches
 
-git branch -v: List all local branches along with the commit message and hash of their most recent commit.
+`git branch -v:` List all local branches along with the commit message and hash of their most recent commit.
 
 **Commonly used Git branches are:** Master Branch: The primary branch of the repository which represents the main codebase.
 
-Feature Branch: A branch created to implement a new feature or work on a specific task. It is typically created off the master branch, and once the feature is complete, it is merged back into the master branch.
+**Feature Branch:** A branch created to implement a new feature or work on a specific task. It is typically created off the master branch, and once the feature is complete, it is merged back into the master branch.
 
-Release Branch: A branch created when a new release is ready. It is typically created from the master branch and contains only stable and tested code.
+**Release Branch:** A branch created when a new release is ready. It is typically created from the master branch and contains only stable and tested code.
 
-Hotfix Branch: A branch created to fix critical issues in the codebase. It is created off the release branch and once the fix is complete, it is merged back into both the master and release branches.
+**Hotfix Branch:** A branch created to fix critical issues in the codebase. It is created off the release branch and once the fix is complete, it is merged back into both the master and release branches.
 
-Development Branch: A branch used for ongoing development work, separate from the master branch. Changes made on this branch are merged into the master branch once they are stable and tested.
+**Development Branch:** A branch used for ongoing development work, separate from the master branch. Changes made on this branch are merged into the master branch once they are stable and tested.
 
 ### Git Checkout
 
@@ -402,7 +394,7 @@ It's important to note that git checkout can modify the state of your working di
 - Using the staging area can be helpful in a number of ways. For example, it allows you to review and selectively add changes before committing them, which can help prevent mistakes and ensure that you only commit changes that are ready to be shared with others.
 - Additionally, using the staging area can help you organize and structure your commits more effectively, which can make it easier to track changes over time and collaborate with others.
 
-add :
+**add :**
 
 - In Git, the "git add" command is used to add changes to the staging area, which is an intermediate step in the process of committing changes to the Git repository.
 - When you make changes to files in your working directory, Git initially tracks those changes but does not automatically add them to the staging area. To add changes to the staging area, you can use the "git add" command followed by the name of the file(s) you want to add. For example: `git add myfile.txt`
@@ -414,18 +406,18 @@ For example: `git add *.txt`
 - The "git add" command can also be used to stage file deletions or moves. For example: `git add --all`
 - This command adds all changes, including file deletions and moves, to the staging area. Alternatively, you can use the "git rm" command to remove files from both the working directory and the Git repository
 
-commit :
+**commit :**
 
 - A git commit is a command used in the Git version control system to save changes to a local repository. When you make changes to files within a Git repository, you can stage those changes using the git add command, which adds the changes to the staging area. Once you have staged all the changes you want to include in the commit, you can use the - - git commit command to create a new commit. The git commit command allows you to provide a commit message, which should briefly describe the changes you are committing.
 - It's important to write clear and descriptive commit messages, as they help others understand what changes you have made and why.
 - A typical git commit command looks like this: git commit -m "Add new feature to web app"
 - This command creates a new commit with the commit message "Add new feature to website". The -m option is used to specify the commit message inline with the command.
 
-          - Branch pointer will be automatically updated after commit
+        - Branch pointer will be automatically updated after commit
         - DO NOT commit when HEAD is not pointing to a branch (no branch will be updated )
         - commit in the middle of an existing branch will create a new commit outside of the original history.
 
-push
+**push**
 
 - git push is a command used in the Git version control system to upload local repository changes to a remote repository. This command is used after making changes to the files in your local repository and committing those changes using the git commit command.
 - The basic syntax for the git push command is as follows: `git push <remote> <branch>`
@@ -441,7 +433,7 @@ Here, refers to the name of the remote repository you want to push your changes 
     
     `git push origin HEAD:master`
 
-Pull :
+**Pull :**
 
 - git pull is a Git command used to fetch and merge changes from a remote repository into your local repository. When you run git pull, Git performs two operations:1.**git fetch**: : This command downloads the latest changes from the remote repository and stores them in a local branch named "origin/branch-name" (where "branch-name" is the name of the remote branch you're tracking).2. **git merge**: This command merges the changes downloaded from the remote repository into your current branch. If there are any conflicts between your local changes and the changes from the remote repository, Git will prompt you to resolve those conflicts before completing the merge.
 
@@ -451,7 +443,7 @@ Here's an example of how to use git pull to update your local repository with th
 2. Run the following command to fetch the latest changes from the remote repository `git fetch` 3.Run the following command to merge the changes into your current branch: `git merge origin/branch-name` Replace "branch-name" with the name of the remote branch you want to merge.
 - Alternatively, you can use the git pull command with the --rebase option to fetch and rebase the changes from the remote repository instead of merging them. This option can be useful for keeping a linear commit history. For example: `git pull --rebase` This will fetch the latest changes from the remote repository and rebase your changes on top of them. If there are any conflicts, Git will prompt you to resolve them before continuing with the rebase.
 
-Stash :
+**Stash :**
 
 - git stash is a command in Git that allows you to temporarily save changes you've made to a working directory and revert it back to the last commit. This is useful when you need to switch to a different branch or work on a different task, but don't want to commit the changes you've made so far. When you run git stash, Git takes all of the changes in your working directory that are not yet committed and stores them in a "stash." You can then switch to a different branch or task and continue working. When you're ready to go back to the changes you stashed, you can run git stash apply to apply the stash back to your working directory. Here are some common git stash commands:
 - **git stash** : this command stashes all the changes you've made to the working directory.
@@ -491,7 +483,7 @@ Tag objects can also be signed with GPG keys to prevent commit or email spoofing
 Reasons why we prefer annotated tag rather than lightweight tag :
 
 > GpG keys Owner authorization These are timestamped, Apart from telling when the last commit was made. It also tells us about the last version release date.
-> 
+
 
 **Merging :**
 
@@ -555,10 +547,6 @@ upon closer inspection, we can see that this is a special kind of commit object-
 
 - This gives the desired result of foo's commits being upstream of master. Note that the original **C**and**D** commits are no longer reachable because no branch points to them.
 
-!https://user-images.githubusercontent.com/89054489/218247808-426a42ec-8015-41da-a191-d39ddba359d3.png
-
-!https://user-images.githubusercontent.com/89054489/218248215-e83029c0-635e-4fa9-b447-ac4c09af505f.png
-
 **Rebasing :** 
 
 - ### Git rebase
@@ -581,7 +569,7 @@ upon closer inspection, we can see that this is a special kind of commit object-
 - In a sense, performing a rebase is like telling git **"Hey, i want to pretend that was actually branched from Take all of the commits from , and pretend that they happened after "**.
 - All we have to do to enable fast-forward merge of feature-branch into master is run git rebase master feature branch before performing the merge. This has brought feature-branch directly upstream of master.
 
-!https://user-images.githubusercontent.com/89054489/218262135-7530d9e1-ec21-47b5-aee0-5bc4b3d5f0f0.png
+![](https://user-images.githubusercontent.com/89054489/218262135-7530d9e1-ec21-47b5-aee0-5bc4b3d5f0f0.png)
 
 - **Rebase flatterns the history, removing unwanted entries**. Git merge on the other hand, only changes the target branch and creates a commit, preserving the history of the source branch. -**cherry picking in git means to choose a particular commit from one branch and apply it onto another branch**. In contrast merge or rebase apply normally many commits onto another branch.
 
@@ -681,7 +669,7 @@ At this point, it helps to understand git's FETCH_HEAD. Everytime you run git fe
 - Recording the stat of working tree, and record the state of index(also known as "staging area")
 - since, its possible for the index and the working tree to contain changes to a same file. Git needs to store the states repeatedly. This gives us a history that looks a little like this :
 
-!https://user-images.githubusercontent.com/89054489/218262227-765b9b2c-6700-4c9a-9e6c-005c9c729082.png
+![](https://user-images.githubusercontent.com/89054489/218262227-765b9b2c-6700-4c9a-9e6c-005c9c729082.png)
 
 - In this history graph, the tree of commit C contains the changes to the working tree. commit C's first parent is the commit that HEAD pointed to when the stash was created (commit A). The second parent (commit B) contains the changes to the index. It is with these two commits that Git is able to re-apply your stashed changes.
 
@@ -754,17 +742,8 @@ $ git clone <remote repository url>
 - $ git commit -m “The initial commit of my project”
     - when u create the commit by running git commit, git checksums each subdirectory ( In this case just the root Project directory) and stores those tree objects in the git repository.
     - Git then creates a commit object that has the metadata and a pointer to the root project tree so it can re-create that snapshot when needed.
-- Your git repository now contains five objects:
-    - three blobs (each representing the contents of one of the three files ). one  tree that lists the contents of the directory and specifies which which file names are stored as which blobs , and one commit with the pointer to that root tree and all the commit metadata.
-    - If you make some changes and commit again, the next commit stores a pointer to the commit that came immediately before it.
-    - A **********branch********** in git is simply a lightweight movable pointer to one of these commits.
-    - The default branch name in git is master.
-    - As you start making commits, you’re given a master branch that points to the last commit you made.
-    - Everytime you commit, the master branch pointer moves forward automatically.
-    
-    $ git branch <branch name> —> To create a new branch
-    
-    ****************************************************************************************what happens if you create a new branch ? >**************************************************************************************** well, doing so creates a new pointer for you to move around. [It creates a new pointer to the same commit you’re currently on ]
+
+  what happens if you create a new branch ? >**************************************************************************************** well, doing so creates a new pointer for you to move around. [It creates a new pointer to the same commit you’re currently on ]
     
     ************************************How does git knows what branch you’re currently on ? >************************************ It keeps a special pointer called ******HEAD.****  ( In git, this is  a pointer to the local branch you’re currently on )*
     
@@ -805,12 +784,6 @@ $ git clone <remote repository url>
     - Remote branches are references to the state of branches on remote repositories
     - Act as bookmarks to where the branches on the remote repositories were the last time it was connected to
     
-    ****************workflows in git****************
-    
-    - A workflow is a recommendation provided by the git tool to set it up and use it. There is a lot of flexibility provided by git to set up the branches and manage changes.
-    - There are 3 workflows suggested for users of git to set it up as per their project context.
-    - These workflows ensure that the workflow for changes is consistent and managed effectively.
-    - These workflows are guidelines and may not represent rigid rules.
     
     ************Points to consider while choosing a workflow************
     
@@ -909,59 +882,12 @@ whatever issue seen in the first release will not be present in the second relea
 
 Reference : https://git-scm.com/docs
 
-
- **INIT a git repository**
-
-- Many ways to init a git repository
-    
-    ```
-      Init a empty git repo with `git init`
-    
-      copy a git repo from other path of file system (copy .git dir)
-    
-      clone a git repo from remote server ( using `git clone <url>`)
-    
-    ```
-    
-- The '.git' directory
-    
-    ```
-    After git repo has been initialized, a .git directory will be generated under root directory.
-    
-    .git contains all information of one git repo
-    
-    ```
-    
-    .git directory contains everything for a whole repository.
-    
-   
-    
-
-`git log --oneline --decorate --graph --all` -- To visualize logs in graph format.
-
-### GIT Working Directory
-
-- Git Working Directory
-    
-    ```
-    Working dir (contents shown in directory )
-    
-    Index/staging area ( contents ready for next commit )
-    
-    Local Repository ( hostory commits )
-    
-    `index` and `local repo` all are in .git dir
-    
-
 ### GIT Commit Graph
 
 - The link between commits are backwards
 - Each commit has atleast one parent except the first commit
 - Each commit represents a unique version
 - we can use `git checkout [SHA1]` to go back to any history versions.
-    
-   
-    
 
 ### Git Branch
 
@@ -1029,9 +955,9 @@ git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
 
 
 
-![Git logo](![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
 
-![Local repository stages](![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/2b993808-2ddb-4a49-af52-417528546bce)
+(![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/2b993808-2ddb-4a49-af52-417528546bce)
 
 
-[Practical Git](https://gitimmersion.com/lab_01.html)
+[Practical Git practice online](https://gitimmersion.com/lab_01.html)
