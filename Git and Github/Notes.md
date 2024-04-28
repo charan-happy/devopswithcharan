@@ -863,7 +863,26 @@ $ git clone <remote repository url>
             - Pushes that master branch to the reference repository so the other developers can rebase on it.
         
 
-
+**Analyzing types of workflows in git**
+1. Centralized workflow
+2. Gitflow workflow
+   
+4. feature branch workflow
+   - The core idea behind the feature branch workflow is that all feature development should take place in a dedicated branch instead of master branch. This encapsulation makes it easy for multiple developers to work on a particular feature without disturbing main codebase. it also means the master branch will never contain broken code, which is a huge advantage for continuous integration environments.
+5. Github flow
+    - Master branch of a specific location (github, gitlab, bitbucket, local server) contains the latest shippable version. For new feature/bugfix/architectural change each developer creates a branch.
+    - Changes happened on that branch and can be discussed in a pull-request, code review etc. once accepted they get merged into the master branch.
+      full flow by Scott CHacon :
+       - Anything in the mater branch is deployable
+       - To work on something new, create a descriptively named branch off of master (i.e; new-user-addition)
+       - commit to that branch locally and regularly push your work to the same named branch on the server
+       - when you need feedback or help, or you think the branch is ready for merging, open a pull request
+       - After someone else has reviewed and signed off on the feature, you can merge it into master
+       - once it is merged and pushed to master you can and should deploy immediately.
+         
+6. forking workflow
+   - Instead of having one centralized repo that all developers have access to each developer has his/her own repo that is forked from the main repo. The advantage of this is that developers can post their own repos rather than a shared repo and a maintainer can integrate the changes from the forked repos into the original whenever appropriate.
+     
 
 
 Branching Strategy
