@@ -1,5 +1,7 @@
 # Git and Github
 
+![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
+
 # what is version control system ? & why we have to use it ?
 
 # Centralised version control vs distributed version control system
@@ -955,7 +957,7 @@ git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
 
 
 
-![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
+
 
 (![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/2b993808-2ddb-4a49-af52-417528546bce)
 
