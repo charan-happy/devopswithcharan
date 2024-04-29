@@ -2,7 +2,7 @@
 
 ![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
 
-# what is version control system ? & why we have to use it ?
+[what is version control system ? & why we have to use it ?](#what-is-version-control-system)
 
 # Centralised version control vs distributed version control system
 
@@ -33,7 +33,7 @@ For More Surprises, visit last part of these page
 
 
 
-### what is version control system ?
+### what is version control system
 
 - Version control system is a system which involves the process of keep track of modifications of the previous versions of present code.
 - VCS is also called as Source Control System (SCS ) is a system that helps you to manages to a file or set of files over a time.
