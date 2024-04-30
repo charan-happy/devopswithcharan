@@ -27,8 +27,72 @@
 
 - Runners are defined simply via the runs-on: clause:
 - `runs-on: ubuntu-latest`
-- 1.11.48
 
+💰 Charges for GitHub Actions Runners: Public vs. Private
+
+Here's a breakdown of charges for GitHub Actions runners, both public and private:
+
+Public Repositories:
+
+Standard GitHub-hosted runners: Free
+Large GitHub-hosted runners: Charged by the job minute
+Self-hosted runners: No charge for the runner itself, but you'll need to manage the infrastructure costs.
+
+Private Repositories:
+
+Standard GitHub-hosted runners: Free for the first 3,000 job minutes per month. Additional minutes are charged by the job minute.
+Large GitHub-hosted runners: Charged by the job minute.
+Self-hosted runners: No charge for the runner itself, but you'll need to manage the infrastructure costs.
+Additional Notes:
+
+Larger runners are charged by the job minute for both public and private repositories.
+Self-hosted runners require you to manage the infrastructure costs, which can vary depending on your setup.
+You can find more detailed information about pricing on the GitHub website. 
+
+[github Docs on Billing](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions)
+
+- Runners are of 2 types. 1. GitHub-hosted runners and 2. Self-Hosted runners
+
+**1. GitHub Hosted Runners:**
+   - These are hosted on Azure specifically and MacOs run on Mac Stadium Apple's own environment.
+   - OS: ubuntu, windows or macOS
+   - Ephemeral ( Lasting for a short time )
+   - 2-core CPU (Mac-os: 3 cores)
+   - 7 GB RAM (Mac-os: 14 GB)
+   - 14 GB SSD disk space
+   - software installed: wget, GH CLI, AWS CLI, Jave ....
+```
+  name: Super Linter workflow
+  on:
+    push:
+
+  jobs:
+    lint:
+       name: Lint Code Base
+
+       runs-on: windows-latest
+  ```
+
+**2. Self-Hosted Runners:**
+- custom hardware config
+- Run on OS not supported on Github-hosted runner
+- Reference runner using custom labels
+- can be grouped together
+- control which organizations/repositories have access to which runner groups
+- Do not use with public repositories
+
+  ```
+  name: Super Linter workflow
+  on:
+    push:
+
+  jobs:
+    lint:
+       name: Lint Code Base
+
+       runs-on: [self-hosted, Linux, ARM64]
+  ```
+  
 ## Jobs
 
 ## Workflow
@@ -110,4 +174,84 @@ jobs: #jobs
 
  ## Workflow Execution
 
+ ## Actions
+
+ - Reusable units of code that can be referenced in a workflow
+ - GitHub runs them in node.js runtime, or in Docker containers
+ - Reference in Action, or run scripts directly
+ - can be referenced in three ways:
+        - public repository
+        - The same repository as your workflow (local actions)
+        - A published Docker container image on DockerHub
+
+```
+name: Super workflow
+
+on:
+ push:
  
+jobs:
+  lint:
+    name: Lint Code Base
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - run: echo "Hello World" #script
+      #public actions
+      - uses: actions/checkout@v2
+      
+      - uses: github/super-linter@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      # local action  
+      - uses: ./path/to/action
+      # docker image
+      - uses: docker://alpine:3.8
+```
+
+Quick summary :
+
+- Events trigger workflows, EX: a push to a branch
+- workflows contain one or more jobs, which contains one or more steps
+- These steps can reference actions or execute commands
+- The term "GitHub Actions" include all components, not just the Actions themselves
+
+  ![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/359608df-1445-49f5-bf73-06871800a3d8)
+
+# GitHub MarketPlace
+- Discover Opensource Actions across multiple domains
+- ~9000 Actions ( and counting...)
+- Blue color round check marks are Verified, Creators
+- Reference these actions directly  in your workflow
+- Integrated into GitHub Editor
+
+# Advanced Syntax
+|Syntax Element|Description|  
+|---|---|
+|permissions|Set workflow permissions for GITHUB_TOKEN|
+|env| Set environmental variables for all run steps|
+|defaults| Set the shell and working directory for the run |  
+|concurrency|Manage workflows running concurrently|
+|needs|Make jobs dependent on each other. Share outputs|
+|if|check whether a job should run based on variables success() always() cancelled() failure() |
+|timeout|Limit runtime|  
+|continue-on-error|Handle termination of workflow|
+|services|Create sidecar docker images for integration dependencies|
+|container| Use a container for the execution of the step |
+
+# function Expressions
+
+|syntax element|Description|  
+|---|---|
+|contains|check if a string is contained in another|
+|startWith/endsWith|Check the start/end of a string|
+|format|format outputs|  
+|join|join arrays into strings|
+|toJSON/fromJSON|Make string JSON and JSON strings|
+|hashFiles|Create a hash from an input file. Useful for caching|
+|always/success/failure/canceled |Workflow statuses. useful for conditional runs|
+
+
+
