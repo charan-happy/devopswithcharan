@@ -19,6 +19,7 @@
 ## Triggering Workflows
 
 ## components
+- By components, we mean the different pieces that GitHub Actions defines for you to use to build a workflow
 
 ## Steps
 
@@ -254,4 +255,63 @@ Quick summary :
 |always/success/failure/canceled |Workflow statuses. useful for conditional runs|
 
 
+# Environments and secrete
 
+- controls deployment
+- Add gated deployments with approvals
+- control secrets
+- Review all deployments to an ENV
+- Navigate directly to URLs for deployments
+- Fully integrated with the checks API (previously called deployment API)
+- supports matrix for gated deployments
+
+# GitHub Secret Store
+- Built-in secret store
+- Encrypted
+  - LibSodium sealed box
+- use directly from your workflow
+- Redacted in workflow logs
+- API support
+- organization/repository/environment secrets
+
+
+Types of secrets
+
+- Environment secrets
+     - Scoped to a single environment
+     - The secret is not accessible by workflow unless the deployment to that environment is approved
+- Repository secrets
+       - Scoped to a single repository
+       - can override org-level secrets
+- Organization secrets
+      - Managed at org level
+      - can be scoped to a specific repositories
+
+# using secrets in workflows
+
+- All secrets can be accessed using the same syntax: ${{ secrets.<SECRET_NAME> }}
+- Every workflow run provisions a GITHUB_TOKEN secret by default
+       - Scoped to a single repository
+       - Granular permissions
+       - Can't trigger other workflows
+- Marketplace Actions exist for integration with other secret stores.
+
+  ```
+  name: pull request labeler
+
+  on:
+    pull_request:
+
+  jobs:
+     triage:
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/labeler#v2
+            with:
+               repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+           - uses: myAction@v1
+             with:
+                mysecret: ${{ secrets.MY_SECRET }}
+  ```
