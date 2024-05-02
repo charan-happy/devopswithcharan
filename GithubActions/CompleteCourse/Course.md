@@ -287,6 +287,9 @@ Types of secrets
       - Managed at org level
       - can be scoped to a specific repositories
 
+- lowest priority always takes the precedence
+- 
+
 # using secrets in workflows
 
 - All secrets can be accessed using the same syntax: ${{ secrets.<SECRET_NAME> }}
@@ -315,3 +318,42 @@ Types of secrets
              with:
                 mysecret: ${{ secrets.MY_SECRET }}
   ```
+
+## Managing Workflows & Actions
+
+**Action Policies**
+- Configure Action policies on enterprise/organization/repository level
+       - which actions are allowed
+       - Artifact retension period
+       - Running workflows from fork PRs
+       - Permissions of GITHUB_TOKEN
+
+## sharing private actions
+- Use github packages and ghcr.io to share actions using docker execution and **package registry** permissions
+
+  use a **GitHub App** to clone actions from :
+   - Actions in different repositories
+   - Actions monorepo
+   - Actions separate organization
+
+```
+job:
+  do-something:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate app installation token
+        id: app
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+           application_id: ${{ secrets.APP_ID }}
+           application_private_key: ${{ secrets.PRIV_KEY }}
+
+      - name: checkout private repository
+        id: checkout_repo
+        uses: actions/checkout@v2
+        with:
+          repository: my-org/repo
+          path: path/to/PrivateAction
+          token: ${{ steps.app.outputs.token }}
+```
+
