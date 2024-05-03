@@ -453,3 +453,7 @@ branding:
 |Provide a clean instance for every job execution|are customizable to your hardware, operating system, software, and security requirements|
 |use free minutes on your github plan with per-minute rates applied after surpassing the free minutes| Don't need to have a clean instance for every job execution|
 ||Are free to use with GitHub Actions but you are responsible for the cost maintaining your runner machines |
+
+
+## Basic CI Workflow
+- Uses a  build matrix across multiple node versions
