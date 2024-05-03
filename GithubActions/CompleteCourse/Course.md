@@ -15,6 +15,7 @@
    - The actual code and related pieces that implement individual actions.
 
 # An overview
+- At a high level, the workflow involved with the GitHub Actions flow is this :
 
 ## Triggering Workflows
 
@@ -382,3 +383,73 @@ Optimizing your workflow performance with caching :
 - create **starter workflows** for reusability
 - use actions for CI/CD but also ***-ops**
 
+## Building your own actions
+
+**Writing your own Actions**
+- 3 types of actions
+       - JavaScript
+       - Docker
+       - Composite run step
+
+- Metadata defined in `action.yml` file
+       - inputs
+       - outputs
+       - Branding
+       - Pre-/post-scripts
+
+`./path/to/action/action.yaml`
+```
+name: "Hello Action"
+description: "Greet Someone"
+author: "charan-happy@github.com"
+
+inputs:
+  MY_NAME:
+     description: "who to greet"
+     required: true
+     default: "world"
+
+outputs:
+  GREETING:
+    description: "Full greeting"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+
+branding:
+  icon: "mic"
+  color: "blue"
+```
+
+**Best Practices**
+- Design for reusability
+- write tests
+- versioning
+- Documentation
+- proper action.yaml metadata
+- github.com/actions/toolkit
+- publish your action to the marketplace
+
+  
+## Using GitHub API
+
+**REST API (v3)**
+ - libraries available for most languages
+ - Octokit
+
+**GraphQL**
+  - The future of the GitHub API
+  - A query language allowing granular control of request and response
+
+# Migration
+
+**Runners**
+
+|**GitHub Hosted**| **Self-Hosted**|
+|---|---|
+|Receives automatic updates for the operating system, pre-installed packages and tools and the self-hosted runner application | Receives automatic updates for the self-hosted runner application only. You are responsible updating the os and all other software|
+|Are managed and maintained by GitHub|can use cloud service or local machines that you already pay for|
+|Provide a clean instance for every job execution|are customizable to your hardware, operating system, software, and security requirements|
+|use free minutes on your github plan with per-minute rates applied after surpassing the free minutes| Don't need to have a clean instance for every job execution|
+||Are free to use with GitHub Actions but you are responsible for the cost maintaining your runner machines |
