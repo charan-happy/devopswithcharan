@@ -357,3 +357,28 @@ job:
           token: ${{ steps.app.outputs.token }}
 ```
 
+## caching
+
+Caching dependencies to speedup workflows
+
+- caching can help with speeding up workflows when you need to install dependencies. NPM, Python, Ruby etc..these are simple examples of applications that require dependencies to be built. But there are more complex scenarios, such as java, c/c++ and modularized microservices that often require downstream artifacts
+- Caching can speed up your builds when your dependencies have not changed.
+
+Note: caching is not supported in self-hosted runners 
+
+Optimizing your workflow performance with caching :
+ - Temporarily save files between workflow runs
+ - 5GB max cache size per repo
+ - 7 days retention
+ - scoped to key and branch
+ - Avoid caching sensitive data
+ - Never cache sensitive data
+
+## Best practices on Actions in an organization
+- use the **GITHUB_TOKEN** when possible, as a second option GitHub Apps
+- **Limit Token Permissions**
+- Run only **trusted actions**
+- protect your secrets with **environments**
+- create **starter workflows** for reusability
+- use actions for CI/CD but also ***-ops**
+
