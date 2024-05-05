@@ -95,7 +95,8 @@ some of the reasons to use linux  are :
 
 **************************Linux Vs Unix**************************
 
-(![Linux vs unix <image>](<Images/linux/Linux vs unix.png>))
+![architecture](/Images/linux/Linux%20vs%20unix.png)
+credits: TWN
 
 | Comparision | Linux | Unix |
 | --- | --- | --- |
@@ -123,7 +124,8 @@ The next level is **************Shell,************** which acts as the user inte
 
 The highest level is **************utilities************** which provides utility functions, in other words, it is the **********user********** level, as user is the one who operates those utilities.
 
-(![Linux architecture](<Images/linux/Linux Architecture.png>))
+![architecture](/Images/linux/Linux%20Architecture.png)
+
 
 | Name | Description |
 | --- | --- |
@@ -654,7 +656,7 @@ Logical Volume Management
 - It allows you to create larger partitions than you could achieve with a single drive.
 - LVM can also be convenient ways to gain redundancy without sacrificing flexibility
 
-(![LVM](Images/linux/LVM.png))
+![LVM](/Images/linux/LVM.png)
 
 Above picture shows the structure of LVM. LVM consists of **************************************************************************************************************************************************physical volume, volume group, logical volumes and finally file systems.************************************************************************************************************************************************** 
 
@@ -1163,7 +1165,7 @@ Boot Procedure and Kernel Parameters
 
 Press the power button on your system, and after few moments you see the linux login prompt.
 
-(![Boot process ](Images/linux/BootProcess.png))
+(![Boot process ](/Images/linux/BootProcess.png))
 
 1. ********BIOS********
     - BIOS stands for Basic Input/Output system
@@ -1241,7 +1243,7 @@ Job Automation
 
 **************************crontab format :**************************
 
-![Crontab ](Images/linux/Crontab.png)
+![Crontab ](/Images/linux/Crontab.png)
 
 | Options | Explanation |
 | --- | --- |

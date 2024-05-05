@@ -2,7 +2,7 @@
 
 ![image](https://github.com/Charan-happy/Learn_Devops_tools/assets/89054489/d5cd4a54-b837-4a01-9f6c-8b6fbe78569b)
 
-# what is version control system ? & why we have to use it ?
+[what is version control system ? & why we have to use it ?](#what-is-version-control-system)
 
 # Centralised version control vs distributed version control system
 
@@ -32,8 +32,8 @@
 For More Surprises, visit last part of these page
 
 
-
-### what is version control system ?
+### what is version control system
+>>>>>>> f07bfe61d2f80dd0a84dc379c721355f3f2b5d24
 
 - Version control system is a system which involves the process of keep track of modifications of the previous versions of present code.
 - VCS is also called as Source Control System (SCS ) is a system that helps you to manages to a file or set of files over a time.
@@ -177,6 +177,9 @@ which are points to a single object(usually a commit or a tag object
 
 ### objects
 - Git is fundamentally a key-value store. when you add data to git. It builds an object and stores SHA-1 of a hash of the object content as a key. and pointer as a value
+
+- Git uses a content-addressable storage system, which means that each object is identified by a unique SHA-1 hash of its contents. This allows Git to easily verify the integrity of objects and detect any changes. The Git object model is key to understanding how Git tracks changes in a project and allows users to navigate the history of a project
+
 - Therefore any content in git is looked up as hash
 
   `$ git cat-file -p <hash-id>`
@@ -280,22 +283,6 @@ The key is the SHA-1 hash of the object's content, ensuring uniqueness and integ
 The value is the actual object, containing the data you added.
 Different types of Git objects serve specific purposes, like storing files, representing directories, capturing project snapshots, and annotating commits.
 
-### GIT Object Model :
-
-Git is a distributed version control system that stores the content of a project as a set of snapshots or commits. The Git object model is the way Git internally represents and stores the content and history of a project.
-
-- The GIT object Model consists of four types of objects.
-
-1. **BLOB :**
-- BLOB stands for binary large object.
-- It is a binary representation of a file. This is the object type which is used to store the contents of each file in a directory.These are most basic datatypes in git.
-1. **Tree objects :**
-- These are bit like directories. Tree objects can contain pointers to blobs and any other tree objects.
-- It represents the hierarchy of files and directories in a project.
-- root tree object is essentially a snapshot of your repository at a given time. When git refers to the tree it means it is root tree object.
-  
-
-Git uses a content-addressable storage system, which means that each object is identified by a unique SHA-1 hash of its contents. This allows Git to easily verify the integrity of objects and detect any changes. The Git object model is key to understanding how Git tracks changes in a project and allows users to navigate the history of a project
 
 **Git Working Tree**
 
@@ -389,7 +376,7 @@ It's important to note that git checkout can modify the state of your working di
     - `git pull = git fetch + git merge`
     - `git pull --rebase = git fetch + git rebase`
 
-- *staging area **
+- **staging areaed**
 - In Git, the staging area (also known as the "index" or "cache") is a concept that refers to the intermediate step between modifying files and committing those changes to the Git repository.
 - When you make changes to files in your Git repository, those changes are initially only tracked in your local working directory. In order to commit those changes to the Git repository, you first need to add them to the staging area.
 - The staging area is essentially a snapshot of your working directory at a particular point in time. You can use the "git add" command to add modified files to the staging area. Once a file is in the staging area, you can review the changes and make any necessary modifications before actually committing the changes to the repository using the "git commit" command.
@@ -452,7 +439,7 @@ Here's an example of how to use git pull to update your local repository with th
 - **git stash save "stash message"**: This command allows you to provide a message describing the changes you've stashed.
 - **git stash list**: This command shows a list of all the stashes you've created.
 - **git stash apply**: This command applies the most recent stash to your working directory.
-- *git stash apply stash@{2}: This command applies a specific stash to your working directory.
+- **git stash apply stash@{2}:** This command applies a specific stash to your working directory.
 - **git stash drop**: This command deletes the most recent stash.
 - **git stash pop**: This command applies the most recent stash and then deletes it
 
@@ -460,7 +447,12 @@ It's important to note that git stash does not create a commit. so, it's not a r
 
 **Tags:**
 
-- Git tags are markers that are used to create a named reference to a specific commit in a Git repository. They can be used to label specific points in a repository's history, such as release versions or important milestones. There are two types of Git tags: lightweight tags and annotated tags.
+- Git tags are markers that are used to create a named reference to a specific commit in a Git repository. They can be used to label specific points in a repository's history, such as release versions or important milestones.
+
+There are two types of Git tags: 
+
+1. lightweight tags and <br>
+2. Annotated tags.
 
 A lightweight tag is simply a pointer to a specific commit. It is created by running the following command: `git tag <tag-name> <commit>`
 
