@@ -27,4 +27,3 @@ jobs:
             - name: Run Images on ${{ matrix.os }}
               run: docker run ${{ matrix.images }} # here we are using matrix strategies images
 
-
