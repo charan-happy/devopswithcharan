@@ -67,4 +67,43 @@ interview Questions
     - If a child process is unable to report its completion status to parent process then it will remain available in system by keeping the PID. It is called as zombie process.
 
   - Ques: https://github.com/orgs/daws-76s/discussions/7 Convert rows in columns and columns into rows.
+
+    what is shell script ?
+
+    How do you comment in shell script ?
+
+    what is shebang (#!) used for in shell script ?
+
+    How do you pass arguments to a shell script ?
+
+    what is difference between $@ and $* in shell scripting ?
+
+    explain the use of if-else statement in shell scripting ?
+
+    what is for loop in shell scripting ?
+
+    How do you read user input in shell script ?
+
+    Explain the purpose of case in shell scripting ?
+
+    How do you check if a file exists in shell script ?
+
+    Explain how to redirect output in a shell script ?
+
+    what is a function in shell scripting ?
+
+    How do you use grep in shell script ?
+
+    Explain the purpose of awk command in shell scripting ?
+
+    How do you handle errors in shell script ?
+
+    what is the purpose of sed command in shell scripting ?
+
+    How do you declare and use variables in shell scripting ?
+
+    Explain the difference between && and || in shell scripting ?
+
+    what is the purpose of export command in shell scripting ?
+    
   
