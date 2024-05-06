@@ -224,3 +224,7 @@ Actions also support linters for various languages to enforce coding standards, 
 
 Moreover, GitHub Actions integrates with third-party tools like CodeClimate or SonarCloud for advanced static code analysis, identifying potential bugs or vulnerabilities before they become issues.
 
+45. What are caller and called workflow in github actions ?
+    - while using reusable workflows, the reusable workflow yaml file is called called workflow and the yaml file which uses the reusable workflow yaml file is called caller workflow.
+
+      
