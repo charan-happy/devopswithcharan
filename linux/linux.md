@@ -1149,6 +1149,46 @@ ping -c <counts> <ip address> —> To limit the pinging for specific number of c
 
 hostname <new name> —> to change the hostname
 
+ping --> to check connectivity
+ifconfig --> Configure network interfaces
+netstat --> Display network connections
+ssh --> Secure shell for remote login
+scp --> Secure Copy for file transfer
+traceroute --> Trace the route packets to take network host
+nslookup -->Query Internet domain name servers
+dig --> DNS lookup utility
+host --> DNS lookup utility
+nmap --> Network exploration tool and security scanner
+ip --> show or manipulate routing, devices, policy routing, and tunnels
+ss --> Another utility to investigate sockets
+tcpdump --> capture and analyze network traffic
+wget --> Non-interactive network downloader
+curl --> Transfer data from or to a server
+ncat --> Network utility for reading from and writing to network connections
+EX: ncat -l 1234
+
+socat --> Multipurpose relay for bidrectional data transfer
+ socat - TCP4-LISTEN:1234,fork
+
+iptables --> user-space utility program that allows a system administrator to configure IP packet filter rules of the linux kernel firewall
+
+firewall-cmd --> command line interface to firewall management 
+EX: firewall-cmd --list-all
+
+ufw --> uncomplicated firewall
+route --> show or manipulate the IP routing table
+arp --> Address resolution protocol
+ethtool --> Utility for controlling network drivers and hardware
+mtr --> diagnostic tool for network problems
+nethogs --> monitor network traffic
+iftop --> monitor bandwidth usage on an interface
+
+vnstat --> network traffic monitor
+bmon --> Bandwidth monitor and rate estimator
+iperf --> tool for active measurement of the maximum achievable bandwidth
+speedtest-cli --> command line interface for testing internet bandwidth using speedtest.net
+
+
 ************Assigning / changing IP address :************
 
 setup/system-config-network 
