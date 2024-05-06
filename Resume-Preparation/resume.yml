@@ -1,0 +1,92 @@
+- Career Objective:
+  - Highly motivated DevOps and Cloud Engineer with a strong passion for driving innovation, optimizing processes, and ensuring seamless software delivery in cloud-based environments.
+  - Seeking a challenging role where I can leverage my expertise in cloud technologies, automation, and continuous integration/continuous deployment (CI/CD) pipelines to architect scalable and reliable infrastructure, streamline development workflows, and enhance overall operational efficiency.
+  - Committed to learn and implement emerging technologies and best practices, I aim to contribute to the success of organizations by enabling efficient software development, deployment, and management in cloud-native environments.
+- Linux:
+  - Extensive experience in administering and managing Linux-based systems, including Red Hat Enterprise Linux (RHEL), CentOS, AWS Linux, etc.
+  - Skilled in utilizing command-line tools, log analysis, and diagnostic utilities to identify and resolve system and application-level problems efficiently.
+  - Extensive experience in Linux user management, package management, service management, network management, disk management.
+- Shell Scripting:
+  - Proficient in shell scripting for automating routine tasks, improving operational efficiency, and streamlining system administration processes.
+  -  Utilized shell scripting to parse and process large datasets, manipulate files and directories, and perform system-level tasks such as user management, package installations, and system configurations.
+  - Implemented robust error-checking mechanisms, such as conditional statements and exit codes, to handle various scenarios and provide accurate error reporting for enhanced script reliability.
+  - Implemented looping constructs with conditionals and control flow statements to iterate through files, directories, or output, performing operations such as file manipulation, data processing, or system administration tasks efficiently.
+- GIT:
+  - Proficient in Git version control system, including branch management, merging, and conflict resolution.
+  - Implemented version control using Git for managing scripts written in Shell, Terraform, and Ansible, ensuring centralized and organized code repositories.
+  - Experienced in using Git commands and tools, such as branching, tagging, and rebasing, to ensure efficient code management and version control.
+  - Collaborated with cross-functional teams, leveraging Git repositories (e.g., Bit Bucket, GitLab) to facilitate code reviews, track issues, and manage feature branches.
+- Ansible:
+  - Extensive experience in utilizing Ansible for configuration management and automation of infrastructure provisioning tasks.
+  - Designed and implemented Ansible playbooks and roles to automate the deployment and configuration of complex multi-tier applications, resulting in reduced deployment time and improved consistency across environments.
+  - Proficient in using Ansible to manage server configuration, package installations, and application deployments.
+  - Extensive experience in utilizing Ansible Tower as a centralized automation and orchestration tool for managing Ansible playbooks and workflows.
+- Jenkins:
+  - Extensive experience in configuring and managing Jenkins CI/CD pipelines for automating software builds, testing, and deployment processes.
+  - Designed and implemented robust CI/CD pipelines, incorporating stages for code compilation, unit testing, code quality analysis, artifact generation, and deployment to various environments.
+  - Proficient in writing and maintaining Jenkins shared libraries to standardize and centralize reusable code and pipeline components. 
+  - Developed custom shared libraries to encapsulate common pipeline logic, enabling consistent and efficient pipeline configuration across multiple projects and teams.
+  - Configured Jenkins jobs to trigger on code commits, pull requests, or schedule-based triggers, ensuring continuous integration and delivery of software changes.
+  - Successfully integrated Jenkins CI/CD pipelines with SonarQube, Nexus, JUnit, Terraform, Ansible, and Helm to establish a robust and automated software development lifecycle. 
+- AWS:
+  - IAM:
+    - Experience in configuring IAM Users, Groups, Roles and policies. 
+    - Implemented granular least access policy and minimize the risk of unauthorized access or data breaches. Migrated systems users with Accesskey and Secret key to Role based access.
+    - Designed and implemented AWS IAM features like cross-account access and role-based access control (RBAC).
+    - Automated provisioning and deprovisioning of new IAM users.
+  - VPC:
+    - Designed and implemented VPC creation, subnet CIDR calcuation, creation of subnets, Internet Gateway, Route table and Routes, NAT Gateway, etc.
+    - Utilized VPC peering and VPN connections to establish connectivity between multiple VPCs and on-premise data centers.
+    - Implemented advanced networking features in AWS VPC, such as VPC endpoints, NAT gateways, and transit gateways, to optimize network traffic flow and improve application performance.
+  - SG and NACL:
+    - Configured and maintained AWS security groups and NACLs to establish robust network security controls for cloud-based applications.
+    - Collaborated with cross-functional teams to define network access policies, allowing only necessary traffic and preventing unauthorized access to critical resources, resulting in enhanced security posture and reduced exposure to potential threats.
+  - Route53:
+    -  Configured DNS hosted zones, records, including A, CNAME records, to effectively route traffic and support various application needs, resulting in improved availability and reduced latency.
+    - Managed and deployed SSL/TLS certificates at scale using AWS ACM to ensure secure communication and encryption across multiple web applications and services.
+    - Automated Route53 record creation and ACM attachment.
+  - EC2:
+    - Designed and implemented scalable and highly available Amazon EC2 architectures, leveraging auto scaling groups and load balancers to ensure optimal performance and fault tolerance for cloud-based applications.
+    - Designed and implemented Spot Instance strategies, utilizing automation and instance interruption handling to ensure seamless and reliable application performance.
+    - Designed and implemented AWS Launch Templates to streamline and automate the provisioning of Amazon EC2 instances, enabling consistent and scalable deployments.
+  - RDS:
+    - Designed and implemented scalable and highly available database architectures using Amazon RDS, leveraging features such as multi-AZ deployments and read replicas.
+    - Managed and optimized RDS instances, including backup and recovery strategies, performance tuning, and security enhancements, resulting in improved database performance, reliability, and data protection
+    - Implemented caching solutions using Amazon ElastiCache to enhance application performance and reduce database load
+    - Designed and configured ElastiCache clusters, leveraging Redis or Memcached engines, to provide in-memory caching for frequently accessed data, resulting in reduced latency and improved overall application response times.
+  - WAF & Shield:
+    - Implemented and managed AWS WAF to protect web applications from common security threats, such as SQL injection, cross-site scripting (XSS), and DDoS attacks.
+    - Configured WAF rules, conditions, and rate-based policies to effectively mitigate and block malicious traffic, ensuring the security and availability of web applications.
+    - Leveraged AWS Shield to protect against DDoS attacks by utilizing its built-in DDoS protection capabilities
+    - Designed and implemented DDoS response plans and incident response procedures, working closely with cross-functional teams to identify and respond to potential attacks, resulting in increased resilience and minimal impact during DDoS events.
+  - KMS:
+    - Managed and implemented AWS KMS to secure and manage encryption keys for sensitive data and resources in the cloud.
+    - Designed and implemented key management policies, including key rotation, access controls, and auditing, ensuring compliance with security and regulatory requirements.
+  - Cost Savings:
+    - Implemented AWS VPC endpoints to establish private and direct connections between VPCs and AWS services, eliminating the need for public internet access
+    - Implemented private communication channels and utilized AWS PrivateLink to securely and cost-effectively connect services and resources within the AWS ecosystem. By leveraging PrivateLink, reduced data transfer costs associated with public internet traffic and achieved significant savings by eliminating the need for costly data egress charges
+- Terraform:
+  - Designed and implemented infrastructure as code using Terraform to provision and manage AWS resources
+  - Developed reusable Terraform modules and templates to achieve consistent and reproducible infrastructure deployments, reducing manual effort and ensuring infrastructure consistency across environments.
+  - Orchestrated complex multi-tier infrastructure deployments using Terraform, including virtual networks, compute instances, storage, and security groups.
+  - Leveraged Terraform's declarative syntax and state management to automate infrastructure provisioning and configuration, resulting in improved efficiency and reduced time-to-deploy.
+  - Implemented Terraform concepts like Locals, Data sources, Outputs, Functions, Count and Count index, etc. to effective develop the modules.
+- Docker and K8:
+  - Extensive experience in containerization using Docker to package applications, ensuring consistency and portability across different environments.
+  - Designed and implemented Docker containers, including creating Docker images, writing Dockerfiles, and configuring container orchestration for seamless deployment and scaling.
+  - Proficient in managing containerized applications using Kubernetes, including deployment, scaling, and monitoring of microservices architecture.
+  - Utilized Kubernetes features such as pods, services, deployments, and ingress controllers to achieve high availability, fault tolerance, and efficient resource utilization.
+  - Demonstrated expertise in deploying and managing applications on Amazon EKS, a fully managed Kubernetes service.
+  - Designed and implemented EKS clusters, including node groups, auto-scaling, and security configurations, to deploy containerized workloads on AWS infrastructure, ensuring scalability, resilience, and seamless integration with other AWS services.
+  - Proficient in creating and managing Helm charts for efficient and streamlined application deployment and management in Kubernetes environments.
+  - Developed Helm charts to package applications, including dependencies, configurations, and deployment templates, enabling simplified and repeatable deployments across multiple environments.
+  - Proficient in both static and dynamic provisioning of storage in Kubernetes clusters. Implemented static provisioning by pre-provisioning persistent volumes (PVs) manually and mapping them to persistent volume claims (PVCs), ensuring dedicated storage resources for applications.
+- ELK:
+  - Proficient in designing, implementing, and managing ELK (Elasticsearch, Logstash, and Kibana) clusters for centralized log management and analysis.
+  - Configured Elasticsearch to store and index log data, Logstash for data ingestion and transformation, and Kibana for log visualization and monitoring, providing real-time insights into system performance.
+- Monitoring:
+  - Extensive experience in implementing and managing monitoring solutions using Prometheus and Grafana. 
+  - Configured Prometheus to collect and store time-series metrics, designed and customized Grafana dashboards to visualize and analyze the collected metrics, and established alerting rules and notifications for proactive monitoring and incident response.
+  - Proficient in utilizing New Relic for application performance monitoring and observability. Integrated New Relic agents and instrumentation into applications, allowing for real-time monitoring of key performance metrics, transaction tracing, and error analysis.
+- General:
+  - Utilized techniques such as rolling updates, traffic shifting, and load balancer configurations to achieve zero downtime deployments, minimizing service interruptions and maximizing customer satisfaction.
