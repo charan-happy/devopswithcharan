@@ -1,0 +1,33 @@
+Resume Template:
+    LeftSide: Your Full Name, Position, Email, Phone Number.
+    RightSide: keep the certification badges.
+    Career Objective: Max 5lines, What you are, What you want to become, next 5 years.
+    Professional Summary:
+    - What tools and concepts you know.
+    - Each point on the tools and concept you know.
+    - Bold the tool name.
+    Technical Skills Table: Mention the tools you know category wise.
+    Certifcations:
+    - AWS Solutions architect associate.
+    - Terraform associate
+    - CKA
+    Work Experience:
+    - List of companies you worked with dates if possible.
+    Education Qualification: Your qualification
+    Projects:
+    - Project-1:
+        Name: company name
+        Client: clinet Name
+        Dates: FROM and TO
+        Location: Bangalore
+        Project Description: Max 5 lines from WIKI.
+        Roles & Responsibilites:
+        - How you implemented the tools and concepts in this project.
+    - Project-N:
+        Name: company name
+        Client: clinet Name
+        Dates: FROM and TO
+        Location: Bangalore
+        Project Description: Max 5 lines from WIKI.
+        Roles & Responsibilites:
+        - How you implemented the tools and concepts in this project.
