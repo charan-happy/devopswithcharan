@@ -10,6 +10,7 @@
 
 - It is an end-to-end GitHub-centric SDLC process that provides an automation platform and framework.​​​​​​​
 
+![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/cdee886b-0312-473c-9bb2-43d09be3b4f2)
 
   <some images to add related to key components of github actions and github fitment in SDLC process>
   
@@ -50,6 +51,12 @@ A matching external trigger happens - i.e., an event from outside of GitHub.
 A schedule is set up to run a workflow at particular times or intervals.
 A workflow is initiated manually - without an operation having to be done first.
 An event triggered by an operation in a GitHub repository is probably the most common we would want to use and expect to see.
+
+![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/a22e00b8-a466-44ed-8649-7747290ed9c4)
+
+
+![image](https://github.com/charan-happy/DevopsWithCharan/assets/89054489/fca18a3b-b5b3-4144-9ce6-8369a75835ab)
+
 
 A common example is a GitHub pull request (PR). if you or a process initiate a pull request, a corresponding “pull request event” is triggered.
 
