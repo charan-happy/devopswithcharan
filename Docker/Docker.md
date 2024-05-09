@@ -61,6 +61,7 @@ Docker swarm
 
 - 
 
+
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3708d8e6-73e9-4d05-a2f0-3af94b7f6377/Untitled.png)
 
 - Every image has layers.
