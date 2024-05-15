@@ -1,0 +1,607 @@
+1. Introduction to terraform
+2. Installation
+3. First Terraform Project
+4. Resources
+5. Providers
+6. Datasources
+7. Outputs
+8. Locals
+9. Templates & files
+10. Project layout
+11. Modules
+12. Plan
+13. State
+14. Workspace
+15. Provisioners
+
+
+- Terraform is an industry leading infrastructure as code tool that allows you to define your system in
+code and then run it to make what your infrastructure look exactly how you have defined. Terraform
+allows you to configure pretty much anything from any cloud including Azure, AWS, GCP to any
+other component or service like Postgres, Kong or DNSimple to name but a few. The list really is
+almost endless
+
+- Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. It
+takes your infrastructure you have defined in code and makes it real!
+
+  #### Issues with configuring infrastructure manually
+
+1. Repetition over environments
+2. Manual work may lead to Erros
+3. More Time consumption
+4. hardtimes in Destroying infra at a time
+
+- Terraform uses a language called HCL (hashicorp configuration language ) to write code. HCL as you
+will see is a very simple, easy to read syntax that is completely understandable even to someone
+looking at it for the first time. This makes it straight forward to read through the code that defines
+the environment and work out what it is going to do.
+
+- Terraform has a solution if you already have infrastructure and you want to start using Terraform
+to manage it. You can do this by **importing** your infrastructure into Terraform. This is great as allows you to move your infrastructure from being manually setup to being defined in code
+
+  ### why not just use cloudformation ?
+  - Even though CloudFormation is from AWs There are so many benefits in using terraform . Which are as follows:
+    1. Execution speed is high in terrarorm when compared to cloudformation
+    2. Cloud formation uses JSON or YAML for configuration. Which is also having drawbacks (like json no support of comments and yaml comments supported but indentation is main concern of it )
+       But Terraform uses HCL, which has a clean concise syntax. It is very easy to read, allows comments
+(both inline and block) and is not fussy about spacing, newlines or indentation. you can easily split your project up into
+multiple files as you see fit. To make the code easier to read and understand when coming to the project.
+
+    3. Terraform is global tool not just for particular vendor (like AWS)
+
+  ### What about chef, puppet don't they solve problems like terraform ?
+  - Chef and Puppet are configuration management tools. They are designed to configure and manage
+software that is running on a machine (infrastructure) that already exists. Whereas Terraform sits at
+the abstraction layer above that and is designed to setup all of the infrastructure that make up your
+system such as load balancers, servers, DNS records etc.
+
+## Installation
+
+- Visit the official Terraform download page and download the latest version for your target platform.
+Unzip the download to extract the Terraform binary. Terraform runs as a single binary so all you
+need to do is move the binary so that it is in a folder that is in your path. The follow varies slightly
+by platform :
+
+**Mac OS/Linux**
+
+1. Open up a Terminal
+2. Change into the downloads directory, normally by running cd ∼/Downloads
+3. Move the Terraform binary into /usr/local/bin by running mv ∼/Downloads/terraform
+/usr/local/bin/
+4. Test the installation by running terraform version, if installation is successful then you should
+see such as Terraform v0.12.7
+
+**Windows**
+
+1. Move the unzipped Terraform binary into your desired folder such as c:\Terraform
+2. Search for View advanced system settings
+3. In then window that appears click environment variables
+4. In the system variables section at the bottom find the path variable, left click it to select it and
+then click edit
+5. In the edit system variable window scroll to the end of the variable value box, ensure that it
+ends in a ; then enter the path where you moved the Terraform binary into e.g. c:\Terraform
+1. Click ok to close all of the windows you have opened
+1. Open up a Command prompt by pressing the windows key, typing cmd and pressing enter.
+2. Test the installation by running terraform version, if installation is successful then you should
+see such as Terraform v0.12.7
+
+**Setting up your free AWS Account**
+
+Due to the fact Amazon change these pages quite a bit, I’m just going to talk through the general
+process of what you need to do.
+1. Head over to https://aws.amazon.com
+2. Click on the create Free Tier Account link
+3. Fill in your details
+4. You will need to register a payment card. This is so that if you go over your free tier Amazon
+charge you. Do not worry about this if you follow the examples in this book nothing should
+cost any money. Just remember to delete the infrastructure once you have finished with it.
+Luckily Terraform can do this for you!
+5. I recommend that you turn on 2FA for your newly created AWS log in
+
+**Setup an AWS user for use with Terraform**
+We now need to create an AWS user that we can use with Terraform. For the purposes of this book
+we are going to create an account which has administrator permissions. This is not recommended
+for a production setup. I cover best practices for AWS configuration later in the book.
+1. Log into your AWS account and you have access and go to the IAM section, you can do this
+by searching for IAM in the search box on the main AWS page and then clicking on the link
+2. Select Users from the left hand menu
+3. Select Add User at the top
+4. Type in any username you like
+5. For access type select Programmatic access only
+6. Click Next
+7. On the set permissions screen select ‘
+Attach existing policies directly‘
+1. Tick AdministratorAccess which should be the top of the list
+2. Click Next
+3. Click Next again, now you should see a summary of the user you are about to create
+4. Click the Create User button and the user should be created
+5. Store the Access Key Id and Secret Access Key somewhere safe as this is the only time you will
+see them
+
+**Setup an AWS Credentials file**
+
+The last thing we need to do is create an AWS Credentials file. This is so that Terraform can get the
+programmatic credentials for the AWS user we created above.
+You need to create a file and with the following text, replacing the two placeholders with the access
+key id and secret access key you got from AWS when you created your admin user.
+1 [default]
+2 aws_access_key_id = <access_key_id_here>
+3 aws_secret_access_key = <secret_access_key_here>
+Lastly save the file to the path given in the table below based on your OS:
+OS Credentials file path
+Windows %UserProfile%/.aws/credentials
+Mac OS/Linux ∼/.aws/credentials
+
+## Your first terraform project
+
+```
+provider "aws" {
+region = "us-east-1"
+}
+resource "aws_s3_bucket" "first_bucket" {
+bucket = "Nagacharan-first_bucket"
+}
+```
+
+- To configure the provider we use the keyword provider then follow it with the name of the provider
+in quotes in this case "aws". We start the provider block by opening a curly brace {. We can now
+specify any parameters we want to configure the provider. To pass a parameter you simply put the
+name of the parameter followed by an equals sign then the value you want to give the parameter in
+quotes, in our example we are setting the region this provider will use to be eu-west-1. This is the
+region where the AWS Terraform provider will create all of the infrastructure we define. We then
+end the provider block with a closing curly brace }.
+
+- The next block we have defined is a resource. A resource in Terraform represents a thing in the
+real world. In this case an S3 bucket. To define a resource you start a resource block by using the
+keyword resource. You then follow it with the resource you want to create in quotes. We want to
+create an S3 bucket so we are using the S3 resource "aws_s3_bucket". If you are following along in
+IntelliJ and typing in the code you might have noticed that IntelliJ gave you a full list of possible
+resources once you started typing. You can see the full list on the AWS provider page if you are
+interested: https://www.terraform.io/docs/providers/aws/index.html. After we have specified the
+type of resource we want to create we then put another space and then the identifier you want
+to give that resource in quotes, in our example "first_bucket". We then open the block in the
+same way that we did for the provider block with an opening curly brace {. Next we can give any
+parameters the resource takes values. We are only setting the name of the bucket. You then end the
+resource block with a closing }
+
+### Creating your first infrastructure with Terraform
+
+The first thing you have to do with a new Terraform project is initialise Terraform for that project.
+To do this go to your Terminal and cd into the folder where your project is, if you followed this guide
+exactly then cd into the folder named MyFirstTerraformProject. Now run the following command:
+
+`terraform init`
+
+You will see some output on the screen as Terraform initialises, then you should see the message
+Terraform has been successfully initialized!. Once you have initialised Terraform you are
+now ready to create the infrastructure by running:
+
+`terraform apply`
+
+After you run the apply you will see quite a lot of output from Terraform. You will notice that the
+apply has paused and is awaiting a response from you.
+
+Lets pause for a second and look at what is happening here. By default when you run terraform
+apply Terraform will look at the code you have written and then compare it to the infrastructure
+that you currently have (in this case in AWS). Once Terraform has done this it calculates a plan.
+The plan is what Terraform is going to do to get the real infrastructure from where it is now to
+how you have specified you want it to be in code. From looking at the plan we can see Terraform
+is saying if you do this it will create an S3 bucket. You have told Terraform you want an S3 bucket
+and Terraform went to AWS to check and realised that there is not an S3 bucket in AWS with that
+name, so it knows that the plan it needs to do is create the bucket.
+
+The great thing about this plan is that Terraform presents it to us and then pauses and lets us decide
+whether we want to go ahead. You can imagine how useful this is if you accidentally make a change
+that is going to destroy your database! To get Terraform to make these changes and create the S3
+bucket type yes and press enter.
+
+Once the apply has finished you should see the message Apply complete! Resources: 1 added,
+0 changed, 0 destroyed.. This is Terraform telling you that it successfully created the S3 bucket
+for you. Log onto the aws console (website), go to the S3 section and you will see the bucket that
+Terraform created. Delete the bucket from the AWS console. Now go back to the terminal and run
+terraform apply again. You will notice that Terraform has worked out the S3 bucket is not there
+anymore so it needs to create it again. At no point did you tell Terraform the bucket was gone,
+Terraform worked it out. Confirm the apply (by typing yes) so the S3 bucket exists again. Now run
+terraform apply again when the bucket is there. You will see Terraform output Apply complete!
+Resources: 0 added, 0 changed, 0 destroyed.. Terraform realises that the state of the world is
+exactly how you want it to be, so Terraform is saying “nothing to do here!”.
+To finish up lets destroy the infrastructure we created, don’t worry Terraform can take care of that
+for us. Simply run the command terraform destroy. Terraform will present a plan to you of what it
+is going to destroy and then pause so you can confirm. Type yes and press enter. When the destroy
+finishes you will see a message Destroy complete! Resources: 1 destroyed.. This is telling you
+Terraform has successfully destroyed everything. Log into the AWS console and go to S3 and you
+will see that the bucket is now gone.
+
+That concludes our first experience with Terraform. I hope that you can start to see the power that
+Terraform provides and how simple it is to use. Feel free to play around with this project and try
+changing the properties like the name of the S3 bucket and see what happens. That is a great way
+to learn. Just remember to run terraform destroy when you are finished to ensure that you are not
+left with any infrastructure running in AWS.
+
+## Resources
+
+-  Resources are the fundamental components of Terraform configurations. They represent individual infrastructure objects or services that you want to manage, such as virtual networks, compute instances, or DNS records. Each resource block defines the desired state of a specific infrastructure element. 
+
+-  you can create resources that represent things from multiple vendors (for example
+multiple clouds) in a single project.
+
+- - If we look back at our S3 bucket resource the last word on the line in quotes was "first_bucket".
+This is the identifier for that S3 bucket within your Terraform project. The identifier is what we use
+inside our project to refer to an instance of a resource. You can create multiple instances of the same
+resource for example you could create many S3 buckets. The identifier gives you a way to reference
+each one.
+The key name value pairs that make up the body of the resource are the properties for the resource.
+Some properties on the resource are mandatory and some are optional. For an AWS S3 bucket the
+only mandatory property is the name of the bucket. We could have set more properties on the bucket
+for example :
+
+```
+1 resource "aws_s3_bucket" "first_bucket" {
+2 bucket = "kevholditch-first-bucket"
+3 acl = "private"
+4
+5 versioning {
+6 enabled = true
+7 mfa_delete = false
+8 }
+9 }
+```
+
+Lets take a look at another resource type so we can examine the other data types that resources can
+take in their properties:
+
+```
+1 resource "aws_security_group" "my_security_group" {
+2 name = "allow_tls"
+3 ingress {
+4 protocol = "tcp"
+5 from_port = 443
+6 to_port = 443
+7 cidr_blocks = ["10.0.0.0/16", "11.0.0.0/16"]
+8 }
+9 }
+```
+
+In the resource above we have the two other types of data resources can take numbers and lists. The
+port properties (from_port and to_port) are numbers, these are set by just providing the value with
+no quotes. cidr_blocks is a list type, it takes a list of CIDR blocks to restrict for this security group
+to. You can see that a list is given in the same way a JSON array of strings is created where you
+surround it in square braces.
+
+
+**🧩 Terraform Interpolation Explained**: In Terraform, interpolation is the process of replacing placeholders within a string with their corresponding values. These placeholders are enclosed in ${} and can represent variables, expressions, or other Terraform constructs. 
+
+🪄 Interpolation in Action: Consider the following example:
+
+```
+resource "aws_instance" "example" {
+  ami           = "${var.aws_ami}"
+  instance_type = "${var.instance_type}"
+}
+```
+Here, the values of the variables aws_ami and instance_type will be substituted into the ami and instance_type attributes of the aws_instance resource. 
+
+🧱 Interpolation Syntax: Terraform supports various interpolation syntaxes, including:
+
+${variable_name}: Inserts the value of a variable.
+${expression}: Evaluates a Terraform expression.
+${object.attribute}: Accesses an attribute of an object.
+${function_call(arguments)}: Calls a Terraform function. 
+
+Using the output from one resource as the argument to another resource is called `Interpolation`
+
+Consider the following project (which can be found in same repository in the folder resources_-
+example_02). If you do not want to copy from the example repository then create a new folder, create
+a single file in the folder called main.tf and place the following code:
+
+```
+1 provider "aws" {
+2 region = "us-east-1"
+3 }
+4
+5 resource "aws_vpc" "my_vpc" {
+6 cidr_block = "10.0.0.0/16"
+7 }
+8
+9 resource "aws_security_group" "my_security_group" {
+10 vpc_id = aws_vpc.my_vpc.id
+11 name = "Example security group"
+12 }
+13
+14 resource "aws_security_group_rule" "tls_in" {
+15 protocol = "TCP"
+16 security_group_id = aws_security_group.my_security_group.id
+17 from_port = 443
+18 to_port = 443
+19 type = "ingress"
+20 cidr_blocks = ["0.0.0.0/0"]
+21 }
+```
+
+- This project creates an AWS VPC with CIDR block 10.0.0.0/16. Then it defines a security group
+(aws_security_group). In the definition of the security group notice that the value of vpc_id is set
+to aws_vpc.my_vpc.id. The value of aws_vpc.my_vpc.id is not known before we run the project as
+AWS will randomly assign it when we create the VPC. By referencing the VPC we created it allows
+us to use this value even though we do not know what it will be until we run the project.
+
+The format of using an output attribute from a resource is <resource_type>.<resource_identifier>.<attribute_-
+name>. In the VPC id example we are getting the output from an aws_vpc resource type, with
+the identifier name my_vpc and we want to get the id attribute value. So hence we end up with
+aws_vpc.my_vpc.id. It is worth noting here that this syntax was greatly simplified in Terraform
+version 0.12. Which is the syntax all of the examples in this book will be using.
+
+Next in our project we define a security group rule (aws_security_group_rule) to allow ingress
+traffic on port 443. In the aws_security_group_rule we need to reference the id of the security group
+that we want to put this rule in. We can use the same technique as we did when we referenced
+the id of the VPC. Lets work through how to figure this out together. It will start with the type
+of the resource we want to reference aws_security_group. Next we use the identifier to specify
+which instance of the security group we want to use which is my_security_group. Lastly we use the
+attribute of that property we want to use, which is id. This leads use to build the expression aws_-
+security_group.my_security_group.id which we can use for the value of the property security_-
+group_id inside the aws_security_group_rule resource.
+
+The neat thing about using interpolation syntax to reference the attribute of a resource in another
+resource is that it allows Terraform to work out the dependency order of the resources. From our
+HCL above Terraform can determine that first it needs to create the VPC because it needs the id
+that AWS assigns to the VPC in order to create the security group. It then knows that it needs to
+create the security group next as it needs the id of the security group in order to create the security
+group rule. Terraform uses this information to build up a dependency graph and then tries to run in
+parallel as much as possible.
+
+To illustrate the way Terraform can create a project in parallel consider what happens when we
+add a new security group rule to our project above (folder resources_example_03 in the example
+repository)
+
+```
+1 resource "aws_security_group_rule" "http_in" {
+2 protocol = "tcp"
+3 security_group_id = aws_security_group.my_security_group.id
+4 from_port = 80
+5 to_port = 80
+6 type = "ingress"
+7 cidr_blocks = ["0.0.0.0/0"]
+8 }
+```
+
+When you run the project now with Terraform, it will realise that it can create both security group
+rules in parallel. Once the security group they both depend on is created, it will be able to create both
+of the rules together. This feature of Terraform makes performance very good. It may seem quite
+obvious in this example but as a project grows it can be quite impressive at how much Terraform
+can run in parallel
+
+### Providers
+
+-🔌 Terraform Providers Explained In Terraform, providers are plugins that enable interaction with various APIs, including cloud providers, third-party tools, and other services. They act as intermediaries between Terraform and the target infrastructure or service, allowing you to manage resources and configurations. 
+
+🧰 Provider Functionality Providers define the resources and data sources available for managing infrastructure within a specific platform or service. They provide the necessary functionalities to create, read, update, and delete resources, as well as retrieve information about them. 
+
+📚 Provider Examples The Terraform ecosystem offers a vast collection of providers, including those for popular cloud platforms like AWS, Azure, and GCP, as well as for various SaaS tools and other services. You can find a comprehensive list of available providers in the Terraform Registry. 
+
+- A provider is defined using a provider block. You have already used a provider block in the examples
+so far in this book, it looks like:
+
+```
+1 provider "aws" {
+2 region = "us-east-1"
+3 }
+```
+
+- The provider block is very simple it starts with the keyword provider to indicate that this is a
+provider block. You then have to give the name of the provider that you are using. In this case we
+are using the aws provider so we put "aws". You then use a { to open the provider block. Inside the
+provider block you can put all of the configuration you want for the provider. For the AWS provider
+the only property that we are configuring is the region. This will be the region that we are going to
+create our AWS resources in. You then end the provider block with a closing }.
+
+- You may be wondering where Terraform puts this provider? It puts it inside the project where you
+are currently working in a special folder called .terraform
+
+-  The provider is actually a separate binary which
+Terraform calls out to at run time to do its work. As an interesting aside the name of the provider
+binary is always in the format terraform-provider-<NAME>_vX.Y.Z. Terraform uses this convention
+to search for providers on your machine, so that it knows if you have a particular version of a
+provider when you run terraform init. It uses this information to know whether or not to download it.
+
+**More than one instance of the same provider**
+
+```
+1 provider "aws" {
+2 region = "eu-west-1"
+3 version = "~> 2.27"
+4 }
+5
+6 provider "aws" {
+7 region = "eu-west-2"
+8 alias = "london"
+9 version = "~> 2.27"
+10 }
+11
+12 resource "aws_vpc" "ireland_vpc" {
+13 cidr_block = "10.0.0.0/16"
+14 }
+15
+16 resource "aws_vpc" "london_vpc" {
+17 cidr_block = "10.1.0.0/16"
+18 provider = "aws.london"
+19 }
+
+```
+
+### Datasources
+
+🔎 Data Sources Explained In Terraform, data sources act as read-only information retrievers. They fetch data from external sources, including cloud provider APIs, existing infrastructure, and other resources. Unlike regular Terraform resources, data sources don't create or modify anything; they simply gather information. 
+
+🔌 Data Source Applications Data sources offer diverse applications in Terraform configurations. They can:
+
+Retrieve existing resource attributes: Obtain information about existing resources in your infrastructure, such as the ID of a specific virtual machine.
+Dynamically configure resources: Use data source outputs to dynamically configure other resources within your Terraform code.
+Access external data: Fetch data from external APIs or services, like retrieving the current price of a resource from a cloud provider. 
+🛠️ Data Source Syntax Data sources are declared similarly to resources, using the data keyword followed by the provider and resource type. They have attributes that specify the data to be retrieved and outputs that expose the fetched information for use in your configuration.
+
+💻 Example: Retrieving an AWS EC2 Instance ID
+
+Here's an example of how to use a data source to retrieve the ID of an existing EC2 instance in Terraform:
+
+```
+data "aws_instance" "example" {
+  instance_id = "i-0123456789abcdef0"
+}
+
+output "instance_id" {
+  value = data.aws_instance.example.id
+}
+```
+
+This code defines a data source named example that retrieves information about the EC2 instance with the ID i-0123456789abcdef0. The output block then displays the instance ID.
+
+
+**💡 Benefits of Using Data Sources**
+
+Data sources offer several benefits, including:
+
+Dynamic configurations: You can use data sources to dynamically configure your infrastructure based on external data. <br>
+Reusability: Data sources can be reused across multiple Terraform configurations. <br>
+Readability: Data sources improve the readability of your Terraform code by separating data retrieval from resource management.
+
+## outputs
+
+An output in your Terraform project shows a piece of data after Terraform successfully completes.
+Outputs are useful as they allow you to echo values from the Terraform run to the command line.
+For example, if you are creating an environment and setting up a bastion jump box as part of that
+environment then its handy to be able to echo the public IP address of the newly created bastion to
+the command line. Then after the Terraform apply finishes you get given the IP of the newly created
+bastion ready for you to ssh straight onto it.
+
+Lets start with an example of outputs. Create a new folder to put our new Terraform project into and
+create a single file called main.tf and paste in the following code (or grab the code from outputs_-
+example_01 folder inside the examples repository):
+
+```
+1 output "message" {
+2 value = "Hello World"
+3 }
+```
+
+Try running this project by opening your terminal. Changing directory into the folder that you
+created where the main.tf file is and then running terraform init and terraform apply. You will
+see that Terraform runs and then prints the following:
+
+```
+1 Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+2
+3 Outputs:
+4
+5 message = Hello World
+```
+**Outputting resource properties**
+
+```
+1 provider "aws" {
+2 region = "eu-west-1"
+3 }
+4
+5 resource "aws_s3_bucket" "first_bucket" {
+6 bucket = "kevholditch-bucket-outputs"
+7 }
+8
+9 output "bucket_name" {
+10 value = aws_s3_bucket.first_bucket.id
+11 }
+12
+13 output "bucket_arn" {
+14 value = aws_s3_bucket.first_bucket.arn
+15 }
+16
+17 output "bucket_information" {
+18 value = "bucket name: ${aws_s3_bucket.first_bucket.id}, bucket arn: ${aws_s3_bucke\
+19 t.first_bucket.arn}"
+20 }
+
+```
+
+- Terraform got the values from the S3 bucket that it created and outputted them when the run
+completed. Terraform prints the outputs in alphabetical order, not the order that you define them in
+your project. That is a good point to make, that Terraform does not care which order you define the
+blocks in your project. Try reordering them and running terraform apply again.
+
+Exporting all attributes
+
+- As of Terraform 0.12>, Terraform allows you to output an entire
+resource or data block. To do this take the example that we just had and add the following output
+(in the examples repository it is outputs_example_03 if you want to just get the code):
+```
+1 output "all" {
+2 value = aws_s3_bucket.first_bucket
+3 }
+```
+
+Run the project again (terraform apply) and you will notice that you see an output called all that
+has all of the attributes that are exported by the aws_s3_bucket resource. Sometimes it can be handy
+just to output the whole resource to the console. Normally when you are debugging something and
+you want to see what the value of one of the properties is.
+
+## Locals
+
+- A local can refer to a fixed value such as a string or it can be used to refer to an expression
+such as two other locals concatenated together or the attribute of a resource that you have created
+
+💻 Terraform Locals Explained In Terraform, locals are named values defined within a module or configuration file. They serve as temporary variables, holding expressions or values that can be referenced elsewhere within the same scope. Locals simplify configuration by avoiding repetitive expressions and promoting code reusability. 
+
+🔨 Creating Locals Locals are declared using the locals block. Within this block, you define key-value pairs, where the key represents the local's name and the value can be any valid Terraform expression. For example:
+
+```
+locals {
+  bucket_name = "${var.prefix}-${var.environment}-bucket"
+  region      = "us-east-1"
+}
+```
+🔁 Using Locals Once defined, locals can be referenced using the local. prefix followed by the local's name. They can be used in various contexts, including resource names, dynamic blocks, and interpolation. For instance:
+```
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = local.bucket_name
+  region  = local.region
+}
+```
+
+**Locals referencing resources**
+
+Locals can reference the output of a resource or a data source by using the expression syntax we
+have learnt. This allows you to give something a more meaningful name or to combine outputs from
+different resource and data source attributes to build up a more complex value
+
+## Templates and files
+
+#### Files-Example
+
+```
+1 provider "aws" {
+2 region = "eu-west-1"
+3 version = "~> 2.27"
+4 }
+5
+6 resource "aws_iam_policy" "my_bucket_policy" {
+7 name = "list-buckets-policy"
+8 policy = file("./policy.iam")
+9 }
+```
+Next if you are creating the code yourself, create another file called policy.iam and paste in:
+
+Filename: policy.iam
+```
+1 {
+2 "Version": "2012-10-17",
+3 "Statement": [
+4 {
+5 "Action": [
+6 "s3:ListBucket"
+7 ],
+8 "Effect": "Allow",
+9 "Resource": "*"
+10 }
+11 ]
+12 }
+
+```
+Template file function :
+
+- 
