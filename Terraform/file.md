@@ -629,3 +629,681 @@ example.tf1
 ```
 
 **Loops in a template**
+- You can pass in an array of values into a template and loop round them.
+
+filename: main.tf
+```
+1 output "rendered_template" {
+2 value = templatefile("./backends.tpl", { port = 8080, ip_addrs = ["10.0.0.1", "10.\
+3 0.0.2"] })
+4 }
+
+```
+
+filename:  backends.tpl 
+
+```
+1 %{ for addr in ip_addrs ~}
+2 backend ${addr}:${port}
+3 %{ endfor ~}
+
+```
+
+## Variables
+
+- A Variable in Terraform is something which can be set at runtime. It allows you to vary what
+Terraform will do by passing in or using a dynamic value.
+
+```
+1 provider "aws" {
+2 region = "eu-west-1"
+3 version = "~> 2.27"
+4 }
+5
+6 variable "bucket_name" {
+7 description = "the name of the bucket you wish to create"
+8 }
+9
+10 resource "aws_s3_bucket" "bucket" {
+11 bucket = var.bucket_name
+12 }
+```
+
+variable keyword followed by identifier of the variable in quotes.  and inside the variable block description is optional.
+
+variable can be defined as `1 variable "bucket_name" {}`
+
+To use the value of a variable in your Terraform code you use the syntax `var.<variable_-
+identifier>`
+
+**variable defaults**
+```
+1 provider "aws" {
+2 region = "eu-west-1"
+3 version = "~> 2.27"
+4 }
+5
+6 variable "bucket_name" {
+7 description = "the name of the bucket you wish to create"
+8 }
+9
+10 variable "bucket_suffix" {
+11 default = "-abcd"
+12 }
+13
+14 resource "aws_s3_bucket" "bucket" {
+15 bucket = "${var.bucket_name}${var.bucket_suffix}"
+16 }
+```
+
+- We have extended the first example and added a second variable "bucket_suffix" and we have set
+its default to "-abcd". Setting a default on a variable means that if you do not provide a value for
+that variable then the default will be used. We are then using the value of the bucket_name variable
+concatenated with the value of the bucket_suffix variable for the value of the bucket name. As
+we are using the values inside a string we need to surround our variables with ${ and }. Otherwise
+Terraform will not use the value of the variable and instead would just print the string var.bucket_-
+name.
+
+**Setting a variable on command line**:
+- Run ` terraform apply -var bucket_suffix=hello`
+- if we have to give values to multiple variables then we can use -var multiple times
+
+  To set the value of a variable on the command line you use the -var flag followed by the variable
+name and the value you wish to use.
+
+**Setting a variable using an environment variable**
+-  set an environment variable in your terminal using the convention `TF_VAR_<variable_identifier>`
+
+```
+  Mac OS/Linux
+1 export TF_VAR_bucket_name=kevholditch
+2 export TF_VAR_bucket_suffix=via_env
+
+Windows
+1 set TF_VAR_bucket_name=kevholditch
+2 set TF_VAR_bucket_suffix=via_env
+```
+
+**Setting a variable using a file**
+- Create a file with `.tfvars` extension. EX: filename.tfvars
+
+Here i am continuouing with above example only.
+```
+Inside the terraform.tfvars file place the following:
+1 bucket_name = "charan"
+2 bucket_suffix = "from_file"
+```
+
+terraform.tfvars is a special file name that Terraform looks for to discover values for variables.
+Terraform will look in this file and use any values given for a variable.
+
+- The other way we could have named our file was anything ending in `.auto.tfvars`
+
+**More Complex Variables**
+
+main.tf
+```
+1 variable "instance_map" {}
+2 variable "environment_type" {}
+3
+4 output "selected_instance" {
+5 value = var.instance_map[var.environment_type]
+6 }
+
+```
+
+terraform.tfvars
+
+```
+1 instance_map = {
+2 dev = "t3.small"
+3 test = "t3.medium"
+4 prod = "t3.large"
+5 }
+6
+7 environment_type = "dev"
+```
+
+- In our variables file we are setting instance_map to a map. A map is a collection of values indexed
+by a key name. We have set 3 keys in our map dev, test and prod. The values we have given for
+each of these keys are instance types to use in AWS. This map could be used to set the instance
+size based on the type of environment you are creating. Next we are setting the environment_type
+variable to dev. Look at the Terraform code we have written and you will see that we are defining
+the two variables instance_map and environment_type. At the bottom we are outputting the value
+in the map for the key specified by the environment_type variable.
+
+## Type constraints - Simple Types
+
+- A type constraint allows you to specific
+the type of a variable. There are 3 simple types string, number and bool.
+To specify a type constraint use the type property when defining a variable
+
+```
+1 variable "a" {
+2 type = string
+3 default = "foo"
+4 }
+5
+6 variable "b" {
+7 type = bool
+8 default = true
+9 }
+10
+11 variable "c" {
+12 type = number
+13 default = 123
+14 }
+15
+16 output "a" {
+17 value = var.a
+18 }
+19
+20 output "b" {
+21 value = var.b
+22 }
+23
+24 output "c" {
+25 value = var.c
+26 }
+```
+
+- By using a type constraint you make it illegal to set the variable to anything other than the type
+defined. So for example if you try and set b to "hello" or 123 and run Terraform then Terraform will
+print an error saying that the value you have provided is not compatible with the type constraint
+
+- There are a few interesting quirks with how the value you give is interpreted that are worth knowing.
+When you define the type to be bool then the following values will be valid true, false, "true",
+"false", "1" (evaluated to true), "0" (evaluated to false). The interesting part is that "1" is valid but
+1 (without the quotes) is not valid.
+
+- As well as the 3 simple types above these types can be combined into the following more complex
+types:
+• list(<TYPE>)
+• set(<TYPE>)
+• map(<TYPE>)
+• object()
+• tuple([<TYPE>, …])
+
+**Type Constraint - LIST**
+- A list is a list of a type. So you can have a list of strings like ["foo", "bar"] or a list of number [2,
+4, 7]. The type means that every element in the list will be that type.
+
+main.tf
+
+```
+1 variable "a" {
+2 type = list(string)
+3 default = ["foo", "bar", "baz"]
+4 }
+5
+6 output "a" {
+7 value = var.a
+8 }
+9
+10 output "b" {
+11 value = element(var.a, 1)
+12 }
+13
+14 output "c" {
+15 value = length(var.a)
+16 }
+```
+
+** Type constraint - set**
+- Set is almost like list , the key difference is that a set only contains a unique values
+
+```
+1 variable "my_set" {
+2 type = set(number)
+3 default = [7, 2, 2]
+4 }
+5
+6 variable "my_list" {
+7 type = list(string)
+8 default = ["foo", "bar", "foo"]
+9 }
+10
+11 output "set" {
+12 value = var.my_set
+13 }
+14
+15 output "list" {
+16 value = var.my_list
+17 }
+18
+19 output "list_as_set" {
+20 value = toset(var.my_list)
+21 }
+```
+
+**Type constraints - Tuple**
+
+A tuple are a strongly typed collection of one or more values. Once a tuple is defined
+it always has to contain the number of values as defined in that tuple. The values also have to be
+the correct type and in the correct order based upon type.
+
+```
+1 variable "my_tup" {
+2 type = tuple([number, string, bool])
+3 default = [4, "hello", false]
+4 }
+5
+6 output "tup" {
+7 value = var.my_tup
+8 }
+```
+
+**Type Constraint - MAP**
+- Type is a set of values indexed by key name. We can give map a  type, the type will be the type of the value
+
+```
+1 variable "my_map" {
+2 type = map(number)
+3 default = {
+4 "alpha" = 2
+5 "bravo" = 3
+6 }
+7 }
+8
+9 output "map" {
+10 value = var.my_map
+11 }
+12
+13 output "alpha_value" {
+14 value = var.my_map["alpha"]
+15 }
+  ```
+
+- In this project we are creating a map of type number. We are initialising the map to have two keys
+alpha and bravo, the values for the keys are 2 and 3 respectively. The fact that we have specified
+that the map is of type (number) means that all of the values have to match the number constraint
+
+**Type Constraint -Object**
+- An object is a structure that you can define from the other types listed above. It allows you to define
+quite complex objects and constrain them to types.
+
+```
+1 variable "person" {
+2 type = object({ name = string, age = number })
+3 default = {
+4 name = "Bob"
+5 age = 10
+6 }
+7 }
+8
+9 output "person" {
+10 value = var.person
+11 }
+12
+13 variable "person_with_address" {
+14 type = object({ name = string, age = number, address = object({ line1 = string, li\
+15 ne2 = string, county = string, postcode = string }) })
+16 default = {
+17 name = "Jim"
+18 age = 21
+19 address = {
+20 line1 = "1 the road"
+21 line2 = "St Ives"
+22 county = "Cambridgeshire"
+23 postcode = "CB1 2GB"
+24 }
+25 }
+26 }
+27
+28 output "person_with_address" {
+29 value = var.person_with_address
+30 }
+```
+
+In the project above we are are first defining a variable called person. This variable has two fields
+a name which is of type string and an age which is of type number. To define the object we specify
+each field inside {} brackets. Each field has the form fieldname = type. We are giving person some
+default values. If you run this project by doing terraform apply you will see that the person output
+will contain the values we gave it Bob, 10. These values are constrained to the types give so if you
+tried to assign a string to the age field you would get a type constraint error.
+
+One interesting thingto point out here is that you are allowed to have different items with the same name in Terraform.
+In this project we have a variable with the identifier person and we have an output with the same
+identifier. This is allowed because one is a variable and the other is an output. You are not allowed
+to have two variables with the same identifier or two outputs.
+
+Next we are defining a variable called person_with_address to show how you can nest objects
+to build up even more complex structures. The person structure is the same as before except we
+have added the field address. The field address is in itself an object which contains four strings
+line1, line2, county, postcode. You can see when we initialise the variable we set the address
+by wrapping the values in a set of {} brackets. When you run the project you will see the person_-
+with_address structure printed out
+
+**Type Constraint -Any type**
+- The any type is a special construct that serves as a placeholder for a type yet to be decided. any itself
+is not a type, Terraform will attempt to calculate the type at runtime when you use any
+
+```
+1 variable "any_example" {
+2 type = any
+3 default = {
+4 field1 = "foo"
+5 field2 = "bar"
+6 }
+7 }
+8
+9 output "any_example" {
+10 value = var.any_example
+11 }
+```
+
+## Project Layout
+
+- Terraform actually does not care what the name of the file is, as long as it ends in .tf. So in all of the projects so far we could have called the
+file project.tf, code.tf or foo.tf. It really does not matter.
+We can also split the code over as many files as we wish. The only rule is that all of the files have to
+be in the same folder because folders have a significance in Terraform
+
+-  only the code in the top level folder is considered by Terraform. It will ignore code inside subfolders
+
+## Modules
+- A module in Terraform is a mini Terraform project that can contain all of the same constructs as
+our main Terraform project (resources, data blocks, locals, etc). Modules are useful as they allow us
+to define a reusable block of Terraform code and have many instances of it in our main Terraform
+project
+
+modules Example --> main.tf sqlwithbackooff /main.tf output.tf variable.tf
+
+  main.tf
+
+```
+
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+module "work_queue" {
+  source      = "./sqs-with-backoff"
+  queue_name  = "work-queue"
+}
+
+output "work_queue_name" {
+  value = module.work_queue.queue_name
+}
+
+output "work_queue_dead_letter_name" {
+  value = module.work_queue.dead_letter_queue_name
+}
+  ```
+
+sqlwithbackoff/main.tf
+```
+resource "aws_sqs_queue" "sqs" {
+  name                       = "awesome_co-${var.queue_name}"
+  visibility_timeout_seconds = var.visibility_timeout
+  delay_seconds              = 0
+  max_message_size           = 262144
+  message_retention_seconds  = 345600 # 4 days.
+  receive_wait_time_seconds  = 20 # Enable long polling
+  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.sqs_dead_letter.arn}\",\"maxReceiveCount\":${var.max_receive_count}}"
+}
+
+resource "aws_sqs_queue" "sqs_dead_letter" {
+  name                       = "awsome_co-${var.queue_name}-dead-letter"
+  delay_seconds              = 0
+  max_message_size           = 262144
+  message_retention_seconds  = 1209600 # 14 days.
+  receive_wait_time_seconds  = 20
+}
+```
+sqlwithbackoff/output.tf
+
+```
+
+output "queue_arn" {
+  value = aws_sqs_queue.sqs.arn
+}
+
+output "queue_name" {
+  value = aws_sqs_queue.sqs.name
+}
+
+output "dead_letter_queue_arn" {
+  value = aws_sqs_queue.sqs_dead_letter.arn
+}
+
+output "dead_letter_queue_name" {
+  value = aws_sqs_queue.sqs_dead_letter.name
+}
+```
+sqlwithbackoff/variable.tf
+
+```
+variable "queue_name" {
+  description = "Name of queue"
+}
+
+variable "max_receive_count"{
+  description = "The maximum number of times that a message can be received by consumers"
+  default = 5
+}
+
+variable "visibility_timeout" {
+  default = 30
+}
+```
+
+-  In a module you can take arguments. This allows you to give the user a chance to specify things about
+this instance of a module. The module that we have written is a module that creates two AWS SQS
+queues. One of the queues is a dead letter queue of the other. For our module we are allowing the user
+to specify the name of the queue. We are doing this by defining the variable queue_name. Variables
+have a special meaning when used with a module, they are the input values for your module. Note
+that inside a module Terraform does not care what the filenames are as long as they end in .tf.
+However, there is a convention where variables go in a file called variables.tf so we are going to
+stick with that. As the queue_name variable does not have a default a value must be given when the
+module is used.
+
+- The last file that makes up our module is output.tf. This is where our outputs (or return values)
+from the module are specified. It is optional to return values out of a module but most modules do
+return values as it makes them easier to use
+
+- To create an instance of a module we start with the keyword module. You then follow that with the
+identifier you want to use to refer to that instance of the module. You then surround the module
+block in { and }. Inside the module every module has a property called source. The source property
+is where the code is for the module. You can see that we are using the local path ./sqs-with-backoff.
+This is telling Terraform that it can find the code for this module in a local folder with that name. We
+are then giving a value of work-queue to the queue_name property
+
+- To reference a value returned by a module, you use the following syntax
+`module.<module_identifier>.<output_name>`. So to reference the value of the main queue you
+would use `module.work_queue.queue_name`. The keyword module is constant.
+
+main.tf crosstalk/ cross-talk-3-way/
+
+crosstalk/main.tf variable.tf   cross-talk-3-way/main.tf variable.tf
+
+```
+
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+resource "aws_security_group" "group_1" {
+  name = "security group 1"
+}
+
+resource "aws_security_group" "group_2" {
+  name = "security group 2"
+}
+
+resource "aws_security_group" "group_3" {
+  name = "security group 3"
+}
+
+module "cross_talk_groups" {
+  source            = "./cross-talk-3-way"
+  security_group_1  = aws_security_group.group_1
+  security_group_2  = aws_security_group.group_2
+  security_group_3  = aws_security_group.group_3
+  port              = 8500
+  protocol          = "tcp"
+}
+```
+crosstalk/main.tf
+```
+
+resource "aws_security_group_rule" "first_egress" {
+  from_port                 = var.port
+  to_port                   = var.port
+  protocol                  = var.protocol
+  security_group_id         = var.security_group_1.id
+  type                      = "egress"
+  source_security_group_id  = var.security_group_2.id
+}
+
+resource "aws_security_group_rule" "first_ingress" {
+  from_port                 = var.port
+  to_port                   = var.port
+  protocol                  = var.protocol
+  security_group_id         = var.security_group_1.id
+  type                      = "ingress"
+  source_security_group_id  = var.security_group_2.id
+}
+
+
+resource "aws_security_group_rule" "second_egress" {
+  from_port                 = var.port
+  to_port                   = var.port
+  protocol                  = var.protocol
+  security_group_id         = var.security_group_2.id
+  type                      = "egress"
+  source_security_group_id  = var.security_group_1.id
+}
+
+resource "aws_security_group_rule" "second_ingress" {
+  from_port                 = var.port
+  to_port                   = var.port
+  protocol                  = var.protocol
+  security_group_id         = var.security_group_2.id
+  type                      = "ingress"
+  source_security_group_id  = var.security_group_1.id
+}
+```
+crosstalk/variable.tf
+
+```
+
+variable security_group_1 {}
+variable security_group_2 {}
+variable port {
+  type = number
+}
+variable "protocol" {}
+```
+
+crosstalk-3-way/main.tf
+
+```
+
+module "first_to_second" {
+  source            = "../cross-talk"
+  security_group_1  = var.security_group_1
+  security_group_2  = var.security_group_2
+  protocol          = var.protocol
+  port              = var.port
+}
+
+module "second_to_third" {
+  source            = "../cross-talk"
+  security_group_1  = var.security_group_2
+  security_group_2  = var.security_group_3
+  protocol          = var.protocol
+  port              = var.port
+}
+
+module "first_to_third" {
+  source            = "../cross-talk"
+  security_group_1  = var.security_group_1
+  security_group_2  = var.security_group_3
+  protocol          = var.protocol
+  port              = var.port
+}
+```
+
+crosstalk-3-way/variable.tf
+
+```
+
+variable security_group_1 {}
+variable security_group_2 {}
+variable security_group_3 {}
+variable port {
+  type = number
+}
+variable "protocol" {}
+```
+
+**Remote Modules**
+
+- A remote module is a module hosted
+externally to the local file system. Terraform supports many different remote module sources such
+as GitHub, BitBucket and S3
+
+```
+
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+module "work_queue" {
+  source      = "github.com/kevholditch/sqs-with-backoff"
+  queue_name  = "work-queue"
+}
+
+output "work_queue" {
+  value = module.work_queue.queue
+}
+
+output "work_queue_dead_letter_queue" {
+  value = module.work_queue.dead_letter_queue
+}
+```
+- By default Terraform will add on the https:// on the front of the URL so we do not need to include that.
+
+-  If you want to instead clone using SSH
+then you can do that by changing the URL to `git@github.com:kevholditch/sqs-with-backoff.git`
+which is the SSH clone address. It is cool that Terraform allows you to clone the module either way.
+Note you will need SSH setup with GitHub in order for the SSH clone to work.
+
+main.tf
+```
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+module "work_queue" {
+  source      = "github.com/kevholditch/sqs-with-backoff?ref=0.0.1"
+  queue_name  = "work-queue"
+}
+
+output "work_queue" {
+  value = module.work_queue.queue
+}
+
+output "work_queue_dead_letter_queue" {
+  value = module.work_queue.dead_letter_queue
+}
+```
+
+## Plans
+
+- A plan is Terraform showing you how it needs to change the world to get it into the desired state
+specified in your code. Terraform plans, detail you what Terraform will create, what Terraform will
+destroy and what Terraform will update. This gives you a view on what Terraform is going to do
+before you ask Terraform to do it. Terraform summarises how many creates, updates and destroys
+it is going to do at the bottom of the plan
+
+- If you want Terraform to create the new queue before deleting the old one
+then this is possible using a resource `lifecycle`
+
+- You can save the plan
+that Terraform generates to a file by using the -out parameter.
+
+- `-out` is to save your plan
+
+## state
