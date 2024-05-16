@@ -587,6 +587,7 @@ different resource and data source attributes to build up a more complex value
 Next if you are creating the code yourself, create another file called policy.iam and paste in:
 
 Filename: policy.iam
+
 ```
 1 {
 2 "Version": "2012-10-17",
@@ -604,4 +605,27 @@ Filename: policy.iam
 ```
 Template file function :
 
-- 
+- To be able to use dynamic values in a file we need to use the templatefile function.
+- The templatefile function allows you to define placeholders in a template file and then pass their
+values at runtime.
+
+  main.tf
+  
+```
+1 locals {
+2 rendered = templatefile("./example.tpl", { name = "charan", number = 7})
+3 }
+4
+5 output "rendered_template" {
+6 value = local.rendered
+7 }
+  ```
+
+example.tf1
+
+```
+1 hello there ${name}
+2 there are ${number} things to say
+```
+
+**Loops in a template**
