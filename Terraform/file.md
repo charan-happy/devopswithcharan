@@ -1307,3 +1307,297 @@ that Terraform generates to a file by using the -out parameter.
 - `-out` is to save your plan
 
 ## state
+
+- State is Terraform’s store of all of the resources it has created. State stores all of the information
+about the resources, including meta information that cannot be retrieved from the underlying
+infrastructure APIs. It also stores the dependency order of the resources that it created. Terraform
+uses its state to work out how it needs to make changes. By default Terraform stores state in a local
+file called terraform.tfstate. You may have noticed this file in the examples we have been doing
+up until now.
+
+EX: RDS instance password and Resource Deletion dependency
+
+- Io import the VPC you created by hand into Terraform go to the AWS UI and copy the VPC ID. Go to
+the command line and type terraform import aws_vpc.example <VPC_ID> replacing <VPC_ID> with
+the ID of the VPC that you got from AWS. You should see Terraform say Import Successful. Now
+if you run terraform apply Terraform will report No changes. Infrastructure is up-to-date..
+
+- terraform import <resource_type>.<resource_-
+identifier> <value>. Where <resource_type> is the type of the resource you are importing,
+<resource_identifier> is the identifier you gave the resource. <value> can be an id or an identifier
+that Terraform can use to go and get the resource. The <value> field is different for every resource.
+
+**Moving resources from one project to another**
+- To make
+Terraform stop managing the resource we have to remove it from Terraform’s state.
+To remove the VPC from the Terraform’s state we need to use the terraform state rm command.
+
+- To remove the VPC from the state run terraform state rm aws_vpc.my_vpc, you will see Terraform say Removed aws_vpc.my_vpc. This now means
+that the VPC will not be in Terraform’s state any more, which means as far as Terraform is concerned
+it did not create the VPC and is not managing it. Note the VPC still exists in AWS (which is what
+we wanted). The format of the Terraform state rm command is terraform state rm <resource_-
+name>.<resource_idenitifier>.
+
+- Now open a terminal in the directory for project 2 and run terraform import aws_-
+vpc.main <VPC_ID>. This will import the VPC into the state of Terraform. Now run terraform apply
+and Terraform should report that there is nothing to do. This is because Terraform in project 2 is
+now managing the VPC and it matches our HCL code. Another interesting aside is that we changed
+the identifier of the VPC in our HCL code from my_vpc to main.
+We have now successfully moved the VPC from one Terraform project to another.
+
+- There is another way to move a resource from one project to another and that is to use the terraform
+state mv command.
+
+```
+1 terraform state mv -state-out=../state_example_02a/terraform.tfstate aws_vpc.main aw\
+2 s_vpc.my_vpc
+```
+- The advantage of the state mv command is that it works on any resource even if it does not support
+an import
+
+-  run the command terraform state list. This command lists all of
+the resources that exist in Terraform’s state file
+
+**Remote state**
+- By default terraform stores its state file locally with `terraform.tfstate` extension. it is ok if we are working individually on POC project or single person. it doesn't work if we are working with multiple people as  a team or big project. That is where remote state comes into the picture.
+
+- Terraform supports multiple remote state storage backends like AWS S3, AzureRM, consul etc.
+
+- To
+specify Terraform to use the S3 state backend we need to create another file called state.tf
+
+```
+1 terraform {
+2 backend "s3" {
+3 bucket = "your-bucket-name"
+4 key = "myproject.state"
+5 region = "eu-west-1"
+6 }
+7 }
+```
+
+- while selecting the remote backend we have to make sure it supports locking feature. With locking feature multiple people are not able to overwrite it.
+- It is not mandatory to have `state.tf` as the name of the state file. it is just our best practice.Terraform doesn't care about the name it only asks us to keep it in .tf extension.
+
+**workspaces**
+
+- A  workspace in Terraform is a way of creating many instances of a set of Terraform code using a
+single project. One of the advantages of Terraform is that you can use the infrastructure as code
+to create your environments reducing human error and making them all the same
+
+- To list all available workspaces in the current project run the command `terraform workspace list`
+
+  `terraform workspace select default` --> To switch back to default workspace
+
+`terraform workspace new dev` --> to create and switch to new workspace named dev
+
+- The special folder terraform.tfstate.d is where Terraform stores its local workspaces, each workspace has
+a folder with its name and in that folder is the terraform.tfstate file for that workspace
+
+- To delete a workspace use the command terraform workspace
+delete dev. It is important to note that the delete command will remove the Terraform state it will
+NOT destroy the infrastructure
+
+-  the amount that you can drive just from the workspace alone
+does not scale well. You really need to have a way to change your input variables at the top-level.
+This problem is solved by Terraform’s managed offering Terraform Cloud or Terraform Enterprise.
+These solutions allow you to create a workspace, point it at a source control repo containing your
+Terraform code and set the variables for that workspace
+
+**provisioners**
+- a  provisioner in Terraform is a way to run a script either remotely or locally after a resource
+has been created. They were added by Hashicorp to Terraform to allow for certain scenarios that
+are not natively supported by the provider you are using
+
+main.tf
+```
+
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+resource "aws_vpc" "vpc" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.vpc.id
+}
+
+resource "aws_subnet" "public" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = aws_vpc.vpc.cidr_block
+  map_public_ip_on_launch = true
+  availability_zone       = "eu-west-1a"
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+}
+
+resource "aws_route_table_association" "gateway_route" {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_security_group" "rules" {
+  name   = "example"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_ip}/32"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "keypair" {
+  key_name   = "key"
+  public_key = file("nginx_key.pub")
+}
+
+data "aws_ami" "ami" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-2.0.*-x86_64-gp2"]
+  }
+}
+
+resource "aws_instance" "nginx" {
+  ami                    = data.aws_ami.ami.image_id
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.rules.id]
+  key_name               = aws_key_pair.keypair.key_name
+
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo amazon-linux-extras enable nginx1.12",
+      "sudo yum -y install nginx",
+      "sudo chmod 777 /usr/share/nginx/html/index.html",
+      "echo \"Hello from nginx on AWS\" > /usr/share/nginx/html/index.html",
+      "sudo systemctl start nginx",
+    ]
+  }
+
+  connection {
+    host        = aws_instance.nginx.public_ip
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("nginx_key")
+  }
+}
+```
+
+variables.tf
+
+```
+variable "my_ip" {}
+```
+
+output.tf
+```
+output "command" {
+  value = "curl http://${aws_instance.nginx.public_ip}"
+}
+```
+
+-Turning to the file main.tf. We are setting up a vpc which is a virtual private cloud in AWS,
+essentially this is a ring fenced private network where we are going to put our infrastructure. The
+internet gateway allows machines inside our VPC to access the internet. Next we create a public
+subnet and a route table. In the route table we create a default route (0.0.0.0/0) and point that to
+our internet gateway. That is basically saying if you are looking for an IP address outside of the
+range of our VPC CIDR (10.0.0.0/16) then go out through the internet gateway. We then need to
+associate this route table with our subnet using an aws_route_table_association.
+
+- By default, AWS security groups which are basically the firewall around a subnet are DENY all. That
+means to allow traffic in and out of our subnet we need to open up ports in (ingress) and out (egress).
+This is what we are doing with the aws_security_group resource. We open port 22 ingress so that
+we can ssh onto the server and run a script. We only open up port 22 to your IP (this is what we are
+using the my_ip variable for). We do this because we do not want to open port 22 to the world as it
+means that anyone can try and get onto that server. We open port 80 ingress so we can hit a website
+over http running on the server. This is ok to open to any address as its bound to our webserver.
+Lastly, we create a rule so that all traffic can egress our server on any port. In practice this isn’t great
+and you would want to lock it down, but it makes getting our example up and running easier.
+The aws_key_pair resource creates a key pair in AWS. A keypair is used to ssh onto a server. The
+keypair that we are setting up is from a local file in the directory. This keypair will not exist on
+your machine
+
+- remote-exec means that Terraform will
+execute this provisioner remotely on the resource itself, in this case on the EC2 machine. The other
+common option is local-exec where the script will run on the machine where Terraform is running
+(ie your machine)
+
+- We have just created a full private
+network, setup a firewall, created a webserver, installed a custom script on there and got it to print
+a message when we visit a page.
+
+
+- The last part of the script is the aws_instance. We have finally arrived at the resource where our
+provisioner is defined. A provisioner is essentially a script that Terraform will execute. We start
+the provisioner block on the resource with the keyword provisioner. After provisioner the value
+remote-exec is the type of provisioner we want to use, remote-exec means that Terraform will
+execute this provisioner remotely on the resource itself, in this case on the EC2 machine. The other
+common option is local-exec where the script will run on the machine where Terraform is running
+(ie your machine). There are a few other provisioners available too, such as chef and puppet but I’m
+not going to discuss those in this book.
+
+
+**null resource**
+
+🔨 What is a Null Resource in Terraform?
+
+A null resource in Terraform is a special type of resource that doesn't actually provision any infrastructure. Instead, it acts as a placeholder for other resources or configurations in your Terraform code. It allows you to perform actions or manage dependencies without directly creating or managing any infrastructure. 
+
+⚙️ How to Use a Null Resource in Terraform?
+
+To use a null resource, you define it in your Terraform configuration file using the null_resource keyword. You can then specify various attributes and options to control its behavior, including:
+
+triggers: This specifies the conditions under which the null resource will be triggered and executed.
+provisioners: This allows you to attach provisioners to the null resource, enabling you to run scripts or perform other actions during the Terraform apply process.
+depends_on: This specifies other resources that the null resource depends on, ensuring that it is executed only after those resources have been created or updated. 
+💡 Why Use a Null Resource in Terraform?
+
+There are several reasons why you might use a null resource in your Terraform code:
+
+Manage dependencies: You can use a null resource to manage dependencies between resources, ensuring that certain actions are taken only after specific resources have been created or updated.
+Execute scripts or commands: You can attach provisioners to a null resource to run scripts or commands during the Terraform apply process, allowing you to perform tasks that are not directly related to infrastructure provisioning.
+Create placeholders: You can use a null resource as a placeholder for future resources or configurations, making it easier to manage your Terraform code as your infrastructure evolves
+
+```
+1 resource "null_resource" "setup" {
+2 provisioner "local-exec" {
+3 command = <<CMD
+4 ssh -i nginx_key ec2-user@${aws_instance.nginx.public_ip} -o StrictHostKeyChecki\
+5 ng=no -o UserKnownHostsFile=/dev/null 'sudo amazon-linux-extras enable nginx1.12; su\
+6 do yum -y install nginx; sudo chmod 777 /usr/share/nginx/html/index.html; echo \"Hel\
+7 lo from nginx on AWS\" > /usr/share/nginx/html/index.html; sudo systemctl start ngin\
+8 x;'
+9 CMD
+10 }
+11 }
+```
