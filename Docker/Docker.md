@@ -24,7 +24,7 @@ Docker swarm
 
 ********************************What is docker ?********************************
 
-→ Docker is a set of platform as a service (PaaS)  products that use OS level virtualization to deliver software packages called ********************containers********************
+→ Docker is a set of platform as a service (PaaS)  products that use OS level virtualization to deliver software packages called **containers**
 
 → Docker is a software platform for building applications based on containers —small and lightweight execution environments that make shared use of operating system kernel but otherwise run in isolation from one another.
 
