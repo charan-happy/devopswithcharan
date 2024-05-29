@@ -200,6 +200,17 @@ docker import
 docker image history
 ```
 
+**************************************************Difference between CMD and ENTRYPOINT in docker file ?**************************************************
+
+- In a dockerfile, ENTRYPOINT and CMD are two instructions that define the process running in the container.
+
+| CMD | ENTRYPOINT |
+| --- | --- |
+| CMD is used to define default commands and/or parameters for a container | ENTRYPOINT is preferred when you want to define a container with a specific executable. |
+| It is best to use CMD if you need a default command that users can easily override. | You cannot override an ENTRYPOINT when starting a container unless you add the - -entrypoint flag.  |
+| If dockerfile has multiple CMDs only the instructions from the last one apply | combine ENTRYPOINT with CMD If you need a container with a specified executable and a default parameter that can be modified easily |
+
+
 **Multi-stage builds**
 - Multi-stage builds will have more than one FROM instruction in the dockerfile
 - Each FROm instruction creates a new build
