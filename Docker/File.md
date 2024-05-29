@@ -522,20 +522,158 @@ upgrade docker engine
 `
 
 ## Persistent and non-persistent storage
+**Docker storage**
+- Store and manage container data
+Two types of storage:
+1. Non-Persistent
+2. Persistent
 
+**1. Non-Persistent storage**
+- Data stored within the container
+- Get deleted when container deleted
+- All container has it by default
+- storage Drivers:
+    > RHEL/Latest Ubuntu & Centos uses overlay2
+    > Ubuntu 14 and older uses aufs
+    > CentOs7 and older uses devicemapper
+    > windows uses its own
+- Storage location :
+    > linux: /var/lib/docker/[storage driver]
+    > windows: c:\ProgaramData\Docker\windowsfilter\
+
+**2. Persistent storage**
+ - Data does not reside within the container
+ - Does not get deleted when container deleted
+ - Two types of Persistent storage:
+ 1. Volumes and 2. Bind Mounts
 
 ## Docker storage - volumes
+ 1. Volumes :
+ > Mounted to a directory in a container
+ > Storage location: 
+        - Linux : /var/lib/docker/volumes/
+        - windows: c:\ProgramData\Docker\volues
+> supports 3 rd party drivers:
+        - Block storage Ex: Amazon AWS EBS
+        - File Storage EX: Amazon EFS
+        - Object storage EX: Amazon S3
+
+**Volume CLI**
+- Create a volume ->`$ docker volume create [volume name]`
+- List volumes -> `$ docker volume ls`
+- inspect a volume -> `$ docker volume inspect[volume name]`
+- Remove a volume -> `$ docker volume rm [volume name]`
+- Delete all unused volumes -> `$ docker volume prune`
+
+There are two ways to mount volume into a docker
+1. --mount
+```
+syntax:
+
+docker container run -d \
+        --name mynginx1 \
+        --mount type=volume,\
+        --source=nginxvolume,\  <---- Docker volume create nginxvolume
+        target=/usr/share/nginx/html/\  <-- directory inside mynginx container
+        nginx
+
+```
+2. --volume or -v
+
+```
+syntax:
+
+docker container run -d\
+        --name mynginx2 \
+        -v nginxvolume:/usr/shared/nginx/html/\
+        nginx
+```
+
+Note: volume should Not start with slash(/): correct way ` -v nginxvolume:/usr/shared/nginx/html/` incorrect way `-v /nginxvolume:/usr/shared/nginx/html/`
+
 
 ## Docker storage - Bind mounts, volume instruction
+2. Bind Mounts:
+    - File or directory on the host system is mounted into a container's file or directory
 
+Two ways to create Bind Mounts:
+1. --mount
+syntax:
+```
+docker container run -d\
+        --name nginxbind1\
+        --mount type=bind,\
+        source="$(pwd)"/bindexample,\ <-- mkdir bindexample
+        target=/app\ <-- directory inside nginxbind1 container
+        nginx
+```
+2. --volume or -v
+syntax:
+```
+docker container run -d \
+        --name nginxbind2 \
+        -v /user/username/bindexample2:/app \
+        nginx
+```
+Bind mount is a file or directory on the host system. Therefore, BindMount name should start with (/)slash
+
+correct way `-v /username/bindexample2:/app`
+incorrect way `-v user/username/bindexample2:/app`
+
+- volume instruction automatically creates a volume and mounts that volume to specified directory
+
+```
+# sample Dockerfile
+FROM nginx
+LABEL description="using Volume Instruction"
+VOLUME ["/usr/share/nginx/html/"]
+
+```
 ## storage drivers
+- Provides temporary internal storage for containers
+- Manages and controls how images and containers are stored on your docker host
 
+**check default storage driver:**
+- docker info
+- docker info | grep storage
 
+Method-1: Edit unit file (docker.service)
+
+- Add --storage-driver flag
+```
+sudo vi /lib/systemd/system/docker.service
+ExecStart=/usr/bin/dockerd --storage-driver devicemapper -H fd:// --containerd=/run/containerd/containerd.sock
+```
+
+- Restart the docker
+```
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+Method-2: Configuration file(daemon.json)
+- Configure daemon file
+    `$ sudo vi /etc/docker/daemon.json`
+    ```
+    {
+        "storage-driver":"devicemaper"
+    }
+    ```
+- Restart Docker
+    ```
+    sudo systemctl restart docker
+    sudo systemctl status docker
+    ```
 ## Docker swarm
 
 - Run containers on multiple servers as a cluster
-- Build distributed cluster of docker machine
+- Build distributed cluster of docker machine. cluster consits of onee or more nodes
 - supports orchestration, high-availability, scaling, load balancing etc
+- swarm uses mutual transport layer security (TLS) for communication and authentication of nodes
+
+Two types of nodes in swarm:
+1. Manager 
+2. Worker
 
 
 **Manager**
@@ -543,7 +681,13 @@ upgrade docker engine
 - Responsible for controlling the cluster and orchestration
 
 **workers**
-- Responsible for running container workloads
+- Responsible for running container workloads and accepting tasks from the manager node 
+
+![Docker swarm cluster](image-6.png)
+
+**Docker swarm set-up:**
+1. Configure swarm manager
+2. Add worker node to swarm manager
 
 **Configure swarm manager**
 
@@ -563,31 +707,385 @@ docker node ls
 - `$ copy and run the swarm join-token output` (on worker node)
 - `$ docker node ls` (on swarm manager)
 
+**swarm and Node commands**
+- List all nodes (on Manager) `$ docker node ls`
+- To inspect a node `$ docker node inspect [node id]`
+- Promote a node to manager `$ docker node promote[node id]`
+- demote a node to worker `$ docker node demote [node id]`
+- Remove a node from swarm
+Step1: on manager `$ docker node rm -f [node name]`
+step2: on worker `$ docker swarm leave`
 
+- Generate join-token for worker (on manager)
+`$ docker swarm join-token worker`
+- Generate join-token for manager (on manager)
+`$ docker swarm join-token manager`
+
+**Docker Swarm AutoLock**
+
+**Docker swarm** - encrypt RAFT logs and TLS communication between nodes
+**Docker swarm autolock** - provides an un-lock key to un-lock swarm whenever docker restart
+**commands**
+- Turn on Autolock
+```
+docker swarm init --autolock=true
+docker swarm update --autolock=true
+```
+- Turn off Autolock `$ docker swarm update --autolock=false`
+- unlock swarm manager `$ docker swarm unlock`
+- Retrieve unlock key `$ docker swarm unlock-key`
+- Rotate unlock key `$ docker swarm unlock-key --rotate`
 
 ## Docker services
+Docker services:
+- Allows us to run applications in the swarm cluster
+- one or more containers can be run across the nodes in swarm cluster
+
+Difference :
+
+|Docker container run|Docker service create|
+|---|---|
+|Runs a single container on a single host| Runs container(s) on 1 to n nodes|
+|Not highly available|Highly available|
+|Not easily scalable|Easily scalable (up or down)|
+|can't use --replicas flag|--replicas used to scale|
+
+#### Docker service CLI :
+- Create a service `$ docker service create <image>`
+- list services `$ docker service ls`
+- list the task(replica) of a service `$ docker service ps <service name>`
+- delete a service `$ docker service rm <service name>`
+
+**Scaling a service**
+- scale up or scale down a service that's running across swarm clsuter
+- Replica flag used to create replica of containers
+`$ docker service create --name mynginx --replicas 3 -p 80:80 nginx`
+
+Two ways to scale:
+1. Docker service update
+    - docker service update --replicas 5 mynginx
+    - docker service update --replicas 5 --deatach=true mynginx
+        - --detach=true: Not to see progress of service
+
+2. docker service scale
+ - scale multiple services at a time
+    `$ docker service scale mynginx=2 mybusybox=3`
+
+**Resource Limitation**
+- Defining containers CPU and memory requirements
+`$ docker service update --limit-cpu=5 --limit-memory=124m --reserve-memory=64m mynginx`
+
+limit `The maximum value of resource that can be used by container`
+
+reservation `the amount of resources required to run the container`
+
+**Template with 'docker service create'**
+- Template is used to give dynamic values
+```
+flags can be used
+--mount
+--hostname
+--env
+```
+`$ docker service create --name mynginx2 --hostname="{{.Node.Id}}-{{.Service.Name}}" nginx`
 
 ####  Replicated and Global mode
+###### Replicated Mode:
+- default mode
+- can scale the service using --replicas
+    `$ docker service create --name mynginx --replicas 2 -p 80:80 nginx`
+**Global Mode**
+- can't scale the service
+- --replicas flag can't be used
+`$ docker service create myglobalnginx -p 8080:80 --mode global nginx`
 
 #### Docker Swarm Quorum
+- 🗳️ Swarm Quorum in Docker In Docker Swarm, a quorum refers to the minimum number of manager nodes that must be available and reachable for the swarm to function properly. This ensures that critical operations, such as adding or removing nodes, can be carried out reliably. 
 
-containers and labels
+🧮 Quorum Requirements The specific quorum requirements depend on the number of manager nodes in the swarm. For example, if there are three manager nodes, at least two must be available to maintain a quorum. If a quorum is lost, the swarm may become unstable or even unusable. 
+
+🕵️‍♂️ Maintaining Quorum It is crucial to maintain a sufficient number of healthy manager nodes in a Docker Swarm to ensure quorum availability. This can be achieved by deploying multiple manager nodes across different physical or virtual machines and using redundancy mechanisms like high availability clusters.
+
+- More manager nodes affect the performance of swarm
+- Immediately replace failed manager node
+- Distribute manager nodes across availability zone(AZ) for High availability (HA)
+- Take swarm backup
+
+![alt text](image-7.png)
+
+![alt text](image-8.png)
+
+**Constraint and Label:**
+
+- used to control the placement of containers
+
+Ex1:
+- Run tasks only on worker nodes
+`$ docker service create --name mynginx_worker --constraint node.role==worker --replicas 3 nginx`
+
+EX2:
+- Runnning tasks on particular node
+1. Label - `$ docker node update --label-add mynode=node1 <node name>`
+2. constraint - `$ docker service create --name mynginx_dc1 --constraint node.labels.mynode==node1 --replicas 3 nginx`
+
+Ex3:
+- spread the tasks evenly all nodes having label as mynode
+`$ docker service create --name mynginx_spread --placement-pref spread=node.label.mynode --constraint node.role==worker --replicas 4 nginx`
 
 ## Docker Compose
+- Docker compose can run multi-container application using different images
+**install Docker compose**
+
+[installation guide](https://docs.docker.com/compose/install/#installation-scenarios)
+
+![alt text](image-9.png)
+
+![alt text](image-10.png)
+
+**Docker compose commands**
+- create a compose `$ docker-compose up -d`
+- list containers created by compose `$ docker-compose ps / docker compose ls`
+- stop a compose `$ docker-compose start`
+- restart a compose `$ docker-compose restart`
+- delete a compose `$ docker-compose down`
+
 
 ## Docker stack
+- can run services across stack
+**Docker stack commands**
+- Deploy a stack `$ docker stack deploy -c [compose file name.yml] [stack name]`
+- list stacks `$ docker stack ls`
+- to see services associated with stack `$ docker stack services <stack name>`
+- To see on what nodes tasks are running `$ docker stack ps <stack name>`
+- To see logs of a service `$ docker service logs <stack name>`
+- To remove a stack `$ docker stack rm <stack name>`
+Ex1:  creating replicas
+
+![alt text](image-11.png)
+
+Ex2: using constraints and labels in docker compose file
+![alt text](image-12.png)
+
+![alt text](image-13.png)
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)
+
 
 ## Docker Networking
+- The docker networking architecture is built on a set of interfaces called Container network model (CNM)
+- libnetwork is the networking component which implements the CNM
+
+**Docker Network Drivers**
+1. Bridge
+2. Overlay
+3. Host
+4. None
+5. MACVLAN
+6. 3rd party network drivers
+
+Building Blocks of CNM :
+
+![alt text](image-16.png)
+
+1. sandbox : sandbox isolates the networking components of a single container such as network interfaces, ports, route tables and DNS
+
+2. Endpoints: Endpoints are virtual network interfaces and responsiblity of endpoints is to connect the sandbox to a network.
+
+3. Networks: Network is a collection of endpoints
+
+**Docker networking commands**
+- List networks `$ docker network ls`
+- create network `$ docker network create <network name>`
+- inspect a network `$ docker network inspect <network name>`
+- connect a container to a network `$ docker network connect <network name> <container name>`
+- disconnect a container from a network `$ docker network disconnect <network name> <container name>`
+- create a subnet and gateway `$ docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 <network name>`
+- Assign a specific Ip to a container `$ docker container run -d --name <container name> --ip <ip address> --network <network name> nginx`
+- Remove a network `$ docker network rm <network name>`
+- Remove unused networks `$ docker network prune`
+
+
+**Docker bridge network**
+- Docker bridge network is the default network driver for containers running on a single host (not on swarm)
+- create a bridge network  `$ docker network create --driver bridge <network name>` or `$ docker network create <network name>`
+
+![alt text](image-17.png)
+
+
+**overlay network**
+- overlay network allows containers running on the same or different nodes (multiple host) to communicate with each other.
+- ingress is the default overlay network
+- use flag --driver=overlay to create custom overlay network
+
+![alt text](image-18.png)
+
+- To create overlay network
+```
+docker network create --driver overlay <network name>
+docker network create --driver overlay --attachable <network name>
+```
+- To create services with custom network
+`$ docker service create -d --name mynginx --network <network name> --replicas 3 -p 80:80 nginx`
+
+**Host Network**
+- No sandbox, No network component isolation
+- use host's network infrastructure
+- can not reuse the port
+- create a host network `$ docker container run -d --name mynginx --network host nginx`
+
+**None network**
+- No networking
+- Container is isolated from other container and also from host
+- create a none network   `$ docker container run -d --name mynginxnone --network none -p 8080:80 nginx`
+
 
 #### Docker embedded DNS
+- name of container or services are mapped back to their actual IP address
+- containers can communicate to each other using container name or service name or network alias
+
+commands:
+```
+docker network create mynetwork
+docker container run -d --name mynginx --network mynetwork --network-alias mynetworkalias nginx
+docker container run -d --name mybusybox --network mynetwork radial/busyboxplus:curl sleep 1000
+
+docker exec -it mybusybox /bin/sh
+        - curl mynginx:80
+        - curl mynetworkalias:80
+```
 
 ## Port publishing modes
+Types of port publishing modes:
+1. Ingress
+2. Host
+
+Ingress:
+- the default mode
+- Publishes the port on all hosts i.e; all nodes of a swarm cluster. Routing-mesh
+- create a service using ingress publishing port: `$ docker service create --name mynginx -p 8080:80 nginx`
+
+Host:
+- Publishes the port on host where containers are running
+- runs only one task of a service on the same node
+- create a service using host publising port `$ docker service create --name mynginxhot -p mode=host, published=8081,target=80 nginx`
 
 ## docker security
+- Docker uses both Operating system and docker native security features
+inux Security Features:
+- Namespaces
+  -  Process ID (pid)
+  - Network (net)
+  - Filesystem/mount (mnt)
+  - InterProcess Communication (ipc)
+  - User (user)
+  - Unix Timesharing System (uts)
+- Cgroups
+   - CPU
+   - RAM
+-  Seccomp
 
-## docker content trust
+some of the Docker security features:
+- Docker content trust (DCT)
+- Docker security scanner
+- Docker MTLS
 
+Secure Computing Mode (Seccomp):
+- Using Secure Computing Mode (Seccomp) during container creation:
+ `$ docker container run --security-opt seccomp=[Profile] Ubuntu`
+o Example:
+`docker container run -it --name myubuntusec --security-opt seccomp=./default.json `
+
+Capabilities:
+
+- Drop a capability:
+`$ docker container run --cap-drop=[Capability] [Image]`
+o Example:
+- `$ docker container run -it --name mybuntucapdrop --cap-drop=MKNOD ubuntu`
+- Add a capability:
+`$ docker container run --cap-add=[Capability] [Image]`
+
+Docker Bench for Security:
+
+- `$ docker run -it --net host --pid host --userns host --cap-add audit_control \
+-e DOCKER_CONTENT_TRUST=$DOCKER_CONTENT_TRUST \
+-v /etc:/etc:ro \
+-v /usr/bin/containerd:/usr/bin/containerd:ro \
+-v /usr/bin/runc:/usr/bin/runc:ro \
+-v /usr/lib/systemd:/usr/lib/systemd:ro \
+-v /var/lib:/var/lib:ro \
+-v /var/run/docker.sock:/var/run/docker.sock:ro \
+--label docker_bench_security \
+docker/docker-bench-security`
+
+## docker content trust (DCT)
+- DCT is to verify integrity and publisher of an image
+- To pull and run signed images
+
+Steps to set-up DCT:
+1. Log into the dockerhub `$ docker login`
+2. Generate key (.pub) `$ docker trust key generate <dockerhub username>`
+3. Add signer to an image repository:
+    `$ docker trust signer add --key <.pub> <docker hub username> <repository>`
+4. enable docker content trust (DCT)
+`$ export DOCKER_CONTENT_TRUST=1`
+5. Sign and push image to registry
+    `$ docker trust sign <image>:<tag>`
+
+Disable docker content trust (DCT): `export DOCKER_CONTENT_TRUST=0`
+
+logout of docker hub: `$ docker logout`
+
+Mutually Authenticated Transport Layer Security (MTLS):
+
+- Docker Swarm uses mutual Transport Layer Security (TLS) for communication and authentication 
+between nodes. 
+
+To Create an encrypted overlay network:
+`$ docker network create --opt encrypted --driver overlay [Network Name]`
+
+Uninstall docker engine :
+
+```
+sudo systemctl stop docker
+sudo apt-get remove -y docker-ce docker-ce-cli
+sudo apt-get update
+```
 ## logging drivers
+- By default docker uses json-file logging driver
+- supported logging drivers :
 
 
+|Driver|Description|
+|---|---|
+|none|No logs are available for the container and docker logs does not return any output.|
+|local|Logs are stored in a custom format designed for minimal overhead.|
+|json-file|The logs are formatted as JSON. The default logging driver for Docker.|
+|syslog | Writes logging messages to the syslog facility. The syslog daemon must be running on the host machine.|
+|Journald|Writes log messages to journald. The journald daemon must be running on the host machine. 
+|gelf|Writes log messages to a Graylog Extended Log Format (GELF) endpoint such as Graylog or Logstash.|
+|fluentd|Writes log messages to fluentd (forward input). The fluentd daemon must be running on the host machine|
+|awslogs|Writes log messages to Amazon CloudWatch Logs.|
+|splunk|Writes log messages to splunk using the HTTP Event Collector.|
+|etwlogs|Writes log messages as Event Tracing for Windows (ETW) events. Only available on Windows platforms.|
+|gcplogs|Writes log messages to Google Cloud Platform (GCP) Logging. |
+|logentries|Writes log messages to Rapid7 Logentries.|
 
+Check default logging driver: `$ docker info` `$ docker info | grep storage`
+
+method-1: Edit Unit file (docker.service)
+- add --storage-driver flag
+`$ sudo vi /usr/lib/systemd/system/docker.service`
+`$ ExecStart=/usr/bin/dockerd --storage-driver devicemapper`
+- Restart the docker
+`$ sudo systemctl daemon-reload`
+`$ sudo systemctl restart docker`
+
+method-2: Configuration file (daemon.json)
+- configure daemon file
+`$ sudo vi /etc/docker/daemon.json`
+![alt text](image-19.png)
+- Restart docker
+    `$ sudo systemctl restart docker`
+    `$ sudo systemctl status docker`
