@@ -2,7 +2,7 @@ What is YAML?
 How to write YAML?
 YAML Syntax
 
-****************what is YAML ?****************
+**what is YAML ?**
 
 - YAML (YAML Ain’t Markup Language / yet another language ) is a human-readable data serialization language. It allows the user to declare configuration as steps if any manually ordered task.
 - It is commonly used for configuration files and data exchange between systems.
