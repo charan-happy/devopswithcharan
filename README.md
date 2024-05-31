@@ -12,8 +12,8 @@
 |Tool Name | 
 | --- | 
 | [Devops introduction](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Devops_Introduction.md)|
-| [Linux ](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/linux.md)
-| [Git & Github](https://github.com/Charan-happy/Learn_Devops_tools/tree/main/Git%20and%20Github)
+| [Linux ](https://github.com/charan-happy/DevopsWithCharan/blob/main/linux/linux.md)
+| [Git & Github](https://github.com/charan-happy/DevopsWithCharan/blob/main/Git%20and%20Github/Notes.md)
 | [jenkins ](https://github.com/Charan-happy/Learn_Devops_tools/tree/main/Jenkins)
 | [GitHub Actions](https://github.com/charan-happy/DevopsWithCharan/tree/main/GithubActions/CompleteCourse) |
 | [Docker ](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Docker.md)
