@@ -48,6 +48,14 @@ Rules of creating YAML file :
 
 Basic Components of YAML file:
 
+**1. Conventional Block Format**
+
+- This block format uses hyphen+space to begin a new item in a specified list. Observe the example shown below
+
+**2. Inline Format**
+
+**3. Folded Text**
+
 
 ****************SYNTAX :****************
 

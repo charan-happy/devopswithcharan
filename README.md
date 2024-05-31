@@ -33,20 +33,20 @@
 |---|---|
 |Ansible|In progress|
 |Azure|In progress|
-|Docker|Done|
-|Git and Github|Done|
-|Github Actions|Done|
+|Docker|Done ✅|
+|Git and Github|Done ✅|
+|Github Actions|Done✅|
 |Go lang|In progress|
 |Helm|Not started|
 |Jenkins|In progress|
 |Jira|Not started|
 |Kubernetes|In progress|
-|Linux|Completed|
-|Maven|Not started|
+|Linux|Completed ✅|
+|Maven|Completed ✅|
 |Monitoring|In progress|
-|Networking|completed|
+|Networking|completed✅|
 |Python|In progress|
-|Shell-script|Completed|
-|Terraform|Completed|
+|Shell-script|Completed ✅|
+|Terraform|Completed ✅|
 |YAML|In progress|
 |Projects|Inprogress|
