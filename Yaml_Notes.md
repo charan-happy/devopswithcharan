@@ -53,6 +53,7 @@ Basic Components of YAML file:
 
 - YAML uses indentation and colons to structure data.
 
+
 Here is the simple example of YAML Syntax :
 
 ```yaml
