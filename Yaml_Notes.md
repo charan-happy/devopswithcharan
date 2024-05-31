@@ -8,7 +8,7 @@ YAML Syntax
 - It is commonly used for configuration files and data exchange between systems.
 - YAML is designed to be easy to read and write, making it popular among developers and system administrators.
 - YAML is a data serialization language like XML and JSON.
-- 
+
 
 YAML is popular
 
@@ -17,13 +17,37 @@ YAML is popular
 - For different Devops Tools and applications
 - Human readable and intuitive
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dd541cc6-921e-4094-b04a-586b96dafbd4/Untitled.png)
+
+YAML Features :
+
+- Matches native datastructures of agile methodology and its languages such as perl, python, php, ruby and javascript
+- YAML data is portable between programming languages
+- Includes data consistent data model
+- Easily readable by humans
+- Supports one-direction processing
+- Ease of implmentation and usage
+
 
 We Have 3 different types of languages in computer.
 
 1. Markup Language
 2. Programming Language
 3. Scripting Language
+
+
+Rules of creating YAML file :
+
+- when you are creating a file in yaml, you should remember the following basic rules
+
+```
+- YAML is case sensitive
+- The files should have `.yaml` or `yml` as the extension
+- YAML does not allow the use of tabs while creating YAML files; spaces are allowed instead
+
+```
+
+Basic Components of YAML file:
+
 
 ****************SYNTAX :****************
 

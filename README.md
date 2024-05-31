@@ -29,3 +29,24 @@
 | Cloud <br> [AWS](https://github.com/Charan-happy/AWS-Devops_Zero-to-Hero) <br> [Azure](https://github.com/charan-happy/charan-happy.github.io/tree/main/Azure)|
 | Projects <br> [source1](https://github.com/Charan-happy/Devops_Realtime-Projects) <br> [source2](https://github.com/Charan-happy/My_Devops_Projects)
 
+|course Name| status|
+|---|---|
+|Ansible|In progress|
+|Azure|In progress|
+|Docker|Done|
+|Git and Github|Done|
+|Github Actions|Done|
+|Go lang|In progress|
+|Helm|Not started|
+|Jenkins|In progress|
+|Jira|Not started|
+|Kubernetes|In progress|
+|Linux|Completed|
+|Maven|Not started|
+|Monitoring|In progress|
+|Networking|completed|
+|Python|In progress|
+|Shell-script|Completed|
+|Terraform|Completed|
+|YAML|In progress|
+|Projects|Inprogress|
