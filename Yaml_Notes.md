@@ -51,10 +51,48 @@ Basic Components of YAML file:
 **1. Conventional Block Format**
 
 - This block format uses hyphen+space to begin a new item in a specified list. Observe the example shown below
+```
+--- # Favourite Movies
+- Simhadri
+- RRR
+- Jersey
+```
 
 **2. Inline Format**
+- Inline format is delimited with **comma and space** and the items are enclosed in JSON .
+```
+--- # movies list
+  [simhadri, RRR, Jersey]
+```
 
 **3. Folded Text**
+- FOlded text converts newlines to spaces and removes the leading whitespace. 
+```
+- {name: Nagacharan, age: 24}
+- name: Charan
+  age: 25
+```
+
+- The structure which follows all the basic conventions of YAML is shown below -
+
+```
+men: [Charan, Nagacharan, Naga]
+women:
+  - shika
+  - samantha
+  - Rashmika
+```
+
+#### Synopsis of YAML Basic Elements
+- Comments in YAML begins with (#) character
+- List members are denoted by a leading hypen (-)
+- List members are enclosed in square brackets and separated by comma
+- Associated arrays are represented using colon (:) in teh format of key value pair. They are enclosed in curly braces {}
+- Multiple documents with single streams are separated with 3 hypens (---)
+- Repeated nodes in each file are initially denoted by an ampersand (&) and by an asterisk (*) mark later
+
+
+### Indentation and separation
 
 
 ****************SYNTAX :****************
