@@ -1,6 +1,11 @@
 # Jenkins
 
-CICD - END to END Process
+[CICD End to End Process](#cicd---end-to-end-process)
+
+[pipelines](#pipelines)
+
+## CICD - END to END Process
+
 Once the developers completes his work, he wil raise a PR (pull request). As soon as developers raise the PR, the local build job would be triggered.
 Once the build s success. The reviewer or approver merge the code into the central repo by clickin on merge button ( merge button wil not be enabled in PR,
 if the local build fails).
@@ -98,7 +103,7 @@ Install the ThinBackup Jenkins plugin.
 
 
 
-*************************** Backup Jenkins (including plugins) under /var/lib/jenkins/jenkins_backup directory using thinBackup plugin. *************************************** create backup directory first
+**** Backup Jenkins (including plugins) under /var/lib/jenkins/jenkins_backup directory using thinBackup plugin. *************************************** create backup directory first
 
 
 
@@ -106,14 +111,25 @@ Install the ThinBackup Jenkins plugin.
 
 
 
-Pipelines
+## Pipelines
 
 A Jenkins file is a set of instructions to run a pipeline.
 
-
-
-
 one Jenkins file with multiple stages is called a "Multi-stage Pipeline".
+
+- A Pipeline is a definition of a job that has some stages executed respectively. Each stage has a steps section that includes commands which should be executed respectively to complete that stage. With the pipeline, we define how Jenkins should complete the CI/CD process for our applications. So to speak, the pipeline runs all processes that were run formerly by human hands.
+
+## scripted vs declarative
+- Jenkins supports two types of pipeline definition. 1- Scripted pipelines which are written in Groovy language. 2- Declarative pipelines which are written in Jenkins DSL language. We intend to talk about the Jenkins DSL language which is more readable and easy to learn. Furthermore, within this DSL language, we can write Groovy scripts too.
+
+## Jenkins pipeline syntax Introduction
+
+- Here is the basic pipeline syntax example :
+
+```
+
+```
+
 
 
 
@@ -122,7 +138,6 @@ Create a pipeline job named hello-world, it should just echo the Hello World str
 You can name the stage as per your choice.
 
 ---
-
 
 
 
