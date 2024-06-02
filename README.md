@@ -48,5 +48,9 @@
 |Python|In progress|
 |Shell-script|Completed ✅|
 |Terraform|Completed ✅|
-|YAML|In progress|
+|YAML|Done ✅|
 |Projects|Inprogress|
+
+
+if you want to learn and know more about cloud and DevOps ⭐ this repo
+
