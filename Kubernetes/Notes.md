@@ -313,19 +313,35 @@ Statefulsets and more
 ## Kubernetes jobs
 
 ## Kubernetes INITcontainer
+
 ## Kubernetes pod lifecycle
+
 ## Kubernetes namespace
+
 ## kubernetes ResourceQuota
+
 ## Kubernetes Autoscaling
+
 ## Multi-cluster kubernetes with HAProxy
+
 ## Kubernetes Ingress
+
 ## Kubernetes Statefulsets
+
 ## Kubernetes Daemonset
+
 ## Kubernetes network policies
+
 ## Kubernetes Operators
+
 ## HELM & Helm charts
+
 ## helm Project
+
 ## AWS Elastic Kubernetes Services EKS
+
 ## Azure Kubernetes Service (AKS)
+
 ## Google Kubernetes Engine (GKE)
+
 ## End-To-End Devsecops Kubernetes Project
