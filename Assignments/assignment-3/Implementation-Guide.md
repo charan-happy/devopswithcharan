@@ -1,16 +1,19 @@
-Monitoring and Logging Setup with Prometheus, Grafana, and ELK Stack
+### Monitoring and Logging Setup with Prometheus, Grafana, and ELK Stack
+
 This guide will help you set up a monitoring and logging solution for a sample application using Prometheus, Grafana, and the ELK stack (Elasticsearch, Logstash, Kibana). We'll deploy a sample application using Docker, configure Prometheus and Grafana for monitoring, and set up the ELK stack for logging.
 
-Prerequisites
+### Prerequisites
+
 Docker and Docker Compose installed
 Basic understanding of Docker, Prometheus, Grafana, and the ELK stack
-Step 1: Setup
+
+### Step 1: Setup
+
 Deploy a Sample Application on Docker
 
 Create a docker-compose.yml file to deploy a simple web application along with Prometheus, Grafana, and the ELK stack.
 
-yaml
-Copy code
+```docker-compose.yml
 version: '3.7'
 
 services:
@@ -65,12 +68,13 @@ services:
 
 volumes:
   grafana-data:
+```
+
 Prometheus Configuration
 
 Create a prometheus.yml file to configure Prometheus to scrape metrics from Docker containers.
 
-yaml
-Copy code
+```prometheus.yml
 global:
   scrape_interval: 15s
 
@@ -82,12 +86,13 @@ scrape_configs:
   - job_name: 'docker'
     static_configs:
       - targets: ['web_app:80']
+```
+
 Logstash Configuration
 
 Create a logstash.conf file to configure Logstash to collect logs from the Docker containers.
 
-plaintext
-Copy code
+```logstash.conf
 input {
   file {
     path => "/var/lib/docker/containers/*/*.log"
@@ -114,7 +119,10 @@ output {
     index => "docker-logs-%{+YYYY.MM.dd}"
   }
 }
-Step 2: Monitoring and Logging Requirements
+```
+
+### Step 2: Monitoring and Logging Requirements
+
 Collect Basic Metrics from Docker Containers
 
 Prometheus will collect metrics from the Docker containers, such as CPU and memory usage.
@@ -131,11 +139,11 @@ Store Logs in Elasticsearch and Visualize Them in Kibana
 
 Access Kibana at http://localhost:5601, configure the index pattern for docker-logs-*, and create visualizations and dashboards to view the logs.
 
-Step 3: Configuration Files
+### Step 3: Configuration Files
+
 Prometheus Configuration (prometheus.yml)
 
-yaml
-Copy code
+```prometheus.yml
 global:
   scrape_interval: 15s
 
@@ -147,10 +155,10 @@ scrape_configs:
   - job_name: 'docker'
     static_configs:
       - targets: ['web_app:80']
+```
 Logstash Configuration (logstash.conf)
 
-plaintext
-Copy code
+```logstash.conf
 input {
   file {
     path => "/var/lib/docker/containers/*/*.log"
@@ -177,12 +185,12 @@ output {
     index => "docker-logs-%{+YYYY.MM.dd}"
   }
 }
+```
 Grafana Dashboard JSON
 
 You can export the created dashboard JSON from Grafana. Here’s an example JSON snippet for CPU usage:
 
-json
-Copy code
+```grafana.json
 {
   "panels": [
     {
@@ -230,7 +238,10 @@ Copy code
   "title": "Docker Monitoring",
   "uid": "docker-monitoring"
 }
-Step 4: Documentation and Screenshots
+```
+
+### Step 4: Documentation and Screenshots
+
 Setup Process
 
 Docker Compose: Create a docker-compose.yml file to define and run all services.
