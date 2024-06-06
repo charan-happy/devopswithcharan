@@ -1,26 +1,26 @@
-CI/CD Pipeline Setup with Jenkins
+# CI/CD Pipeline Setup with Jenkins
+
 This guide will walk you through setting up a CI/CD pipeline using Jenkins for a simple web application. We'll use a basic Node.js application as our sample project. The pipeline will include stages for building, testing, and deploying the application using Docker.
 
-Prerequisites
+## Prerequisites
+
 Jenkins installed on your local machine or server
 A GitHub account and repository for your project
 Docker installed on your Jenkins server
-Step 1: Setup
+
+### Step 1: Setup
 Create a Simple Node.js Application
 
 Initialize a Node.js project:
-sh
-Copy code
+
 mkdir simple-node-app
 cd simple-node-app
 npm init -y
 Install Express.js:
-sh
-Copy code
 npm install express
+
 Create an app.js file with the following content:
-js
-Copy code
+```app.js
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -32,15 +32,15 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
+```
 Add Unit Tests
 
 Install Mocha and Chai:
-sh
-Copy code
-npm install --save-dev mocha chai
+
+`npm install --save-dev mocha chai`
+
 Create a test folder and add a test.js file with the following content:
-js
-Copy code
+```test.js
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../app'); // Adjust path if necessary
@@ -59,11 +59,12 @@ describe('GET /', () => {
       });
   });
 });
+```
 Dockerize the Application
 
 Create a Dockerfile with the following content:
 Dockerfile
-Copy code
+```Dockerfile
 FROM node:14
 WORKDIR /app
 COPY package*.json ./
@@ -71,17 +72,19 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 CMD ["node", "app.js"]
+```
 Push Code to GitHub
 
 Initialize a Git repository, commit your code, and push to GitHub:
-sh
-Copy code
+
 git init
 git add .
 git commit -m "Initial commit"
 git remote add origin <your-repo-url>
 git push -u origin master
-Step 2: Pipeline Stages
+
+### Step 2: Pipeline Stages
+
 Jenkins Installation and Configuration
 
 Install Jenkins (refer to the official Jenkins installation guide for your OS).
@@ -93,8 +96,7 @@ In the pipeline configuration, point it to your GitHub repository.
 Jenkinsfile Definition
 
 Create a Jenkinsfile in the root of your project with the following content:
-groovy
-Copy code
+```Jenkinsfile
 pipeline {
     agent any
     
@@ -145,13 +147,15 @@ pipeline {
         }
     }
 }
-Step 3: Documentation
+```
+### Step 3: Documentation
 Pipeline Stages
 
 Checkout: Clones the repository from GitHub.
 Build: Builds the Docker image for the application.
 Test: Runs the unit tests inside the Docker container.
 Deploy: Deploys the Docker container to a staging environment.
+
 Setup Process
 
 Install Jenkins and necessary plugins.
@@ -159,6 +163,7 @@ Create a pipeline job in Jenkins and configure the GitHub repository.
 Define the pipeline stages in the Jenkinsfile.
 Step 4: Screenshots and Logs
 Successful Pipeline Execution
+
 Screenshot of the Jenkins job configuration.
 Logs showing successful checkout, build, test, and deploy stages.
 Screenshot of the running application accessed via http://localhost:3000.
