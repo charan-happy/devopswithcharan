@@ -1,34 +1,35 @@
-Infrastructure as Code with Terraform and Ansible
+# Infrastructure as Code with Terraform and Ansible
+
 This guide will help you automate the provisioning and configuration of a cloud infrastructure using Terraform and Ansible. The infrastructure will be provisioned on AWS and will include a VPC with public and private subnets, an EC2 instance, and an S3 bucket.
 
-Prerequisites
+## Prerequisites
+
 AWS CLI installed and configured with appropriate permissions
 Terraform installed
 Ansible installed
-Step 1: Setup with Terraform
+
+### Step 1: Setup with Terraform
+
 Terraform Configuration
 
 Create a directory for your Terraform files:
 
-sh
-Copy code
+
 mkdir terraform-aws-setup
 cd terraform-aws-setup
 Provider Configuration
 
 Create a main.tf file with the following content:
 
-hcl
-Copy code
+```main.tf
 provider "aws" {
   region = "us-east-1"
 }
+```
 VPC and Networking Components
 
 Add the VPC, subnets, and security groups to main.tf:
-
-hcl
-Copy code
+```main.tf
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
   enable_dns_support = true
@@ -104,12 +105,12 @@ resource "aws_security_group" "web-sg" {
     Name = "web-sg"
   }
 }
+```
 EC2 Instance
 
 Add the EC2 instance to main.tf:
 
-hcl
-Copy code
+```ec2.tf
 resource "aws_instance" "web" {
   ami           = "ami-0c55b159cbfafe1f0" # Update with the desired AMI ID
   instance_type = "t2.micro"
@@ -124,12 +125,12 @@ resource "aws_instance" "web" {
     command = "echo ${aws_instance.web.public_ip} > ip_address.txt"
   }
 }
+```
 S3 Bucket
 
 Add the S3 bucket to main.tf:
 
-hcl
-Copy code
+```s3.tf
 resource "aws_s3_bucket" "app_data" {
   bucket = "my-app-data-bucket-${random_id.bucket_id.hex}"
   acl    = "private"
@@ -141,29 +142,30 @@ resource "aws_s3_bucket" "app_data" {
 resource "random_id" "bucket_id" {
   byte_length = 4
 }
+```
 Initialize and Apply Terraform Configuration
 
 Run the following commands to initialize and apply the configuration:
 
-sh
-Copy code
+
 terraform init
 terraform apply
-Step 2: Configuration with Ansible
+
+### Step 2: Configuration with Ansible
+
 Ansible Inventory
 
 Create an inventory file hosts with the IP address of your EC2 instance:
 
-ini
-Copy code
+```ini
 [web]
 <EC2_INSTANCE_PUBLIC_IP>
+```
 Ansible Playbook
 
 Create a playbook setup.yml to install necessary software and configure the instance:
 
-yaml
-Copy code
+```setup.yml
 ---
 - hosts: web
   become: yes
@@ -196,29 +198,32 @@ Copy code
             <h1>Hello from Ansible!</h1>
           </body>
           </html>
+```
 Run the Ansible Playbook
 
 Execute the playbook to configure the EC2 instance:
 
-sh
-Copy code
-ansible-playbook -i hosts setup.yml
-Step 3: Documentation
+
+`ansible-playbook -i hosts setup.yml`
+
+### Step 3: Documentation
+
 Setup Process
 
 Terraform: Create and configure main.tf with provider, VPC, subnets, security groups, EC2 instance, and S3 bucket. Run terraform init and terraform apply to provision the infrastructure.
 Ansible: Create an inventory file with the EC2 instance's IP address. Create a playbook to install and configure necessary software. Run ansible-playbook to configure the instance.
+
 Execution Commands
 
-sh
-Copy code
 # Terraform commands
 terraform init
 terraform apply
 
 # Ansible commands
 ansible-playbook -i hosts setup.yml
-Step 4: Screenshots and Logs
+
+### Step 4: Screenshots and Logs
+
 Terraform Output
 Screenshot showing the successful Terraform apply output, including the provisioned resources.
 Ansible Output
