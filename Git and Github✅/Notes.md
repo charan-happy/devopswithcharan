@@ -147,6 +147,8 @@ Running `git init` command creates a `.git` folder
 
    	.git/<br>
     		objects/   refs/
+  ![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/738b82b7-f8c2-4404-8be1-0a3933058aab)
+
     
 Git repository exists entirely in a single ".git" directory
 
