@@ -1,0 +1,1 @@
+[Reference](https://medium.com/@ebaah5084/creating-a-python-script-that-you-can-run-that-will-stop-all-instances-3b92c41703c3)

@@ -1,0 +1,1 @@
+[Reference](https://awstip.com/aws-s3-event-triggering-shell-script-used-by-netflix-airbnb-adobe-expedia-and-others-53b6822e2192)

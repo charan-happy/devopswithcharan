@@ -1,0 +1,1 @@
+[Reference](https://shraddhadlotlikar.wixsite.com/tech-logs/post/deploying-on-aws-using-terraform-jenkins-and-monitoring-the-application)

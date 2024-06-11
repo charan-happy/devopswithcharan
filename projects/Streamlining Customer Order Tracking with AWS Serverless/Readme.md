@@ -1,0 +1,1 @@
+[Reference](https://medium.com/@dibaalA/track-customer-orders-with-aws-serverless-by-integrating-sqs-queue-lambda-function-and-api-gateway-726f21d2a899)

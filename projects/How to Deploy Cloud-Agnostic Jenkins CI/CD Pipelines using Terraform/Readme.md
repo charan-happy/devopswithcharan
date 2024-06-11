@@ -1,0 +1,1 @@
+[Reference](https://medium.com/nerd-for-tech/how-to-deploy-cloud-agnostic-jenkins-ci-cd-pipelines-using-terraform-803c2194e5c3)

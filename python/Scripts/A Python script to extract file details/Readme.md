@@ -1,0 +1,1 @@
+[Reference](https://kennybrast.medium.com/using-python-to-extract-file-information-2ec1e52a1529)
