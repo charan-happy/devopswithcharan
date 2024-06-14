@@ -149,6 +149,10 @@ $ ansible [localhost](http://localhost) -m ping —> To Check if Ansible was ins
 
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/51019000-89e6-480f-bcdd-feae57b46161/Untitled.png)
 
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/469e39bc-499f-482b-a29b-d37a1bfa0f8a)
+
+
+
 Ansible Automation Components
 
 → Ansible automation components include the inventory, API’s , Modules and Plugins.
