@@ -9,6 +9,11 @@
 
 ![Devops](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/Devops_intro/Devops_logo.png)
 
+
+
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/a077733c-ae1c-4154-bfce-1255bd9796db)
+
+
 |Tool Name | 
 | --- | 
 | [Devops introduction](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Devops_Introduction.md)|
