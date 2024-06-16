@@ -3,6 +3,8 @@
 
 [Shell vs Python](#shell-vs-python)
 [Data Types](#data-types)
+[regex](#regex)
+[Keywords and Variables]()
 
 
 ## shell vs python
@@ -99,4 +101,43 @@ when to use python ?🤔
 
 [top](#content)
 
-1. Numeric Data 
+1. Numeric Data Types in python (int, float):
+- python supports two primary numeric data types: `int` for integers and `float` for floating-point numbers
+- Integers are whole numbers, and floats can represent both whole and fractional numbers
+- you can perform arithmetic operations on these types, including addition, substraction, multiplication, division and more.
+- Be aware of potential issues with floating-point precesion, which can lead to small inaccuracies in calculations.
+- python also provides built-in functions for mathematical operations such as `abs()`, `round()` and `math()` module for advanced functions.
+
+## Regex
+
+1. Regular expressions for Text Processing:
+- Regular expressions (regex or regexp) are a powerful tool for pattern matching and text processing.
+- the `re` module in python is used for working with regular expressions.
+- common metacharacters: `.`(any character), `*`(zero or more), `+` (one or more), `?`(zero or one), `[]`(character class), `|`(OR), `^`(start of line),`$`(end of line) etc
+- Example of regex usage: matching emails, phone numbers, or extracting data from text
+- `re` module functions include `re.match()`, `re.search()`, `re.findall()`, and `re.sub()` for pattern matching and replacement.
+
+## Keywords and Variables
+
+Keywords in Python:
+
+- Keywords are reserved words in python that have predefined meanings and cannot be used as variable names or identifiers. These words are used to define the structure and logic of the program. They are an integral part of the python language and case-sensitive, which means you must use them exactly as specified.
+
+Here are some important python keywords:
+
+1. `and`: it is a logical operator that returns `True` if both operands are true
+2. `or`: It is a logical operator that returns `True` if at least one of the operands is true.
+3. `not`: It is a logical operator that returns the opposite of the operand's truth value
+4. `if`: It is used to start a conditional statement and is followed by a condition that determines whether the code block is executed.
+5.`else`: It is used in conjunction with `if` to define and alternative code block to execute when the `if` condition is `false`
+6. `elif`: short for "else if", it is used to check additional conditions after an `if` statement and is used in combination with `if` and `else`
+7. `while`: it is used to create a loop that repeatedly executes a block of code as long as a specified condition is true.
+8. `for`: It is used to create a loop that iterates over a sequence (such as list, tuple or string) and executes a block of code for each item in the sequence
+9. `in`: used with `for`, it checks if a value is present in a sequence.
+10. `try`: it is the beginning of a block of code that is subject to exception handling. it is followed by `except` to catch and handle exceptions.
+11. `except`: used with `try`, it defines a block of code to execute when an exception is raised in the corresponding `try` block.
+12. `finally`: used with `try`, it defines a block of code that is always executed, whether an exception is raised or not.
+13. `def`: it is used to define a function in python
+14. `return`: It is used within a function to specify the value that the function should return
+15. `class`: It is used to define a class, which is blueprint for creating objects in object-oriented programming
+16. `import`

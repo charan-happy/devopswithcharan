@@ -7,23 +7,23 @@ step by step) 🎯
 
 If Ansible is in your learning plan then these topics can help you to start today itself & make you 92% ready👇
 
-Introduction<br>
+[Introduction](#ansible)<br>
 → What is Ansible?<br>
 → Why Use Ansible? <br>
 
 
-Installation
+[Installation](#ansible-installation)
 → Operating System Requirements <br>
 → Installation Methods <br>
    - Package Managers<br>
    - Python PIP
 
-Inventory <br>
+[Inventory]()<br>
 → Hosts<br>
 → Groups<br>
 → Variables
 
-Playbooks <br>
+[Playbooks]() <br>
 → Syntax<br>
 → Tasks<br>
    - Modules<br>
@@ -33,7 +33,7 @@ Playbooks <br>
    - Facts<br>
    - Custom Variables<br>
 
-Roles
+[Roles](#ansible-roles-and-ansible-galaxy)
 → Structure<br>
 → Main Tasks<br>
 → Handlers<br>
@@ -46,42 +46,42 @@ Playbook Execution<br>
    - Tags<br>
    - Limiting Playbook Execution
 
-Variables<br>
+[Variables](#ansible-playbooks---variables-loops-conditionals-templates-and-error-handling)<br>
 → Precedence<br>
 → Variable Types<br>
    - Global Variables<br>
    - Play Variables<br>
    - Host Variables
      
-Conditionals<br>
+[Conditionals](#ansible-playbooks---variables-loops-conditionals-templates-and-error-handling)<br>
 → When Statement<br>
 → Loops<br>
    - With_items<br>
    - Loop Controls
 
-Templates<br>
+[Templates]()<br>
 → Jinja2 Templating Engine<br>
 → Template Files
 
-Inventory Management<br>
+[Inventory Management]()<br>
 → Dynamic Inventory<br>
 → Static Inventory
 
-Modules<br>
+[Modules]()<br>
 → Common Modules<br>
 → Module Options
 
-Debugging<br>
+[Debugging]()<br>
 → Verbose Mode<br>
 → Debug Module<br>
 → Error Handling
 
-Best Practices<br>
+[Best Practices]()<br>
 → Directory Structure<br>
 → Security Considerations<br>
 → Documentation
 
-Advanced Topics<br>
+[Advanced Topics]()<br>
 → Vault <br>
 → Callbacks <br>
 → Dynamic Includes
@@ -95,35 +95,33 @@ Community and Resources<br>
 
 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/e53ea1d6-7adf-42e2-a26a-84f0191990db/Untitled.png)
 
-1. code Analysis                                                 5. Environment provisioning for testing
-2. unit testing                                                     6. Testing (QA)
-3. Code Coverage                                               7. Deployment to pre-production
-4. Build                                                                8. Release Management
 
-    9. Environment provisioning for production
-                                  10. Deployment and release to production
 
-******************************what does environment consist of ?******************************
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/a077733c-ae1c-4154-bfce-1255bd9796db)
+     
+
+**what does environment consist of ?**
 
 - An environment means the underlying infrastructure, The configurations and various dependencies.
 - The underlying infra defines in which place the application would run, the configurations needed by the application to run and how other external dependencies will associate with the application
 - The configuration will decide how the application will fit and perform in the infrastructure that it deployed in.
 - The dependencies would mean the various libraries and services from other modules or systems which are used by application.
 
-******************************************Server Virtualization******************************************
+**Server Virtualization**
 
 - creating and abstracting of multiple instances on a single server. An administrator uses a software termed a virtualization software to partition one physical server into multiple isolated virtual environments. Each environment of such is capable of running independently.
 
-**********************Containerization**********************
+**Containerization**
 
 - Bundling an application together with all of its related configuration files, libraries and dependencies required for it to run in an efficient and bug-free way across different computing environments.
 - Popular containerization softwares include Docker and Kubernetes
 
-************************************************Configuration Management************************************************
+**Configuration Management**
 
-- Configuration Management / Server Configuration Management(SCM) is an automation that ensures that the target system/server reaches its desirable state as per the configuration made upon it. This in turn achieved with the help of ********************************configuration Management Tools********************************
+- Configuration Management / Server Configuration Management(SCM) is an automation that ensures that the target system/server reaches its desirable state as per the configuration made upon it. This in turn achieved with the help of 
+
+**configuration Management Tools**
 
 Home, furniture as an anology for these example
 
@@ -136,18 +134,17 @@ Home, furniture as an anology for these example
 5. Migration to new OS and technologies is easier
 6. Better security governance
 
-****************************************Ansible Installation****************************************
+## Ansible Installation
 
-$ ansible [localhost](http://localhost) -m ping —> To Check if Ansible was installed properly or not
+`$ ansible [localhost](http://localhost) -m ping` —> To Check if Ansible was installed properly or not
 
-************History of Ansible************
+**History of Ansible**
 
 - Ansible was released in 2012 by Micheal Dehaan a developer who was working with configuration managment and infrastructure orchestration earlier with puppet labs and Redhat.
 - The Born of Ansible is from ****************cobbler**************** which was designed to manage datacenter environment in GUI
 
 ****************************************Ansible Architecture****************************************
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/51019000-89e6-480f-bcdd-feae57b46161/Untitled.png)
 
 ![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/469e39bc-499f-482b-a29b-d37a1bfa0f8a)
 
@@ -197,7 +194,6 @@ other terms
 
 **********************************************Ansible Fitment in an automated CI/CD pipeline**********************************************
 
-![Ansible Fitment in Automated CI/CD pipeline](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/e2df2d29-fd80-423b-b2da-c5600ef85c6d/Untitled.png)
 
 Ansible Fitment in Automated CI/CD pipeline
 
@@ -213,13 +209,12 @@ Thus IAC removes the operational burden of sysadmins from managing complex hardw
 
  ****************************************************************************************************Connecting to ansible server from a remote machine****************************************************************************************************
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/5f07be70-d364-4d09-8531-9023e253404a/Untitled.png)
 
 The basic idea for any OS machine before any remote machine connected to using ansible server are as follows
 
 1. open connection from remote machine
 2. Add remote machine details on ansible machine
-    1. Inside the path $ vi /etc/ansible/hosts
+    1. Inside the path `$ vi /etc/ansible/hosts`
         
         Each machine name, followed by the domain name, must be mentioned under a group/alias name as shown below 
         
@@ -256,7 +251,7 @@ once set of processes is defined within a playbook, we need not manually type ou
 
 The goal of **********play********** is to map a group of hosts to well defined roles, represented by tasks.
 
-********Ansible playbooks - Variables, loops, conditionals, templates and error handling********
+## Ansible playbooks - Variables, loops, conditionals, templates and error handling
 
 ******************variables******************
 
@@ -352,6 +347,8 @@ EX: A basic example which can be used to install a lot of linux packages (python
 
 ```yaml
 - name: Ansible loop example
+  tasks:
+  = name: loop demo
 	apt:
 		name: "{{ item }}"
 		state: present
@@ -372,8 +369,8 @@ From the above, the value of with_items block will be inserted in place of *****
 - hosts: all
 	tasks:
 	- name: Ansible loop with index example
-		debug:
-			msg: "echo loop index at {{ item.0 }} and value at {{ item.1 }}"
+	  debug:
+		msg: "echo loop index at {{ item.0 }} and value at {{ item.1 }}"
 		with_indexed_items:
 			- "hello1"
 			- "hello2"
@@ -404,8 +401,8 @@ we can also use “when” conditional statement along with the loop structure. 
 		loop_1: "hello1"
 	tasks:
 	- name: Ansible loop with conditional example
-		debug:
-			msg: "{{ item }}"
+	  debug:
+		msg: "{{ item }}"
 		with_items:
 			- "hello1"
 			- "hello2"
@@ -425,10 +422,10 @@ hello1
 			Orange: 'Orange'
 			Grapes: 'Green'
 	tasks:
-		- name: Ansible dictionary loop Example
-			debug: 
-				msg: "key is {{ item.key }} and color is {{ item.value }}"
-			with_dict: "{{ Fruits }}"
+	- name: Ansible dictionary loop Example
+	  debug: 
+		msg: "key is {{ item.key }} and color is {{ item.value }}"
+		with_dict: "{{ Fruits }}"
 ```
 
 ****************output :****************
@@ -573,13 +570,13 @@ $ vi simple.yml
 ```yaml
 ---
 - name: just a simple play to execute command date
-	hosts: localhost
-	tasks:
-	- name: execute a command "date"
-		command: date
+  hosts: localhost
+  tasks:
+  - name: execute a command "date"
+	command: date
 ```
 
-$ ansible-playbook sample.yml
+`$ ansible-playbook sample.yml`
 
 since, ansible is an environment configuration tool, It would by default only show the final output as how many times was the host changed, unreachable and failed.
 
@@ -643,11 +640,9 @@ $ vi node_demo.yml
 3. As mentioned before, some sites that require access may be by default inaccessible if outside your intranet’s reach, hence proxy may be required. This can be set under the module of environment. So that every task is executed within this defined environment.
 4. coming to the tasks
     1. We first run a shell script available in the given URL so that yum command can be used later to install Node.js and npm
-        1. curl command is used in linux to download or access links on websites starting with http or https. The purpose of the pipeline is to take the output from the left command and use it as input for the command on the right side of the pipeline. In this case curl is 
+        1. curl command is used in linux to download or access links on websites starting with http or https. The purpose of the pipeline is to take the output from the left command and use it as input for the command on the right side of the pipeline. 
 
-pending ….
-
-********************************************Ansible Roles and Ansible galaxy********************************************
+## Ansible Roles and Ansible galaxy
 
 - when a role is created for a specific subtask, that subtask can be utilized into different playbooks just by calling upon the name of the role.
 - For ex, installation and starting of apache as a service is a common dependency for many real-time applications such as drupal or node.js. In such cases, ansible roles can be thoroughly utilized to call upon the subtask of apache into the drupal and nodejs playbooks without having to create a new subtasks inside each of these playbooks separately.
@@ -707,9 +702,9 @@ $ cd prerequisites/tasks/main.yml
 ----
 - name: Install git
   yum: 
-		name: git
-		state: present
-		update_cache: yes
+	name: git
+	state: present
+	update_cache: yes
 ```
 
 Next we will write a playbook for mongodb
@@ -719,18 +714,18 @@ $ cd /mongodb/tasks/main.yml
 
 ----
 - name: MongoDB - Install MongoDB
-	environment:
-		http_proxy: http://username:password@10.122.41.7
-		https_proxy: http://username:password@10.122.41.7
+  environment:
+	http_proxy: http://username:password@10.122.41.7
+	https_proxy: http://username:password@10.122.41.7
   yum:
-		name: mongodb-org
-		state: present
-		update_cache: yes
+	name: mongodb-org
+	state: present
+	update_cache: yes
 
 - name: MongoDB  - Running State
-	service:
-			name: mongod
-			state: started 
+  service:
+	name: mongod
+	state: started 
 ```
 
 Now for the final role named nodejs
@@ -740,35 +735,35 @@ $ cd nodejs/tasks/main.yml
 
 ----
 - name: Node.js - Get Script
-	environment:
-			http_proxy: http://username:password@10.144.51.4:80
-			https_proxy: http://username:password@10.144.51.4:80
-	shell: curl -sL https://rpm.nodesource.com/setup_4.X | bash -
+  environment:
+	http_proxy: http://username:password@10.144.51.4:80
+	https_proxy: http://username:password@10.144.51.4:80
+  shell: curl -sL https://rpm.nodesource.com/setup_4.X | bash -
   args:
 	  warn: no
 
 - name: Node.js - Install Node.js
-	environment:
-			http_proxy: http://username:password@10.144.51.4:80
-			https_proxy: http://username:password@10.144.51.4:80
+  environment:
+	http_proxy: http://username:password@10.144.51.4:80
+	https_proxy: http://username:password@10.144.51.4:80
   yum: name={{ item }} state=present update_cache=yes
 	with_items:
 		- "@Development tools"
-    - nodejs
+    	- nodejs
 
 - name: Setup NPM HTTP Proxy
-	command: npm config set proxy "{{item}}"
-	with_items:
-		- http://username:password@10.144.51.4:80
+  command: npm config set proxy "{{item}}"
+  with_items:
+	- http://username:password@10.144.51.4:80
 
 - name: Node.js - Install bower and gulp globally
-	environment:
-			http_proxy: http://username:password@10.144.51.4:80
-			https_proxy: http://username:password@10.144.51.4:80
-	npm: name={{ item }} state=present global=yes
-	with_items:
-		- bower
-		- gulp
+  environment:
+	http_proxy: http://username:password@10.144.51.4:80
+	https_proxy: http://username:password@10.144.51.4:80
+ npm: name={{ item }} state=present global=yes
+ with_items:
+	- bower
+	- gulp
 ```
 
 Finally, let’s create our main playbook, which will orchestrate the roles together.
@@ -778,12 +773,12 @@ $ cd (local workspace)/mean.yml
 
 ---
 - hosts: localhost
-	roles:
-	- prerequisites
-	- mongodb
-	- nodejs
+  roles:
+  - prerequisites
+  - mongodb
+  - nodejs
 
-Deploy the above using $ anisble-playbook mean.yml
+Deploy the above using `$ anisble-playbook mean.yml`
 ```
 
 why ansible roles ?
@@ -804,13 +799,13 @@ why ansible roles ?
 ```yaml
 ---
 - name: Ansible Tags
-	hosts: Servicegroup
-	tasks:
-	- name: install the httpd service
-		yum:
-			name: httpd
-			state: present
-		tags: service
+  hosts: Servicegroup
+  tasks:
+  - name: install the httpd service
+	yum:
+	- name: httpd
+	  state: present
+	tags: service
 ```
 
 - Tag an entire play - use tags directive at the play level.
@@ -1403,7 +1398,7 @@ clicking on any job takes us to the details of that particular job which has two
 | Details Pane | Provides information and status about the job |
 | Standard out pane | Displays job processes and output |
 
-**Managing complex deployment**
+## Managing complex deployment
 
 Modern days, the companies doing high speed and frequent deployments
 
@@ -1505,7 +1500,7 @@ It is risk averse and minimizes impact of a wrong change
 2. **************************************************cost(Not necessarily in monetory terms):************************************************** Some tools are opensource, other tools need payments for their services. Apart from these, a special consideration is also required on the extra cost that training the team members could bear in terms of time.
 3. ****************features:**************** many tools come up with advanced features that your team may just not need yet, hence you can always scratch off such tools while evaluating them.
 
-**************Ansible**************
+## Ansible
 
 Ansible was developed to simplify complex orchestration and configuration management tasks. The platform is written in python and allows users to script comamnds in yaml as an imperating programming paradigm. Ansible offers multiple push models to send command modules to nodes via SSH that are executed sequentially.
 
@@ -1542,7 +1537,7 @@ Ansible doesn’t require agents on every system, and modules can reside on the 
 - Underdeveloped GUI with limited features
 - The platform is new and not entirely mature as compared to chef and puppet
 
-Ansible can enhance **************idempotency.************** Idempotency means it can be applied multiple times on different client nodes and still be expected to bring about the same successful result.
+Ansible can enhance **idempotency.** Idempotency means it can be applied multiple times on different client nodes and still be expected to bring about the same successful result.
 
 For EX: No matter how many times you fetch your name and address from a database, it will return the same result and not affect the database in any manner. Such a system is idempotent.
 
@@ -1582,13 +1577,6 @@ For EX: No matter how many times you fetch your name and address from a database
 10. usage of forking
 11. use configuration file (Default configuration file path in ansible is ************************************************/etc/ansible/ansible.cfg************************************************
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/a2be7731-103e-4bd5-ab13-8230a2fe0d79/fea5e69b-35cb-4011-a655-5c550b1cbdfd/Untitled.png)
-
-[]()
-
-[]()
-
-[]()
 
 > Practice is the best of all instructions → publius syrus
->
+

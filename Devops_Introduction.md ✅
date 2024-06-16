@@ -75,26 +75,48 @@ https://www.cloudflare.com/learning/ssl/why-is-http-not-secure/
 Appplication Release process
 
 Typical Software Release Process :
+
 Initial Launch
+
 idea
+
 Requirements
+
 Code it
+
 Test it
+
 Build & Package
+
 Deploy it
+
 Operate & Maintain
+
 Source Code
+
 Executable
+
 Configure Server
+
 installing tools
+
 Deploy application
+
 Configure firewall
+
 Operate & Monitor
+
 Any problems with the application
+
 Are users experiencing any issues ?
+
 can the application handle high user load ?
+
 Improvements
+
 Add new feature
+
 optimize performance
+
 fix bugs
 
