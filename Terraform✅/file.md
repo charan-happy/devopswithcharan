@@ -134,7 +134,7 @@ Mac OS/Linux ∼/.aws/credentials
 
 ## Your first terraform project
 
-```
+```.tf
 provider "aws" {
 region = "us-east-1"
 }
@@ -235,7 +235,7 @@ Some properties on the resource are mandatory and some are optional. For an AWS 
 only mandatory property is the name of the bucket. We could have set more properties on the bucket
 for example :
 
-```
+```.tf
 1 resource "aws_s3_bucket" "first_bucket" {
 2 bucket = "kevholditch-first-bucket"
 3 acl = "private"
@@ -250,7 +250,7 @@ for example :
 Lets take a look at another resource type so we can examine the other data types that resources can
 take in their properties:
 
-```
+```.tf
 1 resource "aws_security_group" "my_security_group" {
 2 name = "allow_tls"
 3 ingress {
@@ -273,7 +273,7 @@ surround it in square braces.
 
 🪄 Interpolation in Action: Consider the following example:
 
-```
+```.tf
 resource "aws_instance" "example" {
   ami           = "${var.aws_ami}"
   instance_type = "${var.instance_type}"
@@ -294,7 +294,7 @@ Consider the following project (which can be found in same repository in the fol
 example_02). If you do not want to copy from the example repository then create a new folder, create
 a single file in the folder called main.tf and place the following code:
 
-```
+```.tf
 1 provider "aws" {
 2 region = "us-east-1"
 3 }
@@ -352,7 +352,7 @@ To illustrate the way Terraform can create a project in parallel consider what h
 add a new security group rule to our project above (folder resources_example_03 in the example
 repository)
 
-```
+```.tf
 1 resource "aws_security_group_rule" "http_in" {
 2 protocol = "tcp"
 3 security_group_id = aws_security_group.my_security_group.id
@@ -380,7 +380,7 @@ can run in parallel
 - A provider is defined using a provider block. You have already used a provider block in the examples
 so far in this book, it looks like:
 
-```
+```.tf
 1 provider "aws" {
 2 region = "us-east-1"
 3 }
@@ -404,7 +404,7 @@ provider when you run terraform init. It uses this information to know whether o
 
 **More than one instance of the same provider**
 
-```
+```.tf
 1 provider "aws" {
 2 region = "eu-west-1"
 3 version = "~> 2.27"
@@ -442,7 +442,7 @@ Access external data: Fetch data from external APIs or services, like retrieving
 
 Here's an example of how to use a data source to retrieve the ID of an existing EC2 instance in Terraform:
 
-```
+```.tf
 data "aws_instance" "example" {
   instance_id = "i-0123456789abcdef0"
 }
@@ -476,7 +476,7 @@ Lets start with an example of outputs. Create a new folder to put our new Terraf
 create a single file called main.tf and paste in the following code (or grab the code from outputs_-
 example_01 folder inside the examples repository):
 
-```
+```.tf
 1 output "message" {
 2 value = "Hello World"
 3 }
@@ -486,7 +486,7 @@ Try running this project by opening your terminal. Changing directory into the f
 created where the main.tf file is and then running terraform init and terraform apply. You will
 see that Terraform runs and then prints the following:
 
-```
+```.tf
 1 Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
 2
 3 Outputs:
@@ -495,7 +495,7 @@ see that Terraform runs and then prints the following:
 ```
 **Outputting resource properties**
 
-```
+```.tf
 1 provider "aws" {
 2 region = "eu-west-1"
 3 }
@@ -529,7 +529,7 @@ Exporting all attributes
 - As of Terraform 0.12>, Terraform allows you to output an entire
 resource or data block. To do this take the example that we just had and add the following output
 (in the examples repository it is outputs_example_03 if you want to just get the code):
-```
+```.tf
 1 output "all" {
 2 value = aws_s3_bucket.first_bucket
 3 }
@@ -549,14 +549,14 @@ such as two other locals concatenated together or the attribute of a resource th
 
 🔨 Creating Locals Locals are declared using the locals block. Within this block, you define key-value pairs, where the key represents the local's name and the value can be any valid Terraform expression. For example:
 
-```
+```.tf
 locals {
   bucket_name = "${var.prefix}-${var.environment}-bucket"
   region      = "us-east-1"
 }
 ```
 🔁 Using Locals Once defined, locals can be referenced using the local. prefix followed by the local's name. They can be used in various contexts, including resource names, dynamic blocks, and interpolation. For instance:
-```
+```.tf
 resource "aws_s3_bucket" "my_bucket" {
   bucket = local.bucket_name
   region  = local.region
@@ -573,7 +573,7 @@ different resource and data source attributes to build up a more complex value
 
 #### Files-Example
 
-```
+```.tf
 1 provider "aws" {
 2 region = "eu-west-1"
 3 version = "~> 2.27"
@@ -588,7 +588,7 @@ Next if you are creating the code yourself, create another file called policy.ia
 
 Filename: policy.iam
 
-```
+```.tf
 1 {
 2 "Version": "2012-10-17",
 3 "Statement": [
@@ -611,7 +611,7 @@ values at runtime.
 
   main.tf
   
-```
+```.tf
 1 locals {
 2 rendered = templatefile("./example.tpl", { name = "charan", number = 7})
 3 }
@@ -623,7 +623,7 @@ values at runtime.
 
 example.tf1
 
-```
+```.tf
 1 hello there ${name}
 2 there are ${number} things to say
 ```
@@ -632,7 +632,7 @@ example.tf1
 - You can pass in an array of values into a template and loop round them.
 
 filename: main.tf
-```
+```.tf
 1 output "rendered_template" {
 2 value = templatefile("./backends.tpl", { port = 8080, ip_addrs = ["10.0.0.1", "10.\
 3 0.0.2"] })
@@ -642,7 +642,7 @@ filename: main.tf
 
 filename:  backends.tpl 
 
-```
+```.tf
 1 %{ for addr in ip_addrs ~}
 2 backend ${addr}:${port}
 3 %{ endfor ~}
@@ -654,7 +654,7 @@ filename:  backends.tpl
 - A Variable in Terraform is something which can be set at runtime. It allows you to vary what
 Terraform will do by passing in or using a dynamic value.
 
-```
+```.tf
 1 provider "aws" {
 2 region = "eu-west-1"
 3 version = "~> 2.27"
@@ -677,7 +677,7 @@ To use the value of a variable in your Terraform code you use the syntax `var.<v
 identifier>`
 
 **variable defaults**
-```
+```.tf
 1 provider "aws" {
 2 region = "eu-west-1"
 3 version = "~> 2.27"
@@ -714,7 +714,7 @@ name and the value you wish to use.
 **Setting a variable using an environment variable**
 -  set an environment variable in your terminal using the convention `TF_VAR_<variable_identifier>`
 
-```
+```.tf
   Mac OS/Linux
 1 export TF_VAR_bucket_name=kevholditch
 2 export TF_VAR_bucket_suffix=via_env
@@ -728,7 +728,7 @@ Windows
 - Create a file with `.tfvars` extension. EX: filename.tfvars
 
 Here i am continuouing with above example only.
-```
+```.tf
 Inside the terraform.tfvars file place the following:
 1 bucket_name = "charan"
 2 bucket_suffix = "from_file"
@@ -742,7 +742,7 @@ Terraform will look in this file and use any values given for a variable.
 **More Complex Variables**
 
 main.tf
-```
+```.tf
 1 variable "instance_map" {}
 2 variable "environment_type" {}
 3
@@ -754,7 +754,7 @@ main.tf
 
 terraform.tfvars
 
-```
+```.tf
 1 instance_map = {
 2 dev = "t3.small"
 3 test = "t3.medium"
@@ -778,7 +778,7 @@ in the map for the key specified by the environment_type variable.
 the type of a variable. There are 3 simple types string, number and bool.
 To specify a type constraint use the type property when defining a variable
 
-```
+```.tf
 1 variable "a" {
 2 type = string
 3 default = "foo"
@@ -830,7 +830,7 @@ types:
 
 main.tf
 
-```
+```.tf
 1 variable "a" {
 2 type = list(string)
 3 default = ["foo", "bar", "baz"]
@@ -852,7 +852,7 @@ main.tf
 ** Type constraint - set**
 - Set is almost like list , the key difference is that a set only contains a unique values
 
-```
+```.tf
 1 variable "my_set" {
 2 type = set(number)
 3 default = [7, 2, 2]
@@ -882,7 +882,7 @@ A tuple are a strongly typed collection of one or more values. Once a tuple is d
 it always has to contain the number of values as defined in that tuple. The values also have to be
 the correct type and in the correct order based upon type.
 
-```
+```.tf
 1 variable "my_tup" {
 2 type = tuple([number, string, bool])
 3 default = [4, "hello", false]
@@ -896,7 +896,7 @@ the correct type and in the correct order based upon type.
 **Type Constraint - MAP**
 - Type is a set of values indexed by key name. We can give map a  type, the type will be the type of the value
 
-```
+```.tf
 1 variable "my_map" {
 2 type = map(number)
 3 default = {
@@ -922,7 +922,7 @@ that the map is of type (number) means that all of the values have to match the 
 - An object is a structure that you can define from the other types listed above. It allows you to define
 quite complex objects and constrain them to types.
 
-```
+```.tf
 1 variable "person" {
 2 type = object({ name = string, age = number })
 3 default = {
@@ -978,7 +978,7 @@ with_address structure printed out
 - The any type is a special construct that serves as a placeholder for a type yet to be decided. any itself
 is not a type, Terraform will attempt to calculate the type at runtime when you use any
 
-```
+```.tf
 1 variable "any_example" {
 2 type = any
 3 default = {
@@ -1011,7 +1011,7 @@ modules Example --> main.tf sqlwithbackooff /main.tf output.tf variable.tf
 
   main.tf
 
-```
+```.tf
 
 provider "aws" {
   region  = "eu-west-1"
@@ -1032,7 +1032,7 @@ output "work_queue_dead_letter_name" {
   ```
 
 sqlwithbackoff/main.tf
-```
+```.tf
 resource "aws_sqs_queue" "sqs" {
   name                       = "awesome_co-${var.queue_name}"
   visibility_timeout_seconds = var.visibility_timeout
@@ -1053,7 +1053,7 @@ resource "aws_sqs_queue" "sqs_dead_letter" {
 ```
 sqlwithbackoff/output.tf
 
-```
+```.tf
 
 output "queue_arn" {
   value = aws_sqs_queue.sqs.arn
@@ -1073,7 +1073,7 @@ output "dead_letter_queue_name" {
 ```
 sqlwithbackoff/variable.tf
 
-```
+```.tf
 variable "queue_name" {
   description = "Name of queue"
 }
@@ -1117,7 +1117,7 @@ main.tf crosstalk/ cross-talk-3-way/
 
 crosstalk/main.tf variable.tf   cross-talk-3-way/main.tf variable.tf
 
-```
+```.tf
 
 provider "aws" {
   region  = "eu-west-1"
@@ -1145,7 +1145,7 @@ module "cross_talk_groups" {
 }
 ```
 crosstalk/main.tf
-```
+```.tf
 
 resource "aws_security_group_rule" "first_egress" {
   from_port                 = var.port
@@ -1186,7 +1186,7 @@ resource "aws_security_group_rule" "second_ingress" {
 ```
 crosstalk/variable.tf
 
-```
+```.tf
 
 variable security_group_1 {}
 variable security_group_2 {}
@@ -1244,7 +1244,7 @@ variable "protocol" {}
 externally to the local file system. Terraform supports many different remote module sources such
 as GitHub, BitBucket and S3
 
-```
+```.tf
 
 provider "aws" {
   region  = "eu-west-1"
@@ -1271,7 +1271,7 @@ which is the SSH clone address. It is cool that Terraform allows you to clone th
 Note you will need SSH setup with GitHub in order for the SSH clone to work.
 
 main.tf
-```
+```.tf
 provider "aws" {
   region  = "eu-west-1"
 }
@@ -1366,7 +1366,7 @@ the resources that exist in Terraform’s state file
 - To
 specify Terraform to use the S3 state backend we need to create another file called state.tf
 
-```
+```.tf
 1 terraform {
 2 backend "s3" {
 3 bucket = "your-bucket-name"
@@ -1410,7 +1410,7 @@ has been created. They were added by Hashicorp to Terraform to allow for certain
 are not natively supported by the provider you are using
 
 main.tf
-```
+```.tf
 
 provider "aws" {
   region  = "eu-west-1"
@@ -1520,7 +1520,7 @@ variable "my_ip" {}
 ```
 
 output.tf
-```
+```.tf
 output "command" {
   value = "curl http://${aws_instance.nginx.public_ip}"
 }
@@ -1588,7 +1588,7 @@ Manage dependencies: You can use a null resource to manage dependencies between 
 Execute scripts or commands: You can attach provisioners to a null resource to run scripts or commands during the Terraform apply process, allowing you to perform tasks that are not directly related to infrastructure provisioning.
 Create placeholders: You can use a null resource as a placeholder for future resources or configurations, making it easier to manage your Terraform code as your infrastructure evolves
 
-```
+```.tf
 1 resource "null_resource" "setup" {
 2 provisioner "local-exec" {
 3 command = <<CMD
