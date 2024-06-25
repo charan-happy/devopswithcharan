@@ -376,7 +376,9 @@ It's important to note that git checkout can modify the state of your working di
     - Merge flow (fetch + merge + push )
     - Rebase flow (fetch + rebase + push )
     - `git pull = git fetch + git merge`
-    - `git pull --rebase = git fetch + git rebase`
+    - `git pull --rebase = git fetch + git rebase'`
+
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/bec8b410-00c7-4110-969a-1e9a4edb3cf7)
 
 - **staging areaed**
 - In Git, the staging area (also known as the "index" or "cache") is a concept that refers to the intermediate step between modifying files and committing those changes to the Git repository.
@@ -433,6 +435,9 @@ Here's an example of how to use git pull to update your local repository with th
 1. Navigate to the local repository directory using the command line
 2. Run the following command to fetch the latest changes from the remote repository `git fetch` 3.Run the following command to merge the changes into your current branch: `git merge origin/branch-name` Replace "branch-name" with the name of the remote branch you want to merge.
 - Alternatively, you can use the git pull command with the --rebase option to fetch and rebase the changes from the remote repository instead of merging them. This option can be useful for keeping a linear commit history. For example: `git pull --rebase` This will fetch the latest changes from the remote repository and rebase your changes on top of them. If there are any conflicts, Git will prompt you to resolve them before continuing with the rebase.
+
+
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/845bbfee-1987-4aaf-8aa1-2cf579e3bc26)
 
 **Stash :**
 
@@ -542,6 +547,9 @@ upon closer inspection, we can see that this is a special kind of commit object-
 `$ git checkout foo` `$ git reset --hard foo-temp` `$ git branch -D foo-temp`
 
 - This gives the desired result of foo's commits being upstream of master. Note that the original **C**and**D** commits are no longer reachable because no branch points to them.
+
+  ![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/f1451dcd-f80c-4cb6-9f94-f7a023810ca3)
+
 
 **Rebasing :** 
 
@@ -950,6 +958,7 @@ To remove tracking between local and deleted remote branches use `git fetch -p` 
 git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
 
 
+![image](https://github.com/charan-happy/devopswithcharan/assets/89054489/f88ef1f3-9b7c-407c-8613-a1a30084708b)
 
 
 
