@@ -202,8 +202,10 @@ Alternatives of Kubernetes:
 
 Differences between Docker Swarm and Kubernetes 
 
-<th>Docker Swarm vs Kubernetes </th>
-||Docker Swarm| Kubernetes|
+Docker Swarm vs Kubernetes 
+
+|context |Docker Swarm| Kubernetes| 
+|---|---|---|
 |Install and Configurations|quick easy and fast| complicated and time consuming|
 |supports|only work with docker containers|can work with any other containers such as docker, containerd , etc|
 |Data Volumes|can be shared with any other containers|can be shared to the same pod's containers|
@@ -254,7 +256,7 @@ Master node/control plane is the brain of the cluster.
 ******************************kubelet :****************************** 
 
 - An agent that runs on each node in the cluster. It make sure that containers are running in a pod.
-- the Kubelet takes a set of PodSpecs that are provided that are provided through various mechanisms and ensures that the containers described in those podspecs are running and healthy. The kubelet doesn’t manage containers which were not created by Kubernetes.
+- the Kubelet takes a set of PodSpecs that are provided through various mechanisms and ensures that the containers described in those podspecs are running and healthy. The kubelet doesn’t manage containers which were not created by Kubernetes.
 
 **************************Kube-proxy :**************************  
 
