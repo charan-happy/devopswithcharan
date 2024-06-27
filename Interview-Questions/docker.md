@@ -1,6 +1,6 @@
-what is docker architecture ?
-what is docker lifecycle ?
-what is dockerfile and docker compose file
+what is docker architecture ?  
+what is docker lifecycle ?  
+what is dockerfile and docker compose file  
 explain various layers in dockerfile
 what is docker networking ? tell me various types of network in docker
 what is default network in docker
@@ -62,3 +62,236 @@ CMD ["java", "-Xmn256m", "-Xmx768m", "-jar", "shipping.jar" ]
 <details><summary> </summary></details>
 <details><summary> </summary></details>
 <details><summary> </summary></details>
+
+Roles and Responsibilitis in SonarQube Server
+---------------------------------------------
+
+Install the SonarQube Server
+
+Configure Sonarqube Server Details in pom.xml
+
+Creating  Users / Configure LDAP Server
+
+Creating Groups
+
+Create the Quality Profiles as per Project requirement.
+
+Create the Quality Gates as per Project requirement.
+
+Roles and Responsibilitis in Nexus Server
+-----------------------------------------
+
+Install the Nexus Server
+
+Create the Repositories (Maven2 - hosted,Proxy and group, Docker)
+
+Configure Nexus Repository Details in pom.xml and credentails in settings.xml
+--------------------------------------------------------------------------------------
+Creating  Users / Configure LDAP Server
+--> docker build -t Hostname/ip ofRepo:port/Appname:version . 
+ex: docker build -t 123.455.697.56:8081/appname:1 for private repo
+    docker build -t vithalterdal/appname . (for docker repo)
+
+Dockerfile
+-----------
+FROM tomcat:8.8.20-jre8
+COPY target/*.war /user/local/tomcat/webapps/appname.war
+
+incase of public Repo
+docker login -u vithalterdal -p *****
+
+
+incase of Private Repo
+docker login -u vithalterdal -p ***** <URL> 
+Ex: docker login -u admin -p admin123 nexus.tcs.com
+Ex: docker login -u admin -p admin123 198.789.321.12:8083
+
+Qtn: How can you move your image from 1 server to another server without repository
+
+Ans:(docker save to docker load and SCP)
+1) Create tar file with command
+docker save imagename -o newimagename.tar
+2) SCP from 1server to another server
+3) docker load -i newimagename.tar
+
+Qtn: What is dangling images
+ Ans : The images which is not taged to any repository it contains only image name is called danglig images
+
+Qtn:Home directory of docker ?
+Ans : /var/lib/docker
+Commands
+docker logs container_name
+docker inspect container_name
+
+Qtn: How to trouble shoot the containers?
+Ans: Docker logs container_id
+by system error and system out we will find the errors
+and check docker proccess
+docker top container_id--to check process on which container
+docker stats container_id to see cpu utilization it will show max and used memory and cpu utilization defualt merory is 983mb~1Gb
+
+Qtn: How to execute some commands on running container
+Ans: docker exec container_name linuxcommand
+     docker exec appname ls / ----->tocheck root directory
+     docker exec appname ls
+     docker exec appname pwd
+     docker exec appname cat /etc/*release
+  **all the containers uses system kurnels
+Qtn: How to login into a container
+Ans: docker exec -it container_name /bin/bash
+
+If some containers not having bash then
+     docker exec -it container_name /bin/sh
+Qtn:  How to copy files from container to system or system to container
+Ans: docker cp containername:/usr/local/tomcat/logs/catalina.out cat.out(for current directory)--cont to system
+     docker cp file.txt containername:/usr/local/tomcat/logs/test.txt
+
+Qtn: docker kill vs docker stop
+Ans: docker stop will send SIGTERM and SIGKILL after grace period
+     docker kill will send SIGKILL
+
+Dockerfile--> Dockerfile is the input for the docker images.
+In Dockerfile we write the instructions using docker file keywords.
+Docker will process these instructions from top to bottom.
+
+Qtn: How many FROM keywords you can have in a Dockerfile ?
+Answer: yes more than 1 we can have that concept is call multistage Dockerbuild 
+
+Qtn: What is difference between COPY and docker cp
+Ans: COPY is used to copy files from local system to image
+     docker cp will copy from local to container and also from container to local system
+Qtn: Diff between CMD and Entrypoint
+Ans: CMD commands can be overriden while creating a container.Entrypoint commands cant be overridden while creating a container
+ex: CMD java -jar jarfileName.jar
+--CMD commands will be execute as child process under /bin/bash or bash/sh main process .CMD command will be executed as /bin/bash -c "command"
+--Entrypoint commands will be executed as main process /bin/<command>. CMD command will be executed as /bin/bash -c "command".
+
+https://github.com/MithuntechnologiesDevops===Reffer for Dockerfiles
+
+In which scenario we can use both CMD & Entrypoint
+We can use CMD & Entrypoint together if we have to pass/overrite arguments for your entry point
+ EX: sh catalina.sh 
+CMD run
+ENTRYPOINT ["sh","catelina.sh"]
+Output = sh catelina.sh run
+while creating container we can mension CMD ex
+docker run imagename restart
+Important QTNS.
+Difference between RUN AND CMD.
+Difference between ENTRYPOINT AND CMD.
+CAN we can more CMD in a dockerfile
+Can we have Entrypoints in a docker file
+Basically CMD And Entrypoint are used to start the process while creating ours container.
+WE can have more than one entrypoint and CMD but latest one will be executed.
+
+Qtn: can we have more than one process in a container?
+yes we can have but it is no recommended.bcz hole concept of docker is isolate process.
+how? create shell script copy the shell Script with COPY then with CMD or Entrypoint run the shell script
+
+VOLUMES
+------------
+two types
+1) bind mounts
+2) volume
+1) bind mounts(not recomended)
+-------------------
+***We can't do volume mapping for running container.While creating container only we need to do volume mapping.
+
+When we use bind mount, a file or directory on the host machine is mounted into a container.
+The directory is referenced by its fill or relative path
+EX: create directory 
+mkdir mongodbbackup 
+docker run -d --name mongo -v /home/ubuntu/mongodbbackup:/data/db --network flipkartnetwork mongo
+                                 (host path)              (container path)
+If u delete container data still exist and if u create a container with same volume mounting ur date retrived and attaced to the mount point 
+
+2)Volumes
+--------------
+volume are prepered way for persiting data generated and used by docker containers. 
+while bind mounts are dependet on the directory structure of the host system.
+Volume are completely managed by docker.
+volumes are easier to backup or migrate.
+we can manage volumes using docker cli
+volumes will work in both linux/windows
+volume drivers we let us to store volumes on remote servers or cloud provider.(ex:s3,ebs,efs, nfs)
+
+How do you take jenkins backup or jenkins job migration>
+copy the /var/lib/jenkins ---working directery
+install jenkins in 2nd server and reload the jobs
+
+Same for docker /var/lib/docker migrate this folder
+
+docker volume create -d local mongobkp
+docker volume create -d local volumewithlimit --opt "size=50m" (notworking but we ca set like this)
+ex: docker run -d -v volumename:containerpath --network networkname imagename
+    docker run -d --name mongo -v mongobkp:/data/db --network flipkartnetwork mongo
+
+REX-Ray (supports ebs,efs.s3)volume plugin for cloud storage to attach to container
+install this plugin
+docker plugin install rexray/ebs EBS_ACCESSKEY=AWS ACCESS KEY EBS_SECRETKEY=AWS SECRET KEY
+docker plugin ls
+docker volume create -d rexray/ebs mongoebsbkp
+Volume mapping while creating a container
+docker run -d --name mongo -v mongoebsbkp:/data/db --network flipkartnetwork mongo
+
+What is monolithic VS micro-services Architechture
+
+
+What is difference between global and replica mode
+By default service will be created in replica mode with 1 replica if we dont mension.
+docker service create --name <serviceName> -p <hostPort>:<containerPort> --replicas <NoofReplicas> <imageName>
+In replica mode we can scale up amd scale the number of replicas(containers).
+
+Global mode will create container in all the machines of docker swarm.We can't scale up and scale down the conatiners.
+when you add a new machine to docker swarm container for the global mode services will be created automatically in newly added machines
+
+docker service create --name <serviceName> --mode blobal -p <hostPort>:<containerPort> <imageName>
+
+EX: docker service create ngnix -p 80:80 --mode global nginx
+
+Qtn: how to place container in specific machine in docker swarms
+
+Ans: with labels and constraints
+docker service create --name javawebapp --mode global --constraint "node.role==worker" dockerhandson/java-web-app only to run in worker machine.
+to constrain on the basic of application type for each node(making app and db group seperatly)
+docker node update --lable-add "name=appserver" nodeID(to get node id docker node ls)
+docker node update --lable-add "name=dbserver" nodeID(to get node id docker node ls) 
+--now
+docker service create --name mavenwebapp -p 9090:8080 --replicas 2 --constraint "node.labels.name==appserver" dockerhandson/maven-web-app.
+Qtn: if this machine itself is gone down what will happen? 
+Anw: application will go down it will not create another instance unless untile other macine have same condition and constraint
+
+Qtn: what is docker stack?
+stack is a collection of services .We can manage group of services using docker stack in docker swarm.
+
+Qtn: what is docker service?
+Ans: its one or more containers(replicas) specific to one image in docker swarm.
+
+docker swarm init 
+it will create default overlay network naming ingress for swarm scope.
+
+Docker Swarm Quetions and answers
+These are for two different applications for one client
+Qtn: How many Docker machines you have?
+Ans:30 to 40 (including jenkins docker nexus etc)
+Qtn:What is the capacity of your server?
+Ans: 128GB Ram ,64 core processer
+     64 ram     32 core processer
+     32Gb ram   12 core processer
+Qtn:How many docker-swarm cluster u have?
+DEV:2 managers 6 workers
+QA:3 managers 10 workers
+Prod:3 managers 10 workers
+Qtn: How many manager and how many workers u have in your production server?
+Ans: 3 manager 10 workers
+Qtn: How many services you have in your application/docker swarm?
+Ans: We have about 35 to 40 microservices
+Qtn: How many stack?
+Ans: 2 stacks
+Qtn: Totally How many containers?
+Ans: 200 to 250 containers
+Qtn: How many containers in one machine?
+Ans: depends on capacity of machine
+Qtn: Load balancer in docker?
+Ans: External ELB is used with docker swarm--(ELB for only load balancing)
+Docker swarm will not create another server if it is down ..it orchestrate the services.
