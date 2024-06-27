@@ -295,3 +295,34 @@ Ans: depends on capacity of machine
 Qtn: Load balancer in docker?
 Ans: External ELB is used with docker swarm--(ELB for only load balancing)
 Docker swarm will not create another server if it is down ..it orchestrate the services.
+
+
+what is docker?
+difference between container and vms?
+difference between docker and virtualization?
+difference between container and image?
+how image builds?
+what are image layers?
+how image layers work?
+what is overlayfs?
+where the image layers found in which directory?
+how can we check the content of the each layer?
+how to check the layers stacked with image?
+what is union Mount & AUFs?
+why use union mount system for docker?
+what are the 3 different directories in /var/lib/docker/aufs?
+how to run an image?
+how to tag an image?
+how to link one container with another ?
+how do you sequence the containers? A first then B should execute after that?
+how to create a volume in docker container to store data?
+how to mount a local directory into a container?
+what is entry point in docker?
+what is docker file?
+difference between ADD & copy parameters in docker file?
+how to create a bridge in container?
+how a  container gets an internal IP?
+can we check the process of a container inside as well as outside the container?
+can we check the container process on docker host?
+how kernel isolates to rin the container and how resources managed by the kernel?
+what is namespace
