@@ -10,6 +10,19 @@ how you designed your gitlab ci
 What is difference between gitlab and github
 how the jenkins talks with gitlab
 
+what is git ?
+what is difference between git and github?
+what is scm and vcs?
+what are the process of pushing the code to git hub repository?
+why do we commit?
+what are the commands of git to push the code?
+how you can merge a git repository with another?
+what is branching in git?
+different types of branching in git?
+what is merge conflict in git?
+how you can resolve merge conflict if you are merging same project and in the same branch?
+
+
 # join Devops
 * What is Git conflict, how to resolve?
 * Branching strategy?
