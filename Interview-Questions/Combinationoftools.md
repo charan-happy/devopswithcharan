@@ -42,3 +42,29 @@
 <details><summary>Can you provide an example of a time when you had to resolve a conflict or miscommunication within a team?</summary></details>
 
 
+1.What is CI/CD and why is it important?  
+2. Explain the difference between Docker and Kubernetes.  
+3. How do you ensure high availability in a cloud environment?  
+4. What are the different stages in a DevOps pipeline?  
+5. How do you monitor and troubleshoot application performance?  
+6. Describe a situation where you had to resolve a production issue. 
+7. What are some best practices for infrastructure as code (IaC)?  
+8. How do you handle security in a DevOps workflow?  
+9. What tools do you use for configuration management and why?  
+10. Explain the concept of blue-green deployment.  
+11. How does container orchestration work?  
+12. What is the role of a reverse proxy in a DevOps environment?  
+13. How do you implement logging and monitoring for microservices?  
+14. What is a service mesh and why is it useful?  
+15. Can you explain the concept of immutable infrastructure?  
+16. How do you manage secrets and sensitive data in your deployments?  
+17. What are the key metrics you monitor in a DevOps environment?  
+18. How do you handle load balancing and scaling in Kubernetes?  
+19. What is a canary deployment and how is it different from blue-green deployment?  
+20. How do you ensure disaster recovery and backup in cloud infrastructure?  
+21. What are the common challenges in a DevOps transformation?  
+22. Explain the use of Ansible/Puppet/Chef in DevOps.  
+23. How do you integrate security practices into your CI/CD pipeline?  
+24. What is the significance of automated testing in DevOps?  
+25. How do you manage and optimize costs in a cloud environment?  
+
