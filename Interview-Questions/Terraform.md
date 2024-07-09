@@ -474,3 +474,88 @@ Answer: Upgrades can be managed using package managers (e.g., Homebrew, Chocolat
 
 50. Considerations for Terraform Version Upgrades 📝
 Answer: Considerations include compatibility with existing configurations, changes in behavior or syntax, availability of new features, and potential impacts on existing infrastructure.
+
+<details><summary> how do you manage and automate deployments using terraform ?</summary>"I use Terraform to manage infrastructure as code, allowing for consistent and repeatable deployments. In a recent project, I used Terraform to provision a complete AWS environment, including VPCs, subnets, EC2 instances, and RDS databases. I wrote modular Terraform scripts to create reusable components and used remote state to manage the infrastructure state securely. This approach enabled us to deploy environments quickly and ensured that all configurations were version-controlled and auditable.</details>
+<details><summary>what is terraform state lock ? </summary>Terraform state lock prevents concurrent operations from conflicting with each other. It locks the state file when a command that modifies the state is run and unlocks it when the command is finished. This ensures that only one operation modifies the state at a time.</details>
+<details><summary> Terraform script to launch EC-2 Instance</summary>
+
+```terraform
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "ExampleInstance"
+  }
+}
+```
+</details>
+<details><summary>Terraform script to create autoscaling group </summary>
+
+```terraform
+resource "aws_launch_configuration" "example" {
+  name          = "example-launch-configuration"
+  image_id      = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+}
+
+resource "aws_autoscaling_group" "example" {
+  desired_capacity     = 2
+  max_size             = 3
+  min_size             = 1
+  launch_configuration = aws_launch_configuration.example.id
+  vpc_zone_identifier  = ["subnet-abc123"]
+
+  tag {
+    key                 = "Name"
+    value               = "example-asg"
+    propagate_at_launch = true
+  }
+}
+
+```
+
+</details>
+
+* Remote state in terraform and state in terraform?
+
+* terraform data block vs resource block?
+
+* How do you mange credentials in terraform?
+
+* Explain the concept of a workspace
+
+* terraform modules?
+
+* Provider in terraform
+
+* Null resource in terraform
+
+* How to Ignore the Error Duplicate Resource when applying Terraform
+
+* What are the commands of terraform apart from init, apply, plan
+
+* How you maintain the state file
+
+* If I lose the state files in terraform how can I recover that
+
+* Is there a tool that can look for security vulnerabilities in your terraform code?
+
+* What is the difference between Ansible & Terraform?
+
+* explain provisioners in terraform.
+
+* variables vs locals
+
+* Does Terraform support multi-provider deployments?
+
+* How to Store Sensitive Data in Terraform?
+
+* Give the terraform configuration for creating a single EC2 instance on AWS
+
+* How does Terraform manage updates to existing resources?
+
+* How can you manage versioning of Terraform configurations?

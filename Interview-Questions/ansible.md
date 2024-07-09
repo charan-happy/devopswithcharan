@@ -45,8 +45,10 @@ what is ansible ?
 
   
 
-
-
+<details><summary>How have you used Ansible for automation in your previous projects?
+ </summary>"I have used Ansible extensively for configuration management and automation. In one project, I automated the deployment of a web application across multiple environments, ensuring consistency and reducing manual errors. I wrote playbooks to configure servers, deploy applications, and manage updates. Additionally, I integrated Ansible with Jenkins for CI/CD pipelines, allowing for automated testing and deployment. This approach significantly reduced deployment times and improved reliability.</details>
+ <details><summary> How do you integerate ansible with other devops tools like github, bamboo,jenkins</summary>"I have integrated Ansible with various DevOps tools to create automated CI/CD pipelines. For example, in a recent project, I used GitHub for source code management and Jenkins for continuous integration. I configured Jenkins to trigger Ansible playbooks stored in GitHub whenever there was a change in the repository. This setup allowed us to automate the deployment process, including code testing, infrastructure provisioning, and application deployment. Additionally, I have used Bamboo for similar purposes, creating build and deployment plans that leverage Ansible for configuration management." </details>
+<details><summary> How do you eliminate one or two servers from inventory while running the play?</summary> Use Ansible ad-hoc commands with --limit to exclude specific hosts. For example, ansible-playbook playbook.yml --limit '!db_host' would run the playbook on all hosts except db_host </details>
 # Join Devops
 * What is ansible playbook?
 * What are handlers in Ansible playbook?

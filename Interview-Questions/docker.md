@@ -17,6 +17,28 @@ write a docker file and state various layers and use the depends_on concept
 How to save a container as image and then as a zip file
 what are docker volumes
 
+## Docker Interview Questions
+
+- What is a Dockerfile?
+- What is multi-stage in Docker?
+- What is a Docker volume and how do you use it?
+- How can we pass an argument to Dockerfile?
+- Dockerfile runs as which user?
+- How do you push the image to Docker Hub?
+- Write a Dockerfile for a Java-based application.
+- What is Docker Compose?
+- How is Docker integrated in Jenkins?
+- Please explain Docker networking.
+- Can you use multiple FROM statements in a Dockerfile?
+- What is the difference between RUN and CMD?
+- Write a Dockerfile for an Nginx application.
+- What is the difference between Docker images and Docker containers?
+- What are the benefits and use cases of using multi-stage builds in Docker?
+- How does Docker handle resource limitations and isolation, such as CPU, memory, and I/O?
+- Docker command: COPY vs ADD.
+- ENTRYPOINT vs CMD in Dockerfile.
+- Tell us something about Docker Compose.
+
 <details><summary> 1.what is the difference between Virtualization and containerization </summary> </details>
 
 <details><summary>2. how to do the port mapping to the container </summary> we will do `docker -p [host-port]:[container-port] option</details>
@@ -326,3 +348,30 @@ can we check the process of a container inside as well as outside the container?
 can we check the container process on docker host?
 how kernel isolates to rin the container and how resources managed by the kernel?
 what is namespace
+
+<details><summary> Walk me through what goes into a Dockerfile based on your experience.
+
+</summary>FROM: Base image.
+RUN: Commands to install dependencies.
+COPY/ADD: Copy application files.
+EXPOSE: Port to be exposed.
+CMD/ENTRYPOINT: Command to run the application.</details>
+<details><summary> </summary> </details>
+<details><summary> docker compose file for nodejs application</summary>
+
+```docker-compose
+version: '3'
+services:
+  app:
+    image: node:14
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"
+    command: npm start
+
+```
+ </details>
+
+ <details><summary>saving changes inside a container </summary>Changes inside a running container can be committed to a new image using docker commit <container_id> <new_image_name>. </details>

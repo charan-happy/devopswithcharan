@@ -160,5 +160,39 @@ How do you clear the server if you continuously get Space not available
 What are the Linux commands you use daily?
 
 Linux file permissions types
+
+<details><summary>How can you monitor a log file in real-time?</summary>Use tools like tail -f /path/to/logfile or less +F /path/to/logfile to monitor log files in real-time. </details>
       
-    
+<details><summary>Disk space utilization still high after deleting logs</summary>Run sudo lsof | grep deleted to check if any deleted files are still being used by processes. Restarting the respective services or the instance can free up the space.
+ </details>
+<details><summary>what is swap memory and when it is used ? </summary>Swap memory is space on a disk used when the physical RAM is full. When the system requires more memory resources and the RAM is full, inactive pages in memory are moved to the swap space, freeing up RAM</details>
+
+<details><summary>Execute a script on server reboot</summary>Add the script to /etc/rc.local or create a systemd service and enable it to run on boot. </details>
+
+<details><summary>Verify if a web server is working from the command line</summary>: Use curl http://your-web-server-url to check the server response </details>
+<details><summary>Nginx web server not working after reboot </summary>Ensure Nginx is enabled to start on boot using sudo systemctl enable nginx and check its status with sudo systemctl status nginx.</details>
+<details><summary> </summary> </details>
+  
+## Real interview questions faced during interviews
+* What is the difference between a hard link and a soft link in Linux?
+* How can you check the memory usage of a Linux system?
+* How do you find the IP address of a Linux system?
+* What is the purpose of the "chmod" command in Linux?
+* What is the purpose of the "grep" command?
+* How do you change the password for a user in Linux?
+* What is the purpose of the "crontab" in Linux?
+* How do you schedule a cron job in Linux?
+* Disk space full issue?
+* Running out of memory?
+* How do you troubleshoot high CPU usage on a Linux server?
+* Describe the boot process of a Linux system?
+* You need to transfer a large file securely between two Linux servers. What tools or protocols would you use, and why?
+* A user accidentally deleted an important file, and you need to recover it from the backup. Explain the steps you would take to restore the file.
+* A user reports that they are unable to connect to a remote Linux server using SSH. How would you troubleshoot and resolve this connectivity issue?
+* You need to find all files larger than 100MB in the /home directory and its subdirectories. How would you accomplish this task?
+* What is inode?
+* What is booting process in Linux?
+* How do you clear the server if you continuously get Space not available
+* What are the Linux commands you use daily?
+* Linux file permissions types
+* How do you clear the server if you continuously get Space not available

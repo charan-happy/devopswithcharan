@@ -124,4 +124,39 @@ Differentiate between
 How can you determine if a linux server is virtualized or bare-metal?
 
 Explain special variables in Shell
+
+<details><summary>"In one project, we needed to migrate a large number of files from an on-premises server to AWS S3 while maintaining the directory structure and metadata. I wrote a shell script that iterated through the file system, uploaded files to S3 using the AWS CLI, and preserved the original file attributes. The script also logged the progress and handled errors gracefully, ensuring that the migration was completed efficiently and with minimal downtime." </summary>
+
+```bash
+#!/bin/bash
+
+# Set the path to the source directory on your on-premises server
+source_dir="/path/to/your/source/directory"
+
+# Set your AWS S3 bucket name
+s3_bucket="your-s3-bucket-name"
+
+# Iterate through files in the source directory
+for file in "$source_dir"/*; do
+    if [ -f "$file" ]; then
+        # Extract the relative path (excluding the source directory) for S3 key
+        relative_path="${file#$source_dir}"
+        # Upload the file to S3 preserving metadata
+        aws s3 cp "$file" "s3://$s3_bucket$relative_path" --metadata-directive REPLACE
+        if [ $? -eq 0 ]; then
+            echo "Uploaded: $file"
+        else
+            echo "Error uploading: $file"
+        fi
+    fi
+done
+
+# It sets the source_dir variable to the path of your on-premises source directory.
+# It specifies your AWS S3 bucket name in the s3_bucket variable.
+# The script iterates through each file in the source directory.
+# For each regular file, it extracts the relative path (excluding the source directory) to determine the S3 key.
+# It uploads the file to S3 using the AWS CLI, preserving metadata (including timestamps, permissions, etc.).
+# The script logs successful uploads and handles errors gracefully.
+``` 
+</details>
   

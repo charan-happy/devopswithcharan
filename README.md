@@ -5,6 +5,7 @@
 
 ![Devops Tools](https://github.com/Charan-happy/Learn_Devops_tools/blob/main/Images/Devops_intro/all_devops_tools.png)
 
+[python-boto3 coding resources](https://hands-on.cloud/)
 
 # Devops Introduction
 

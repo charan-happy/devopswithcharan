@@ -22,6 +22,7 @@ different types of branching in git?
 what is merge conflict in git?
 how you can resolve merge conflict if you are merging same project and in the same branch?
 
+<details><summary> Branching Strategies for QA testing </summary>QA testing is typically done on a dedicated QA branch or in a pre-production/staging environment. Feature branches are merged into the QA branch for testing.</details>
 
 # join Devops
 * What is Git conflict, how to resolve?
