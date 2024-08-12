@@ -169,25 +169,33 @@ COPY vs ADD
 
 `$ docker search -f stars=100 -f ls-official=true nginx`
 
-**list images**
-`E docker images`
-`$ docker image ls`
-`$ docker image ls -a`
+**list images**  
+`$ docker images`  
+`$ docker image ls`  
+`$ docker image ls -a`  
 
 **tag an image**
 `$ docker image tag <source image>:<tag> <reference to source image>:<tag>`
 
 **delete an image**
-`$ docker image run nginx`
-`$ docker rmi ngnix`
-**remove dangling image**
-`$ docker image prune`
+`$ docker image run nginx`  
+`$ docker rmi ngnix`  
+**remove dangling image**  
+`$ docker image prune` -> To cleanup unused images
+
+`$docker system prune ` -> to clean up multiple types of objects at once.
 **remove all unused and dangling image**
 `$ docker image prune -a`
 inspect an image
 `$ docker image inspect nginx`
 
 `$ docker image inspect nginx --format"{{ContainerConfig.Hostname}}"`
+
+what are dangling and unused images in docker ?
+
+- an image that has not been assigned or used in a container. Ex: when you run `docker ps -a` it will list all your running and existing containers. Any images shown being used inside any of the containers are a "used image"
+- dangling image is one that isn't tagged and referenced by any container
+-  a dangling image just means that you've created the new build of the image, but it wasn't given a new name. So the old images you have becomes the "dangling image". Those old image are the ones that are untagged and displays "<none>" on its name when you run docker images.
 
 #### Flattening an image
 
