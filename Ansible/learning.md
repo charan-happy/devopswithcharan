@@ -392,7 +392,50 @@ Manages user accounts.|
 
 ## 9. Ansible Playbook
 
+- An ansible playbook is a file written in the ansible automation language, and it's based on the yaml format. The playbook is ansible's means to perform configuration, deployment and orchestration
 
+- a playbook contains tasks that can be launched synchronously or asynchronously depending on the use case.
+
+
+Typical playbook structure
+
+```
+Playbook
+  play 1
+   hosts
+   variables
+   task1: Module
+   Task2: Handler
+   Task3: Notify
+   Task4: Module
+   Handler1: Restart service
+   Handler2: Restart service
+  play2
+```
+
+- if we would like to target just one server, for instance, without changing the playbook itself then we will use `--limit` argument.
+
+`ansible-playbook --limit <server-ip> playbook-name.yml`
+
+- if we would like to check the syntax of the playbook without executing it, there is the --syntax-check option. 
+
+`ansible-playbook --syntax-check playbook-name.yml`
+
+- To run the "dry run" which is like test mode, there is -c option. Dry run mode will show the output of the specified change. But, without changing the managed hosts. 
+
+`ansible-playbook -c playbook-name.yml`
+
+- variables provide a very convenient way to handle dynamic values. Variables could be about anything, such as list of users, a list of software packages to install or uninstall, and services to start or stop.
+
+variables scope :
+
+- Ansible defines three scopes, summarized in the following table.
+
+|Scope | Description |
+|--- | ---|
+|Global | This is set by configuration, environment variables and the command line. It is set to all hosts|
+|Host ||
+|Play ||
 
 ## 10. Ansible Playbook Handlers
 
