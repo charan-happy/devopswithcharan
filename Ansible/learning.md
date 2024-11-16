@@ -434,8 +434,40 @@ variables scope :
 |Scope | Description |
 |--- | ---|
 |Global | This is set by configuration, environment variables and the command line. It is set to all hosts|
-|Host ||
-|Play ||
+|Host | Directly associated to a specific host or host groups (as defined in the inventory file). Those are variables defined in the inventory or in the host_vars directory. |
+|Play | Scope applies to the play in which variables are declared. It applies to all hosts in the context of the current play.<br> The vars directive in the playbook is where the variables are declared. Additionally, they can be defined by the include_vars task.|
+
+host variables > play scope > global variables > inventory file
+
+- However, if the variable value is defined in the command line directly while executing the command, it has higher precedence. 
+
+- In the playbook, we can define the variables in two possible ways: either by declaring them explicitly using the vars directive or by using the vars_files directive to include the files where the variables are declared.
+
+```yml
+---
+- name: Example with vars
+  hosts: all
+  vars:
+    user_name: charan
+    user_description: "standard user"
+  tasks:
+    - name: Show user name
+      debug:
+        msg: "{{ user_name }} - {{ user_description }}"
+- name: Example with var_files
+  hosts: all
+  vars_files:
+    - vars/users.yml
+    - vars/services.yml
+
+
+```
+
+```users.yml
+user_name: john
+user_description: "standard user"
+
+```
 
 ## 10. Ansible Playbook Handlers
 
