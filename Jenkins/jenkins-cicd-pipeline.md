@@ -125,3 +125,29 @@ principles of least privilege
 Regular audit and rotation
 secure storage and access
 
+
+## lambda function
+![alt text](image-9.png)
+
+- AWS lambda is a compute service that lets you run the code without having to provision or manage servers
+
+- AWS manages server maintainance, scaling, capacity provisioning and logging
+
+Benefits of lambda :
+> NO servers to manage
+> Runs on demand
+> Automated scaling
+> Simple pricing
+> wide service integration
+> multi-language support
+> custom runtime as well
+> can be deployed as container image
+
+- Lambda function supports event-driven workflow
+- It supports microservices architecture (each function of lambda can have different service)
+- lambda API workflow
+
+Lambda pricing : no.of requests your functions receive and amount of compute time they consume
+- Increasing memory also increases the CPU power too
+
+![alt text](image-10.png)
