@@ -151,3 +151,15 @@ Lambda pricing : no.of requests your functions receive and amount of compute tim
 - Increasing memory also increases the CPU power too
 
 ![alt text](image-10.png)
+
+#### AWS serverless application model
+- 
+
+Builidng AWS Lambda pipeline
+
+![alt text](image-11.png)
+
+
+
+
+

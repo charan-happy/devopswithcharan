@@ -453,3 +453,232 @@ source venv/bin/activate
 ```
 
 3. Install kafka-python. `pip install kafka-python`
+
+Establishing connection :
+- create a file named `producer.py` and add the follwing code :
+
+```
+from kafka import KafkaProducer
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+                         key_serializer=lambda k: k.encode('utf-8'),
+                         value_serializer=lambda v: v.encode('utf-8'))
+
+topic_name = 'example-topic'
+message = 'Hello, Kafka!'
+
+producer.send(topic_name, key='key1', value=message)
+producer.close()
+```
+
+Explanation :
+
+- `bootstrap.servers`: The address of your kafka cluster
+- `key_serializer` & `value_serializer`: how to turn the key and value objects the producer will send into bytes
+
+Sending a message :
+
+- To send a message, use the `send` method with the topic name, key, and value. The serializers  ensure the key and value are encoded to bytes.
+
+Ex code for sending a message :
+```
+topic_name = 'example-topic'
+key = 'key1'
+value = 'Hello, Kafka!'
+
+# Send the message
+producer.send(topic_name, key=key, value=value)
+```
+
+Explanation :
+- `producer.send(topic_name, key=key, value=value):` Sends the message to the kafka cluster with the specified topic, key and value.
+
+#### Error Handling
+
+- use `try-except` block to handle errors. Modify the `send` method to include error handling;
+
+```
+from kafka.errors import KafkaError
+
+try:
+    future = producer.send(topic_name, key='key1', value=message)
+    record_metadata = future.get(timeout=10)
+    print(f'Message sent successfully to topic {record_metadata.topic}, partition {record_metadata.partition}, offset {record_metadata.offset}')
+except KafkaError as e:
+    print(f'Error sending message: {e}')
+finally:
+    producer.close()
+```
+
+Explanation :
+
+- `try-except-finally`: Ensures that the producer is closed properly even if an error occurs
+- `kafkaError`: Catches exceptions specific to Kafka Operations
+- `future-get(timeout=10):` waits for the send operation to complete and retrieves metadata or raises an error
+
+- By following the steps outlined in the document, you will be able to create kafka producers in both java and python, establish connections, send messages and handle errors efficiently.
+
+### Developing with kafka: Consumer
+
+#### Writing Kafka Consumers
+- Kafka,a distributed streaming platform, enables you to process and analyze data in real-time. 
+- Consumers play a crucial role in reading data from kafka topics. 
+
+Understanding Kafka Consumers :
+
+- A Kafka consumer reads records from a kafka cluster. Consumers subscribe to one or more topics and process the stream of records produced to them.
+- In Kafka, the consumer is responsible keeping track of the records it has processed - This is known as managing offsets.
+
+Why kafka Consumers ?
+
+- Scalability : Kafka consumers can be scaled horizontally to read from topics in parallel
+- Fault Tolerance: They support automatic offset commit capabilities, ensuring no data loss even in case of consumer failures
+- Flexibility: consumers can start reading from a specific offset, allowing for various processing strategies, such as reprocessing historical data
+
+Setting up Environment
+
+- Before writing kafka consumers, you need to set up your development environment. This involves installing kafka and setting up a project using Gradle for java or a suitable environment for python.
+
+Installing Kafka:
+
+- Download and unzip kafka from the oficial site. Start the zookeeper and kafka server :
+
+```
+# Start Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start Kafka Server
+bin/kafka-server-start.sh config/server.properties
+```
+
+Setting up a gradle project for java
+
+- create a new directory for your project and initialize a gradle project
+
+```
+mkdir kafka-consumer-java
+cd kafka-consumer-java
+gradle init --type java-application
+```
+
+Add the kafka clients dependency to your `build.gradle` file:
+
+```
+dependencies {
+    implementation 'org.apache.kafka:kafka-clients:2.8.0'
+}
+```
+
+Setting up Python environment
+
+- Ensure you have python installed and created a new virtual environment:
+
+```
+python3 -m venv kafka-consumer-python
+source kafka-consumer-python/bin/activate
+```
+
+install the kafka python package: `pip install kafka-python`
+
+Writing a simple kafka consumer in java
+
+- let's write a simple kafka consumer that subscribes to a topic and prints the messages to the console
+
+Basic Consumer configuration
+
+- create a new java class `SimpleConsumer.java`. Initialize the consumer with basic configurations;
+
+```
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import java.util.Arrays;
+import java.util.Properties;
+
+public class SimpleConsumer {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
+            consumer.subscribe(Arrays.asList("test-topic"));
+            // Consumer logic goes here
+        }
+    }
+}
+```
+
+Reading Messages 
+
+- Inside the try block, add logic to poll for new messages and print them:
+
+```
+while (true) {
+    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+    for (ConsumerRecord<String, String> record : records) {
+        System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+    }
+}
+```
+
+Writing a simple Kafka consumer in python
+
+Now, let's implement a simmilar consumer in python
+
+Basic consumer configuration
+
+- create a new python script `simple_consumer.py`. Initialize the consumer with basic configurations :
+
+```
+from kafka import KafkaConsumer
+
+consumer = KafkaConsumer(
+    'test-topic',
+    bootstrap_servers=['localhost:9092'],
+    auto_offset_reset='earliest',
+    group_id='test-group',
+    value_deserializer=lambda x: x.decode('utf-8')
+)
+```
+
+Reading Messages:
+
+- Add logic to continuously read messages and print them :
+
+```
+for message in consumer:
+    print(f"offset = {message.offset}, key = {message.key}, value = {message.value}")
+```
+
+Managing offsets 
+
+- Kafka consumers use offsets to keep track of the messages they have consumed. Bydefault, offsets are committed automatically, but you can also manage them manually for finercontrol.
+
+Automatic offset committing
+
+- Both the java and python consumers above use automatic offset committing.  This behavior is controlled by the `enable.auto.commit` configuration (set to `true` by default)
+
+Manual offset committing 
+
+- To Manually commit offsets in java, set `enable.auto.commit` to `false` and use the `commitsync` method:
+
+```
+props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+// Inside the polling loop
+consumer.commitSync();
+```
+
+In Python, use the `commit` method:
+
+```
+consumer = KafkaConsumer(enable_auto_commit=False)
+# Inside the message loop
+consumer.commit()
+```
+
+Conclusion:
+
+- Writing Kafka consumers is a fundamental skill for working with real-time data streams. By understanding consumer configurations, reading messages, and managing offsets, you can build robust applications that process data efficiently. Whether using Java with Gradle or Python, Kafka provides the flexibility and power to meet your streaming needs.
