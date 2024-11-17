@@ -682,3 +682,40 @@ consumer.commit()
 Conclusion:
 
 - Writing Kafka consumers is a fundamental skill for working with real-time data streams. By understanding consumer configurations, reading messages, and managing offsets, you can build robust applications that process data efficiently. Whether using Java with Gradle or Python, Kafka provides the flexibility and power to meet your streaming needs.
+
+Task :
+Write the Python code snippet that pulls messages from the payment-transactions topic using kafka-python.
+
+
+Create a file named SimpleConsumer.py in the /root/ directory and write your script in this file.
+
+NOTE: Run the Python code to pull messages by executing: python3 /root/SimpleConsumer.py and do not stop or terminate the code.
+
+Solution:
+
+```
+pip install kafka-python
+
+vi /root/SimpleConsumer.py
+
+# script to send message to producer
+from kafka import KafkaConsumer
+
+# Set up the Kafka consumer
+consumer = KafkaConsumer(
+    'payment-transactions',
+    group_id='my-group',
+    bootstrap_servers=['localhost:9092'],
+    auto_offset_reset='earliest'
+)
+
+# Poll messages from the topic
+for message in consumer:
+    print(f"Topic: {message.topic}, Partition: {message.partition}, Offset: {message.offset}")
+    print(f"Key: {message.key}, Value: {message.value.decode('utf-8')}")
+
+# Run python code to pull messages by executing:
+
+python3 /root/SimpleConsumer.py
+
+```
