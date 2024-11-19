@@ -124,4 +124,19 @@ k get deploy -n <ns> -o=jsonpath='{.spec.template.spec.containers}'
 
 ## kubectl debug
 
+why debug instead of exec
+- to minimize pod disruptions
+- distroless images (too lightweight images for good security practice)
+- crashed container
+
+- k debug <name of pod> -it --image=busybox
+
+- k apply -f nginx.yml
+
+- k debug -it nginx-pod --image=busybox
+
+- k debug -it nginx-pod --image=busybox --target=nginx
+
+- k debug nginx-pod --image=busybox -it --copy-to-debugging-pod --share-processes
+
 - 
