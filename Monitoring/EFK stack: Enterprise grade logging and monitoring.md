@@ -21,4 +21,10 @@ Repo : https://github.com/kodekloudhub/efk-stack
 
 what is logging and why does it matter ?
 
-> 
+> LOGGING  is a critical aspect of modern physical infrastructure providing essential 
+
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+

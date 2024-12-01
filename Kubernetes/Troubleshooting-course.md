@@ -139,4 +139,93 @@ why debug instead of exec
 
 - k debug nginx-pod --image=busybox -it --copy-to-debugging-pod --share-processes
 
-- 
+
+## Image pullBackoff Errors
+- Even though, if we are able to see image pullbackoff error, it doesn't mean that we are having same issue for all.
+
+
+## Crashing pods
+- It is not an error, but it is a looping of container . Meaning a container inside a pod is trying to come live but it failed and starts restarting and this happening continuously.
+
+default restart policy in the k8s manifest file is `Always`.
+
+
+
+## Pending pods
+
+- k8s receive request to schedule a pod but it's not able to in the any of the node in the cluster due to many reasons like cpu,memo
+limits does not involve in scheduling part 
+
+`kubectl label nodes node01 type=gpu`
+
+taints, tolerations, insufficient resources, nodeselector/missing label, affinity, antiaffinity will be some of the reason for the pods to be in pending state.
+
+## Case of the Missing Pods
+
+- Resource quota limits, any dependency missing of the pod like service account, To know more details about it always try to check at events of the pods.
+
+
+## Schrodinger's Deployment
+- key considerations when it comes to schrodinger's deployment is `endpoints application, service load balancing, label selector matching`
+
+
+## Create a container error
+
+1. Pull Image
+
+2. Generate Container
+Configuration
+
+CreateContainerConfigError
+
+3. Create Container
+
+CreateContainerError
+
+4. Start Container
+
+RunContainerError
+
+
+## config out of date
+
+
+
+## Reloader
+- Reloader is an external feature in k8s which will helpus to keep track of any chances made to configmaps, secrets etc in our kubernetes clsuter resources.
+
+- How to setup and more details about it can be found on the github at `https://github.com/stakater/Reloader`
+
+## Endlessly Terminating Pods
+
+-  use --force at the end of the kubectl command
+
+
+## Field immutability
+delete the paritcular resource/object where we are getting this kind of error and recreate it again with the same manifest file. It will work.
+
+- The reason for being like this is that may be due to static type nature of some of the things in manifest file like matchlables etc
+
+## Enable servicelink
+- ![alt text](image-5.png)
+enable servicelink is true by default
+
+![alt text](image-6.png)
+
+## Interns can see our secret (RBAC Troubleshooting)
+
+using RBAC
+k auth can i get access like this commands
+
+## Port mania
+- We just have to make sure the target port in service manifest file and container port on deployment manifest file should be same.
+
+
+
+## unreachable pods + Leaky network policies
+
+
+## what is ingress ?
+
+## Multi-attach volume errors (storage)
+
