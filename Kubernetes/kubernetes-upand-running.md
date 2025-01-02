@@ -127,10 +127,105 @@ docker run -d --name <image-name> --p <hostport>:<containerport> --memory value 
   |kubectl get nodes| To list out nodes|
   |kubectl describe nodes <node-name>| To see basic information about the node|
 
-##### Cluster components
+- the `controller-manager` is responsible for running various controllers that regulates behaviour of the cluster.
+- The `scheduler` is responsible for placing different pods onto different nodes in the clsuter.
+- The `etcd` servers is the storage for the cluster where all of the API objects are stored.
 
-  |||
-  |||
-  
-  
-  
+##### Cluster components
+- All the kubernetes components runs on the `kube-system` namespace.
+- `kube-proxy` is responsible for routing network traffic to load-balanced services in the kubernetes cluster.
+
+  |kubectl get daemonsets --namespace=kube-system kube-proxy
+|To see proxies |
+  |kubectl get services --namespace=kube-system
+|a kubernetes service that performs loadbalancing for dns server|
+
+|kubectl get deployments --namespace=kube-system
+|To get dns serverice as a deployment data |
+
+### 4. common kubectl commands
+
+- kubernetes namespaces uses `namespaces` to organize objects in the cluster. by default, `kubectl` command line tool interacts with default namespace. To change namespace we can use `kubectl --namespace=something`
+- if we wanted to change the default namespace permanently, then we can use `context`. This gets recorded in a kubectl configuration file, usually located at $HOME/.kube/config 
+- This configuration file also stores how to both find and authenticate to your cluster.
+`kubectl config set-context my-context --namespace=mystuff`
+- contexts also be used to manage different clusters or different users for authenticating to those clusters using --users or --clusters flags with the set-context command 
+```
+kubectl config current-context
+kubectl config get-contexts
+kubectl config set-context my-context --namespace=charan
+kubectl config get-contexts
+kubectl config use-context my-context
+```
+
+- Everything contained in kubernetes is represented by a RESTful resource. These resources are refered as `kubernetes objects`.  each kubernetes objects exists at a unique HTTP path.
+- The kubectl command makes HTTP requests to those URLs to access the kubernets objects that reside at these paths.
+- The most basic command to view kubernetes objects via kubectl is get. if you run `kubectl get <resource-name>` we will get a listing of all resources in the current namespace
+- To get specific resource, we can use `kubectl get <resource-name> <obj-name>`
+- By default, kubectl uses human-readable printer for viewing the responses from the API server. To get detailed view we can use `-o wide` flag.  To view objects as raw json or yaml using -o json or -o yaml .
+- A common-option for manipulating the output of kubectl is to remove headers, which is often useful when combining kubectl with unix pipes (ex: kubectl .. | awk ...) if you specify --no-headers flag, kubectl will skip the headers at the top of the human-readable table.
+- Another common task for extracting specific fields from object. Kubectl uses the JSONPath query language to select fields in the returned object. 
+
+```
+kubectl get pods my-pod -o jsonpath --template={.status.podIP}
+192.168.67.1
+```
+- we can also view multiple objects of different types by using a comma separated list of types `kubectl get pods,services`
+- To get more detailed info, we can use `kubectl describe <resource-name> <obj-name>`
+- To see a list of supported fields for each supported type of kubernetes object, you can use the explain command `kubectl explain pods`
+- To continuously observe the state of a particular kubernetes resource to see changes to the resources when they occur. we can use `--watch` flag.
+ex: `kubectl get pods --watch`
+
+#### creating, updating, and Destroying kubernetes objects
+- objects in the kubernetes API are represented as JSON or YAML files. These files are either returned by the server in response to a query or posted to the server as part of an API request.
+- we can use yaml or json file to create,update or delete objects on the kubernetes server 
+
+- let's assume that you have a simple object stored in obj.yml. you can use kubectl to create this objects in kubernetes by running `kubectl apply -f obj.yml`
+and to update also same `kubectl apply -f obj.yml`
+- It is idempotent meaning if the objects you are creating already exist in the cluster, it will simply exit successfully without making any changes. This makes it useful for loops where you want to ensure the state of the cluster matches the state of the filesystem.
+- if you want to see what the apply command will do without actually making the change, we can use `--dry-run` flag to print the objects to the terminal without actually sending them to the server.
+- if you feel like making interactive edits instead of editing a local file, you can instead use the `edit` command. `kubectl edit <resource-name> <object-name>`
+- The apply command also records the history of previous configurations in an annotation within  the object. You can manipulate these records with the edit-last-applied, set-last-applied, and view-last-applied commands. for ex: `kubectl apply -f myobj.yml view-last-applied`
+- To delete an object simply run `kubectl delete -f obj.yml`
+- kubernetes will not prompt you to confirm the deletion. once you issue the command, object will be deleted. To delete an object using resource type and name. we can use `kubectl delete <resource-name> <obj-name>`
+
+#### labeling and annotating objects 
+- labels and annotations are tags for your objects. 
+ex: To add the `color=red` label to a pod named `bar`, you can run `kubectl label pods bar color=red`
+- By default, labels and annotations will not let you overwrite an existing label. to do this, you need to add the `--overwrite` flag 
+- To remove a label, we can use `<label-name>-syntax`
+`kubectl label pods bar color -` this will remove the color label from the pod named bar 
+
+#### Debugging commands 
+- To see the logs of a container, we can run `kubectl logs <pod-name>`
+- if you have multiple containers in your pod, you can choose the container to view using `-c` flag.
+- if you want to continuously stream the logs back to the terminal without exiting, you can add the `-f(follow`) command-line flag.
+- you can also use the exec command to execute a command in a running container. `kubectl exec -it <pod-name> -- bash`
+- if you don't have bash or someother terminal available within your container, you can always attach to the running process.
+`kubectl attach -it <pod-name>`
+- we can copy files to and from a container using `cp` command. `kubectl cp <pod-name>:</path/to/remote/file> </path/to/local/file>`
+- if you want to access your pod via network, you can use the `port-forward` from command to forward network traffic from the local machine to the pod. This enables you to securely tunnel network traffic through to containers that might not be exposed anywhere on the public network. `kubectl port-forward <pod-name> 8080:80` this will opens-up a connection that forwards traffic from the local-machine on port 8080 to the remote container on port 80.
+- we also use `port-forward` command with service also but the requests will be forwarded to a single pod in that service. They will not go through the service loadbalancer.
+- if you want to view kubernetes events, you can use the `kubectl get events` 
+- To see events in realtime, we can add `--watch` and to see all events in all namespaces, we can use `-A`
+ex: `kubectl get events --watch -A`
+- to see the resource utilization, we can use `kubectl top nodes`
+
+#### cluster management
+- `cordon` -> unscheduling pods on a particular node
+- `drain` -> remove pods running currently on the machine
+- `un-cordon` -> To schedule pods on a node
+
+
+#### pods
+- A pod is a collection of application containers and volumes running in the same execution environment. Pods are the smallest deployable artifact in a kubernetes cluster.
+- Each container within a pod runs in its own cgroup, but they share a number of linux namespaces.
+- Applications running in the same pod share the same IP address and port space (network namespace) have the same hostname (UTS namespace), and can communicate using native interprocess communication channels over system v IPC or POSIX message queues (IPC namespace). However, Applications in different pods are isolated from each other; they have different IP addresses, hostnames, and more. containers in different pods running on the same node might as well be on different servers
+
+- Right question to ask when designign pod is "will these containers work correctly if they land on different machines?" if answer is no then pod is the correct grouping for containers.else go with different pods.
+
+#### pod manifest
+
+
+
+
