@@ -222,10 +222,271 @@ ex: `kubectl get events --watch -A`
 - Each container within a pod runs in its own cgroup, but they share a number of linux namespaces.
 - Applications running in the same pod share the same IP address and port space (network namespace) have the same hostname (UTS namespace), and can communicate using native interprocess communication channels over system v IPC or POSIX message queues (IPC namespace). However, Applications in different pods are isolated from each other; they have different IP addresses, hostnames, and more. containers in different pods running on the same node might as well be on different servers
 
-- Right question to ask when designign pod is "will these containers work correctly if they land on different machines?" if answer is no then pod is the correct grouping for containers.else go with different pods.
+- Right question to ask when designig pod is "will these containers work correctly if they land on different machines?" if answer is no then pod is the correct grouping for containers.else go with different pods.
 
 #### pod manifest
 
+- pods are described in a pod manifest, which is just a text-file representation of the kubernetes API object. kubernetes is strongly believes in declarative configuration. 
+- once scheduled to a node, pods don't move and must be explicitly destroyed and rescheduled.
 
+#### Creating a pod
+- The simplest way create a pod is via imperative kubectl run command. `kubectl run <pod-name> <image-name>:<tag>`
+- To check the status `kubectl get pods`
+- To delete it , `kubectl delete <pod-name>`
+
+#### Creating a pod manifest 
+- we can write pod manifests using yaml or json, but YAML is generally prefered due to it's human-editable nature and it supports comments.
+- pod manifest include a couple of key fields and attributes namely, `metadata` section of describing the pod and its labels, a `spec` section for describing volumes, and a list of containers that will run in the pod.
+
+```kuard-pod.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP 
+```
+- To create a pod with the above manifest file, we can use `kubectl apply -f kuard-pod.yml`
+- To list the pods `kubectl get pods`
+- To get wide range of information, we can use `-o wide` along with our kubectl command like `kubectl get pods -o wide`
+- Adding `-o json` or `-o yaml` will print out the complete objects in JSON or YAML, respectively.
+- To describe pod, we can use `kubectl describe pods <pod-name>`
+- To delete a pod with file, we can use `kubectl delete -f kuard-pod.yml`
+- The default grace period of pod termination is 30 sec 
+- To get logs of a pod, we can use `kubectl logs kuard` and kubernetes always get logs from currently running container. adding `--previous`flag will get logs from a previous instance of the container.
+- Sometimes, logs are not enough to truly determine, what's going on. you need to execute commands in the context of the container itself. To do this, we can use `kubectl exec kuard -- date` To get interactive session `kubectl exec -it kuard -- ash`
+
+#### health-check
+- when you run your application as a container in kubernetes, it is automatically kep alive for you using a `process health` check. This health check simply ensures taht the main process of your application is always running. if it isn't kubernetes restarts it.
+- However, in most cases, a simple process check is insufficient. For ex: if your process is deadlocked and is unable to serve requests, a process health check will still believe that your application is healthy since, it's process is still running.
+
+```kuard-pod-health.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - image: nginx
+      name: nginx 
+      livenessProbe:
+        httpGet:
+          path: /healthy
+          port: 8080
+        initialDelaySeconds: 5
+        timeoutSeconds: 1
+        periodSeconds: 10
+        failureThreshold: 3
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+          
+```
+- The above pod manifest uses an `httpGet` probe to perform an `HTTPGET` request against the `/healthy` endpoint on port 8080 of the kuard container. The probe sets an `initialDelaySeconds` of 5 and thus will not be called until 5 seconds after all the containers in the Pod are created. the probe must respond within the 1-second timeout, and the HTTP status code must be equal to or greater than 200 and less than 400 to be considered successful. kubernetes will call the probe every 10 seconds. if morethan 3 consecutive probes fail, the container will fail and restart.
+
+```
+kubectl apply -f kuard-pod-health.yml
+kubectl port-forward kuard 8080:8080
+
+```
+- The default behaviour of a failed liveness check is to `restart` the pod, the actual behaviour is governed by pod's `restartpolicy`. There are 3 options for restart policy: Always(the default), onFailure(restart only on liveness failure or nonzero process exit code) or Never 
+
+##### Readiness probe 
+- liveness determines if an application is running properly. Containers that fail liveness checks are restarted. Readiness describes when a container is ready to serve user requests. containers that fail readiness checks are removed from service loadbalancers.
+##### startup probe 
+- startup probes are introduced to kubernetes as an alternative way of managing slow starting containers. when a pod is started, the startup probe is run before any other probing of the pod is started. The startup probe proceeds until it either timeout (in which case the pod is restarted) or it succeeds, at which time the liveness probe takes over. 
+- startup probes enable you to poll slowly for a slow-starting container while also enabling a responsive liveness check once the slow-starting container has initialized.
+- probes in kubernetes have number of advanced options, including how long to wait after pod startup to start probing, how many failures should be considered true failure, and how many successes are necessary to reset the failure count. All of these configuration receive default values when left unspecified, but they may be necessary for more advanced use cases.
+- In addition to HTTP healthchecks, kubernetes also supports tcpSocket health checks that open a TCP socket, if the connection succeeds, the probe succeds. This type of probe is useful for non-HTTP applications, such as databases or other non-HTTP based APIs.
+- finally, kubernetes allows `exec` probes. These execute a script or program in the context of the container. following typical convention, if this script returns a non-zero exit code, the probe succeeds, otherwise it fails. exec scripts are often useful for custom application validation logic that doesn't fit nearly into an HTTP call.
+
+#### Resource management
+- kubernetes allows users to specify two different resource metrics. Resource `requests` specify the minimum amount of a resource required to run the application. Resource `limits` specify the maximum amount of a resource that an application can consume.
+```
+"400m" is 0.4 MB, not 400Mb, a significant difference.
+```
+- most commonly requested resources are cpu and memory, but kubernetes supports other resource types as well, such as GPUs.
+
+```kuard-pod-resreq.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "128Mi"
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP 
+
+```
+- Resources are requested per container, not per pod. The total resources requested by the pod is the sum of all resources requested by the pod because the different containers often have very different cpu requirements.
+- CPU requests are implemented using the `cpu-shares` functionality in the linux kernel.
+- w.r.to Memory requests, if a container is over its memory request, the OS can't just remove memory from the process, because it's been allocated. Consequently, when the system runs out of memory, the `kubelet` terminates containers whose memory usage is greater than their requested memory. These containers are restarted automatically, but with less available memory on the machine for the container to consume.
+
+```kuard-pod-reslim.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - image: nginx
+      name: kuard
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "128Mi"
+        limits:
+          cpu: "1000m"
+          memory: "256Mi"
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP 
+
+```
+- when you establish limits on a containers, the kernel is configured to ensure that consumption cannot exceed these limits. A container with a CPU limit of 0.5 cores will only ever get 0.5 cores, even if the CPU is otherwise idle. A container with a memory limit of 256 MB will not be allowed additional memory; for ex: `malloc` will fail if its memory usage exceeds 256 MB.
+
+#### Persisting data with volumes
+- when a pod is deleted or container restarts, any and all data in the container's filesystem is also deleted.
+- To perist data in kubernetes, we have persistent storage concept.
+- To add volumes to a pod manifest, There are 2 standards to add our configuration.
+1. `spec.volume` section. This array defines all of the volumes that may be accessed by containers in the pod manifest. Note that not all containers are required to mount all volumes defined in the pod.
+<br>2. `volumeMounts` array in the container definition. This array defines the volumes that are mounted into a particular container and the path where each volume should be mounted. Note that two different containers in a pod can mount the same volume at different mount paths.
+
+```kuard-pod-vol.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard
+spec:
+  volumes:
+    - name: "kuard-data"
+    hostPath:
+      path: "/var/lib/kuard"
+  containers:
+    - image: nginx
+      name: nginx
+      volumeMounts:
+        - mountPath: "/data"
+          name: "kuard-data"
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP 
+```
+
+##### Different ways of using Volumes with pods
+- There are variety of ways you can use data in your application. The following are the some of the ways and the recommended patterns for kubernetes:
+
+**1. communication/synchronization**<br>
+**2. cache**<br>
+**3. Persistent data** <br>
+**4. Mounting the host filesystem**<br>
+
+```kuard-pod-full.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kuard
+spec:
+  volumes:
+    - name:  "kuard-data"
+      nfs:
+        server: my.nfs.server.local
+        path: "/exports"
+  containers:
+  - name: kuard
+    image: gcr.io/kuard-demo/kuard-amd64:blue
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "128Mi"
+      limits:
+        memory: "256Mi"
+        cpu: "1000m"
+    ports:
+      - containerPort: 8080
+        name: http
+        protocol: TCP
+    volumeMounts:
+      - name:  "kuard-data"
+        mountPath:  "/data"
+    livenessProbe:
+      httpGet:
+        path: /healthy
+        port: 8080
+      initialDelaySeconds: 5
+      timeoutSeconds: 1
+      periodSeconds: 18
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 30
+      timeoutSeconds: 1
+      periodSeconds: 10
+      failureThreshold: 3
+      
+```
+
+- kubelet daemon is responsible for the containers inside the pods creation as well as performing any health checks defined in the pod manifest.
+
+## 6. labels and annotations
+- `labels` are key/value pairs that can be attached to kubernetes objects such as pods and Replicasets. labels provide the foundation for grouping objects
+- `annotations` provide a storage mechanism that resembles labels; key/value pairs designed to hold nonidentifying information that tools and libraries 
+
+##### Labels
+- labels provide identifying metadata for objects. these are fundamental qualities of the object that will be used for grouping, viewing, and operating.
+- 
+```
+kubectl run alpaca-prod --image=nginx --replicas=2 --labels="ver=1,app=alpaca,env=prod"
+kubectl run alpaca-test --image=nginx --replicas=1 --labels="ver=2,app=alpaca,env=test"
+
+# Two deployments
+kubectl get deployments --show-labels
+
+```
+- we can also apply or update labels on objects after we create them: `kubectl lable deployments alpaca-test "canary=true"`
+- `kubectl get deployments -L canary` -> To show label value as a column
+- we can remove label by applying a dash suffix. `kubectl label deployments alpaca-test "canary" -`
+
+- if we want to list only pods that have the `ver` level set to `2`, we could use the `--selector` tag.
+- if we specify two selectors separated by comma, only the objects that are satisfy both will be returned. This is logical AND operation.
+`kubectl get pods --selector="app=bandicoot,ver=2"`
+
+- we can also ask if a label is one of a set of values. Here we are asking for all pods where the app label is set to alpaca or bandicoot 
+`kubectl get pods --selector="app in (alpaca,bandicoot)`
+- we can ask if a label is set at all. Here we are asking for all the deployments with the canary label set to anything.
+`kubectl get deployments --selector="canary"`
+
+|operator|description|
+|---|---|
+|key=value|key is set in value|
+|key!=value|key is not set to value|
+|key in (value1, value2)|key is one of value1 or value2|
+|key notin (value1, value2)|key is not one of value1 or value2|
+|key|key is set|
+|!key|key is not set|
+
+- for ex:, asking if a key, in this case canary, is not set can look like:
+`kubectl get deployments --selector="!canary"`
+- you can combine positive and negative selectors: `kubectl get pods -l 'ver=2,!canary'`
 
 
