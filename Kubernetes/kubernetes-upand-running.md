@@ -489,4 +489,127 @@ kubectl get deployments --show-labels
 `kubectl get deployments --selector="!canary"`
 - you can combine positive and negative selectors: `kubectl get pods -l 'ver=2,!canary'`
 
+##### label selectors in API Object
+- A kubernetes object uses a label selector to refer to a set of other kubernetes objects. Instead of simple string as described in the previous section, we use a parsed structure.
+
+- Most objects support a newer, more powerful set of selector operators. A selector of app=alpaca, ver in (1,2) would be converted to this:
+
+```
+selector:
+  matchLabels:
+    app: alpaca
+  matchExpressions:
+    - {key: ver, operator: In, values: [1,2]}
+```
+
+##### labels in kubernetes architecture:
+- labels play a crucial role in linking various related kubernetes objects. Kubernetes purposefully a decoupled system.
+
+- For ex: Replicasets, which create and maintain multiple replicas of a pod, find the pods that they are managing via  selector. likewise, service loadbalancer finds the pods to which it should bring traffic via selector query. when pod is created it can use a nodeselector to identify a particular set of nodes onto which it can be scheduled. when people want to restrict network traffic in their cluster, they use network policy in conjunction with specific labels to identify pods that should or should not allowed to communicate with each other.
+
+##### Annotations
+- while labels are used to identify and group objects, annotations are used to provide extra information about where an object came from, how to use it, or policy around that object.when in doubt, add information to an object as an annotation and promote it to a label if you find yourself wanting to use it in a selector
+- Annotations are used to :
+```
+- keep track of a 'reason' for the latest update to an object
+- communicate a specialized scheduling policy to a specialized scheduler
+- extend data about the last tool to update the resource and how it was updated (used for detecting changes by other tools and doing smart merge)
+- attach build, release or image information that isn't appropriate for labels (may include git hash, timestamp, pull request number etc)
+- Enable the deployment object to keep track of replicasets that it is managing for rollouts
+- provide extra data to enhance the visual quality or usability of a UI. ex: objects could include a link to an icon (or a base64-encoded version of an icon)
+- prototype alpha functionality in kubernetes (instead of creating first class API field, the parameters for that functionality are encoded in an annotation)
+```
+- Annotations are used in various places in kubernetes, with the primary use case being rolling deployments. During rolling deployments, annotations are used to track rollout status and provide the necessary information required to rollback a deployment to previous state.
+
+- To cleanup , `kubectl delete deployments --all`
+
+To sum up, **labels** are used to identify and optionally group objects in kubernetes cluster. They are also used in selector queries to provide flexible runtime grouping of objects, such as pods. <br>
+**Annotations** provide object-scoped key/value metadata storage used by automation tooling and client libraries. They can also be used to hold configuration data for external tools such as third-party schedulers and monitoring tools
+
+## 7. Service Discovery
+- service discovery tools help solve the problem of finding which processes are listening at which addresses for which services. a good service discovery system will enable users to resolve this information quickly and reliably.
+
+- Real service discovery in kubernetes starts with a service object. A Service object is a way to create a named label selector. 
+
+- To interact with services, we have to do the port-forwarding.
+`kubectl port-forward <pod-name> <hostport>:<containerport>`
+
+##### service DNS
+- kubernetes provides a DNS service exposed to pods running in the cluster. This kubernetes DNS service was installed as a system component when the cluster was first created. The DNS service is, itself, managed by kubernetes and is a great example of kubernetes building on kubernetes. The kubernetes DNS Service provides DNS names for cluster IP's
+
+- the fqdn would be in the format of <service-name>.<namespace-name>.svc.cluster.local
+- By default, services are exposed inside a cluster using clusterIP. if we want to talk with external system we can use Nodeport service. 
+- we can do it by adding service type as nodeport 
+- `ssh <node> -L 8080:localhost:32711`
+
+##### Load Balancer Integration
+- To make service type as loadbalancer we need to make changes in the yaml file
+- Creating a service of type loadbalancer exposes that service to the public internet.
+- if we did it in right way, then we should be able to see `External-IP` when we give `kubectl describe service <name-of-service>`
+- Internal loadbalancing of a service can be done through annotations
+
+##### Endpoints
+- some applications want to be able to use services without using a clusterIP. This is done with another type of object called an Endpoint object. For everyservice object, kubernetes creates a buddy endpoints object that contains the IP addresses for that service.
+`kubectl describe endpoints <service-name>`
+
+- kubernetes services are built on top of label selectors over pods.This means we can use the kubernetes API to do rudimentary service discovery without using a service object at all.
+
+##### kubeproxy and clusterIP's
+- clusterIPs are stable virtual IPs that loadbalance traffic across all of the endpoints in the service. This magic is performed by a component running on every node in the cluster called `kube-proxy`
+![alt text](image-7.png)
+- kube-proxy watches for new services in the cluster via API server. It then programs a set of `IPtables` rules in the kernel of that host to rewrite the destinations of packets so they are directed at one of the endpoints for that service.if the set of endpoints for a service changes (due to pods coming and going or due to a failed readiness check), the set of iptables rules is rewritten
+
+- The clusterIP itself is usually assigned by API server as the service is created. But, when creating a service, the user can specify a specific cluster IP. once set, the cluster IP cannot be modified without deleting and recreating the service object.
+
+- The kubernetes service address range is configured using the `--service-cluster-ip-range` flag on the kube-apiserver binary. The service address range should not overlap with the IP subnets and ranges assigned to each DOcker bridge or kubernetes node. In addition, any explicit cluster IP requested must come from that range and not already in use.
+
+##### ClusterIP Environmental Variables
+- while most users should be using the DNS services to find clusterIPs, there are some older mechanisms that may still be in use. One of these is injecting a set of environmental variables into pods as they start up.
+
+- A problem with environmental variable approach is that it requires resources to be created in a specific order. The services must be created before the pods that reference them. This can introduce quite a bit of complexity when deploying a set of services that make up a larger application. In addition, using just environment variables seems strange to many users. For this reason, DNS is probably a better option.
+
+##### Connecting to Resource outside of a cluster
+- when you are connecting kubernetes to legacy resource outside of the cluster, you can use selector-less services to declare a kubernetes service with a manually assigned IP address that is outside of the cluster. That way, kubernetes service discovery via DNS works as expected, but the network traffic itself flows to an external resource.
+- To create selector-less service, you remove the `spec.selector` field from your resource, while leaving metadata and the ports sections unchanged. Because your service has no selectors, no endpoints are automatically added to the service. Meaning you must add them manually.
+Typically, the end point that you will add will be fixed IP address, so you only need to add it once.
+- But, if the IP address that backs the service ever changes, you will need to update the corresponding endpoint resource. To create/update the endpoint resource.
+
+
+##### Connecting External Resources to Services inside a cluster
+- connecting external resources to kubernetes services is somewhat trickier.  
+if cloud provider supports it, the easiest thing to do is to create an "internal" loadbalancer, as described above, that lives in your virtual private network and can deliver traffic from a fixed IP address into the cluster. you can then use traditional DNS to make this IP address available to the external resource.
+- if an internal loadbalancer isn't available, you can use `nodeport` service to expose the service on the IP addresses of the nodes in the cluster. You can then either program a physical loadbalancer to serve traffic to those nodes, or use DNS-based loadbalancing to spread traffic between the nodes.
+
+- If neither of those solutions works for your use case, more complex options include running the full kube-proxy on external resource and programing that machine to use the DNS server in the kubernetes cluster, such a setup is significantly more difficult to get right and should really only be used in on-premise environments.
+
+## 8. HTTP Loadbalancing with ingress
+- 
+
+## 9. Replicasets
+
+## 10. Deployments
+
+## 11. Daemonsets
+
+## 12. Jobs
+
+## 13. configmaps and secrets
+
+## 14. Rolebased access control for kubernetes
+
+## 15. Service meshes
+
+## 16. Integrating storage solutions and kubernetes
+
+## 17. Extending kubernetes
+
+## 18. Accessing kubernetes from common programming language
+
+## 19. Securing applications in kubernetes
+
+## 20. policy and governance for kubernetes clusters
+
+## 21. multicluster application deployment
+
+## 22. organizing your application
 
