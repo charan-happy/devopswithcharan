@@ -583,11 +583,115 @@ if cloud provider supports it, the easiest thing to do is to create an "internal
 - If neither of those solutions works for your use case, more complex options include running the full kube-proxy on external resource and programing that machine to use the DNS server in the kubernetes cluster, such a setup is significantly more difficult to get right and should really only be used in on-premise environments.
 
 ## 8. HTTP Loadbalancing with ingress
-- 
+- Service object operates at Layer 4(according to OSI Model). This means that it only forwards TCP and UDP connections and doesn't look inside of those connections.Because of this, hosting many applications on a cluster uses many different exposed services. 
+usually, for services of type : Nodeport, you'll have to have clients connect to a unique port per service. If services are of type : loadbalancer, you'll be allocating  (often expensive or scarce) cloud resources for each service. But, for HTTP (layer7) based services, we can do better.
+
+- kubernetes calls its HTTP-based loadbalancing system **ingress**. Ingress is a kubernetes native way to implement the "virtual hosting" pattern we just discussed. One of the more complex aspects of the pattern is that the user has to manage the loadbalancer configuration file. one of the more complex aspect of the pattern is that the user has to manage the loadbalancer configuration file. 
+
+- The ingress controller is a software system made up of two parts. The first is the **ingress proxy** which is exposed outside the cluster using a service of type loadbalancer. This proxy sends the requests to "upstream" servers. 
+- The other component is the **Ingress reconciler or operator**. The ingress operator is responsible for reading and monitoring ingress objects in the kubernets API and reconfiguring the ingress proxy to route traffic as specified in the ingress resource.  
+
+- ingress is a unique system in kubernetes.It is simply a schema, and the implementations of a controller for that schema must be installed and managed separately. But it is also critical system for exposing services to users in a practical and cost-efficient way.
 
 ## 9. Replicasets
+- A replicaset acts as cluster wide manager, ensuring that the right types and number of pods are running at all times.
+- pods managed by replicasets are automatically rescheduled under certain failure conditions, such as node failure and network partitions.
+- The actual act of managing the replicated pods is an example of  `reconciliation loop`. 
+- **reconciliation loop** is the concept which will make sure that the desired state matches with the current/observed state .
+- In addition to supporting modularity, decoupling pods and replicasets enables several important behaviors, which are listed below :
+Adopting Existing containers, Quaranting containers, Designing with replicasets,
+
+Note : Usually, we can see applications use deploymnent object because it allows you to manage the release of new versions. Replicasets power deployments under the hood, and it's important to understand how they operate so that you can debug them should you need to troubleshoot.
+
+- when the number of pods in the current state is less than the number of pods in the desired state, the replicaset controller will create new pods using a template contained in the replicaset specification.
+- Replicaset uses labels to make sure the desired state matches withe the current state in our cluster. The selector in the Replicaset Spec should be a proper subset of the labels in the pod template.
+
+- To inspect replicaset we can use `kubectl describe rs <name>`
+- Sometimes, pod is also manages replicaset. To enable this kind of discovery, the replicaset controller adds an `ownerreferences` section to every pod that it creates.
+`kubectl get pods <pod-name> -o=jsonpath='{.metadata.ownerReferences[0].name}'`
+- we can scale replicasets up or down by updating the `spec.replicas` key on the replicaset object stored in kubernetes. we can do it imperatively too by giving `kubectl scale replicasets <image> --replicas=4`
+- Horizontal autocaling involves creating additional replicas of a pod and vertical scaling involves increasing the resources required for the pod.
+- Autoscaling requires the presence of `metrics-server` in your cluster. The `metrics-server` keeps track of metrics and provides an API for consuming metrics that HPA uses when making scaling decesions. To get to know about the metric-server status in our cluster, we can use `kubectl get pods --namespace=kube-system`. Here we should be able to see the pod with starting-name of  "metrics-server"
+- To scale replicaset, you can run the command like the following `kubectl autoscale rs <image> --min=2 --max=5 --cpu-percent=80`
+`kubectl get hpa`
+`kubectl delete rs <name>` --> to delete replicaset  and `kubectl get pods` --> To see the list of pods
+- if we don't want to delete the pods that the replicaset is managing, you can set the `--cascade` flag to false to ensure only replicaset object is created and not the pods. `kubectl delete rs <name> --cascade=false`
 
 ## 10. Deployments
+- Using Deploymnets, we can simply and reliably rollout new software versions without downtime or errors. The actual mechanics of the software rollout performed by a deployment are controlled by a deployment controller that runs in the kubernetes cluster itself. 
+```deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      selector:
+        matchLabels:
+          run: myapp
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            run: myapp 
+            
+      containers:
+      - name: myapp
+        image: <Image>
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: <Port>
+```
+- To create deployment, use `kubectl create -f deployment.yml`
+- we know that replicasets manage pods. Deployments manage replicasets. this relationship is defined by labels and label selector. We can see label selector by looking at the deploymnet object `kubectl get deployments <name> -o jsonpath --template {.spec.selector.matchLabels}
+
+- we can use label selector to query across replicasets to find that specific replicaset `kubectl get replicasets --selector=run=kuard`
+
+- To resize the deployment, `kubectl scale deployments <name> --replicas=2`
+- `kubectl get replicasets --selector=run=myapp` . Note that scaling deployment has also scaled the replicaset
+- if we try to scale replicaset directly using `kubectl get replicasets --selector=run=myapp` no changes would be observed because replicasets is managed by its top level resource called deployment.
+- if you want to manage replicasets directly, first we need to delete the deployment (remember to set --cascade to false else it will delete the replicaset and pods as well)
+
+```
+kubectl get deployments <name> -o yaml > myapp-deployment.yml
+kubectl replace -f <deployment>.yml --save-config
+```
+- To describe the deployment, we can use `kubectl describe deployments <name>`
+
+```
+kubectl rollout status deployments <name>
+
+kubectl get replicasets -o wide
+kubectl rollout pause deployments <name>
+kubectl rollout resume deployments <name>
+kubectl rollout history deploymnet <name>
+kubectl rollout history deployment <name> --revision=2
+kubectl rollout undo deployments <name> 
+```
+- we can do undo both partially completed and fully completed rollouts. An undo of a rollout is actually simply a rollout in reverse (example from v2 to v1 instead of from v1 to v2)
+- we can rollback to a specific revision in the history using `--to-revision` flag.
+- `kubectl rollout undo ` is equal to `kubectl rollout undo --to-revision=0`
+- wecan set revision history limit too by keeping `revisionHistoryLimit` property with some value that we like in the deployment specification.
+**Deployment strategies**
+
+- when it comes to change the version of the software implementing your service. some of the key kubernetes deployment strategies are :
+<br>1. Rolling update (default) : It is the default one and new pods are automatically scaled up while old ones are scaled down, minimizing service disruption. It is suitable for most scenarios and suitable for most scenarios and provide balance between downtime and risk mitigation.
+<br>2. Recreate : It abruptly deletes all the existing pods and creates new set of pods with updated image. It is faster than rolling updates, but it can have some downtime. it is suitable for stateless applications where downtime is acceptable
+<br>3. Blue-green Deployment : This approach involving two identical environments . Where blue(running current version) and green(running new version). once the green environment is verified traffic is switched from blue to green effectively deploying the new version without downtime. These strategy is ideal for high availability applications requiring zero downtime deployments 
+<br>4. Canary Deployment : This involves rolling out new version to a small subset of pods initially (canary). if the canary proves stable, the deployment is gradually rolled out to a the remaining pods. This strategy provides low risk approach to test new versions in a production environment before widespread deployment.
+
+
+148
 
 ## 11. Daemonsets
 
