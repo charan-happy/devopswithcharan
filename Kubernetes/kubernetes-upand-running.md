@@ -691,11 +691,103 @@ kubectl rollout undo deployments <name>
 <br>4. Canary Deployment : This involves rolling out new version to a small subset of pods initially (canary). if the canary proves stable, the deployment is gradually rolled out to a the remaining pods. This strategy provides low risk approach to test new versions in a production environment before widespread deployment.
 
 
-148
-
 ## 11. Daemonsets
+- Daemonsets provide an easy-to-use abstraction for running a set of pods on every node in a kubernetes cluster or if the case requires it, on a subset of nodes based on labels. 
+- The daemonsets provides its own controller and scheduler to ensure key services like monitoring agents are always up and running on the right nodes in your cluster.
+- A deamonset is a kubernetes object, which ensures that a copy of a pod is running across a set of nodes in a kubernetes cluster.
+- Daemonsets are used to deploy system daemons such a log collectors and monitoring agents. which typically must run on every node.
+- Replicasets should be used when your application is completely decoupled from the node and you can run multiple copies on a given node without special consideration.
+- Deamonsets should be used when a single copy of your application must run on all or subset of the nodes in the cluster.
+- we can use labels to run Daemonset pods on specific nodes. For ex: you may want to run specialized intrusion-detection software on nodes that are exposed to the edge network. You can also use Daemonsets to install software on nodes in a cloud-based cluster. For many cloud services, an upgrade or scaling of a cluster can delete/recreate new virtual machines.
+
+- Daemonsets determine which node a pod will run on at pod creation time by specifying the nodeName field in the pod spec. As a result, pods created by Daemonsets are ignored by the kubernetes scheduler.
+
+```fluentd.yml
+apiVersion: apps/v1
+kind: Daemonset
+metadata:
+  name: fluentd
+  labels:
+    app: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - name: fluentd
+          image: fluent/fluentd:v0.14.0
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          volumeMounts:
+            - name:  varlog
+              mountPath: /var/log
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers            
+```
+
+- Daemonsets require a unique name across all Daemonsets in a given kubernetes namespace.
+- `kubectl describe daemonset fluentd` --> To describe the daemonset
+- To add labels to a single node, `kubectl label nodes <node-name> ssd=true`
+- `kubectl get nodes` 
+- `kubectl get nodes --selector ssd=true` --> to fileter nodes based on selector
+- **Nodeselectors** can be used to limit what nodes a pod can run on in  a given kubernetes cluster. 
+```nginx-fast-storage.yml
+apiVersion: apps/v1
+kind: Daemonset
+metadata:
+  labels:
+    name: nginx
+    ssd: true
+  name: nginx-fast-storage
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+      ssd: "true"
+  template:
+    metadata:
+      labels:
+        app: nginx
+        ssd: "true"
+    spec:
+      nodeSelector:
+        ssd: "true"
+      containers:
+        - name: nginx
+          image: nginx:1.10.0
+```
+- Updating daemonset can be done vi rolling update strategy, There are two parameters that control the rolling update of a Daemonset:
+
+`spec.minReadySeconds` - Determines how long a pod must be "ready" before the rolling update proceeds to upgrade subsequent pods.  
+`spec.updateStrategy.rollingUpdate.maxUnavailable` indicates how many pods may be simultaneously updated by the rolling update.
+
+`kubectl rollout status daemonSets <daemonset-name>` To see the status of daemonset update
+
+- To delete a deamonset, we have to use `kubectl delete -f fluentd.yml`
+- Deleting daemonset will also delete all the pods being managed by that daemonset. Set the `--cascade` flag to false to ensure only the daemonset is deleted and not the pods.
+
 
 ## 12. Jobs
+- The job object is responsible for creating and managing pods defined in a template in the job specification. These pods generally run until successful completion. The job object coordinates running a number of pods in parallel.
+- 159
 
 ## 13. configmaps and secrets
 
