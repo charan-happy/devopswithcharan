@@ -787,11 +787,481 @@ spec:
 
 ## 12. Jobs
 - The job object is responsible for creating and managing pods defined in a template in the job specification. These pods generally run until successful completion. The job object coordinates running a number of pods in parallel.
-- 159
+- There is a chance that your job will not execute if the scheduler does not find the required resources. Also, due to the nature of distributed systems, there is a small chance that duplicate pods will be created for a specific task during certain failure scenarios.
+
+##### Job patterns
+|Type|Use case|Behaviour|completions | Parallelism |
+|---|---|---|---|
+|One shot|Database Migrations|A single pod running once until successful termination|1|1|
+|Parallel fixed completions|Multiple pods processing a set of work in parallel|One or more Pods running one or more times until reaching a fixed completion count|1+|1+|
+|Work Queue parallel jobs|Multiple pods processing from a centralized work queue|one or more pods running once until successful termination|1|2+|
+
+**One Shot**
+- A job can fail for any number of reasons, including an application error, an uncaught exception during runtime, or a node failure before the job has a chance to complete. In all cases, the job controller is responsible for re-creating the pod until a successful termination occurs.
+- There are multiple ways to create a one-shot job in kubernetes. The easiest is to use kubectl command line utility
+```
+kubectl run -i oneshot --image=gcr.io/kuard-demo/kuard-amd64:blue --restart=onFailure --command /kuard -- --keygen-enable --keygen-exit-on-complete --keygen-num-to-gen 10
+```
+- To see the completed jobs in the terminal, we have to use `kubectl get jobs -a`
+- Because jobs have a finite beginning and endings, users often create many of them. This makes picking unique labels more difficult and more critical. For this reason, the job object will automatically pick a unique label and use it to identify the pods it creates. IN advanced scenarios (such as swapping out a running job without killing the pods it is managing) users can choose to turn off this automatic behavior and manually specify labels and selectors.
+
+- we can clean multiple resources at a time, by using the command `kubectl delete rs,svc,job -l chapter=jobs`
+
+**cronjobs**
+- Sometimes, we may want to schedule a job to run at a certain interval. To achieve this, you can declare a CronJob in kubernetes, which is responsible for creating a new job object at a particular interval. 
+```cronjob.yml
+apiVersion: batch/v1
+kind: Cronjob
+metadata:
+  name: example-cron
+spec:
+  schedule: "0 */5 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: batch-job
+              image: my-batch-image
+          restartPolicy: OnFailure
+```
+- To get details of the cronjob, we can use `kubectl describe <cron-job>`
+
 
 ## 13. configmaps and secrets
+- configmaps are used to provide configuration information for workloads. This can be either fine-grained information like a string or a composite value in the form of a file
+- Secrets are simmilar to configmaps but focus on making sensitive information available to the workload. They can be used for things like credentials or TLS certificates
+- The key thing to note w.r.to. configmaps is that configmap is combined with the pod right before it is run. This means that the container image and the pod definition can be reused by many workloads just by changing the ConfigMap that is used.
+
+`kubectl create configmap my-config --from-file=my-config.txt --from-literal=extra-param=extra-value --from-literal=another-param=another-value` 
+
+**Using a ConfigMap**
+- There are 3 main ways to use a configmap:
+<br>1. Filesystem : You can mount a configMap into a pod. a file is created for each entry based on the key name. The contents of that file are set to the value
+<br>2. Environment variable : A configmap can be used to dynamically set the value of an environment variable
+<br>3. Command-line argument: kubernetes supports dynamically creating the command line for a container based on configMap values.
+
+```kuard-config.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard-config
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/kuard-demo/kuard-amd64:blue
+      imagePullPolicy: Always
+      command:
+        - "/kuard"
+        - "$(EXTRA_PARAM)"
+      env:
+        - name: ANOTHER_PARAM
+          valueFrom:
+            configMapKeyRef:
+              name: my-config
+              key: another-param
+        - name: EXTRA_PARAM
+          valueFrom:
+            configMapKeyRef:
+              name: my-config
+              key: extra-param
+      volumeMounts:
+        - name: config-volume
+          mountPath: /config
+    volumes:
+      - name: config-volume
+        configMap:
+          name: my-config
+    restartPolicy: Never
+```
+
+- secretes enable container images to be created without bundling sensitive data. This allow containers to remain portable across environments. Secretes exposed to pods via explicit declaration in pod manifests and the kubernetes API. 
+- In this way, kubernetes secrets API provides an application centric mechanism for exposing sensitive configuration information to applications in a way that's easy to audit and leverage native OS isolation primitives.
+-  By default, kubernetes secrets are stored in plain text in the etcd storage for cluster. Depending on your requirements, this may not be sufficient security for you.
+- To overcome it, in recent versions of kubernetes, support has been added for encrypting the secrets with a user-supplied key, generally integrated into a cloud key store. Additionally, most cloud keystores have integration with kubernetes secrets store CSI Driver volumes, enabling you to skip kubernetes secrets entirely and rely exclusively on the cloud provider's key store.
+
+- First step in creating a secret is to obtain the raw data we want to store. The TLS key and certificate for the Kuard application can be downloaded by running the following commands:
+```
+curl -o kuard.crt https://storage.googleapis.com/kuard-demo/kuard.crt
+curl -o kuard.key https://storage.googleapis.com/kuard-demo/kuard.key
+```
+
+with kuard-crt and kuard.key files stored locally, we are ready to create a secret.
+`kubectl create secret generic kuard-tls --from-file=kuard.crt --from-file=kuard.key`
+- kubectl describe secrets kuard-tls
+- secrets can be consumed using the Kubernetes REST API by application that know how to call the API Directly. However, our goal is too keep application portable. Not only should they run well in kubernetes, but they should run, unmodified, on other platforms.
+- Instead of accessing secrets through API server, we can use a `secret volume`. secret data can be exposed to pods using the Secrets volume type. Secrets volumes are managed by the kubelet and are created at pod creation time. secrets are stored on tmpfs volumes (aka RAM disks) and as such are written to disk on nodes.
+- Each data element of a secret is stored in a separate file under the target mount point specified in the volume mount.
+
+```kuard-secret.yml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard-tls
+spec:
+  containers:
+    - name: kuard-tls
+      image: gcr.io/kuard-demo/kuard-amd64:blue
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: tls-certs
+          mountPath: "/tls"
+          readOnly: true
+  volumes:
+    - name: tls-certs
+      secret:
+        secretName: kuard-tls
+```
+`kubectl apply -f kuard-secret.yml` and to connect `kubectl port-forward kuard-tls 8443:8443`
+
+**Private Container Registries**
+- A special use case for secrets is to store access credentials for private container registries. Kubernetes supports using images stored on private registries, but access to those images requires credentials. 
+- Private images can be stored across one or more private registries. This presents a challenge for managing credentials for each private registry on every possible node in the cluster.
+- `Image pull secrets` leverage the secrets API to automate the distribution of private registry credentials.
+- Image pull secrets are stored just like regular secrets but are consumed through the `spec.imagePullSecrets` pod specification field
+`kubectl create secret docker-registry my-image-pull-secret --docker-username=<user-name> --docker-password=<password> --docker-email=<email>`
+
+```kuard-secret-ips.yaml
+apiVersion: v1
+kind: pod
+metadata:
+  name: kuard-tls
+spec:
+  containers:
+    - name: kuard-tls
+      image: gcr.io/kuard-demo/kuard-amd64:blue
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: tls-certs
+          mountPath: "/tls"
+          readOnly: true
+  imagePullSecrets:
+    - name: my-image-pull-secret
+  volumes:
+    - name: tls-certs
+      secret:
+        secretName: kuard-tls
+```
+- if you are repeatedly pulling from the same registry, you can add the secrets to the default service account associated with each pod to avoid haviing to sepcify the secrets in every pod you create
+- The maximum size for configMap or secret is 1 MB
+- when selecting a keyname, remember that these keys can be exposed to pods via volume mount. pick a name that is going to make sense when specified on a command line or in a config file. Storing a TLS key as key.pem is clearer than tls-key when configuring applications to access secrets.
+
+```
+configMap and Secret key examples
+--------------------------------
+valid keyname | invalid key name
+--------------------------------
+.auth_token | Token...properties
+--------------------------------
+key.pem | auth file.json
+--------------------------------
+config_file | _password.txt
+```
+
+**managing ConfigMaps and Secrets**
+- ConfigMaps and secrets are managed through the kubernetes API. The usual create, delete, get, describe commands work for manipulating these objects.
+- `kubectl get secrets`, `kubectl get configmaps`, `kubectl describe configmap my-config`
+
+- The easiest way to create a secret or configmap is via `kubectl create secret generic <flag>` or `kubectl create configmap <flag>`
+flags can be replaced with any of the below
+
+```
+--from-file=<file-name> --> Load from the file with the secret data key that's the same as the filename
+--from-file=<key>=<filename> --> load from the file with the secret data key explicitly specified
+--from-file=<directory> --> load all the files in the specified directory where all the filename is an acceptable keyname
+--from-literal=<key>=<value> --> use the specified key/value pair directly
+```
+
+**updating**
+- we can update a configmap or secret and have it reflected in running applications. there is no need to restart if the application is configured to reread configuration values.There are 3 ways to update  
+1. update from file  
+2. Recreate and update: if we store the inputs into configmaps/secrets as separate files on disk (as opposed to embedded into yaml directly). we can use kubectl to re-create the manifest and then use it to update the object
+```
+kubectl create secret generic kuard-tls --from-file=kuard.crt --from-file=kuard.key --dry-run -o yaml | kubectl replace -f -
+```
+
+3. Edit current version  
+
+- once the configmap or secret is updated using the API, it'll be automatically pushed to all volumes that use that configmap or secret. using this live update feature, we can update the configuration of applications without restarting them.
+
+- currently there is no built-in way to signal an application when a new version of a configmap is deployed. It is up to the application (or some helper script) to look for the config files to change and reload them
 
 ## 14. Rolebased access control for kubernetes
+- Rolebased access control provides a mechanism for restricting both access to and actions on kubernetes APIs to ensure that only authorized users have access. RBAC is a critical component to both harden access to the kubernetes cluster where you are deploying your application and (possibly more impotantly) prevent unexpected accidents where one person in the wrong namespace mistakenly takes down production when they think they are destroying their test cluster.
+
+- Every Request to kubernetes is first `authenticated`. Authentication provides the identity of the caller issuing the request. It could be simple as saying that the request is unauthorized, or it could integrate deeply with a pluggable authentication provider (e.g., Azure Active Directory) to establish an identity within that third-party system .kubernetes doesnot have a built-in identity store, foucsing instead on integrating other identity sources within itself
+
+-  Kubernetes RBAC is a powerful security feature that allows administrators to control who can access the kubernetes API and what actions they can perform. You can use it implement the principle of "least privilege" which means that users should have the minimum level of access necessary to perform their tasks. This approach minizes the potential for accidental or malicious misue of kubernetes system
+- RBAC in kubernetes is implemented using policies that define the permissions and subjects, which are entities to which these permissions are granted. Policies are defined through Roles and Clusterroles, while subjects can be users, groups or service accounts, bound to the roles using RoleBindings or ClusterRoleBinding.
+  **why is RBAC is importatnt for kubernetes ?**
+  - Granular access control
+  - improved security
+  - Access Auditinig
+  - Simplifies the management
+**core components of Kubernetes RBAC**
+- Role and Cluster Role
+   > In k8s RBAC, Permissions are defined through two types of objects: Roles and clusterroles. A role defines permissions within a specific namespace, while a clusterrole defines permissions cluster-wide. Both type of roles allows you to specify a set of rules that define what actions can be perfomed on which resources
+
+- RoleBinding and ClusterRoleBinding
+  > To grant permissions defined in a Role or clusterrole to a user, group or service account, you use another set of objects: Rolebindings and clusterrolebindings. **A rolebinding** grants the permissions defined in a role to a user within a specific namespace. **A Clusterrolebinding** grants the permissions defined in the clusterrole to a user across the entire cluster.
+
+**Serviceaccounts**
+> Service accounts are special type of user in kubernetes, designed to be used by processes running inside pods. Like regular users, service accounts can be assigned Roles and clusterroles using Rolebindings and clusterrolebindings. This allows you to control the permissions of your applications in the same granular and secure way as your human users.
+
+**How to use kubernetes RBAC**
+
+<details><summary>Enabling RBAC</summary>Kubernetes RBAC is typically enabled by default in most modern Kubernetes distributions. However, if you are using an older version or a custom Kubernetes setup, you may need to manually enable RBAC. This is done by starting the Kubernetes API server with the --authorization-mode=RBAC flag.</details>
+
+<details><summary>Creating a Role</summary></details>
+
+```yaml
+Create a new ServiceAccount processor in Namespace project-hamster. Create a Role and RoleBinding, both named processor as well. These should allow the new SA to only create Secrets and ConfigMaps in that Namespace.
+
+A ClusterRole|Role defines a set of permissions and where it is available, in the whole cluster or just a single Namespace.
+A ClusterRoleBinding|RoleBinding connects a set of permissions with an account and defines where it is applied, in the whole cluster or just a single Namespace.
+Because of this there are 4 different RBAC combinations and 3 valid ones:
+1. Role + RoleBinding (available in single Namespace, applied in single Namespace)
+2. ClusterRole + ClusterRoleBinding (available cluster-wide, applied cluster-wide)
+3. ClusterRole + RoleBinding (available cluster-wide, applied in single Namespace)
+4. Role + ClusterRoleBinding (NOT POSSIBLE: available in single Namespace, applied cluster-wide)
+
+To the solution
+We first create the ServiceAccount:
+
+
+➜ k -n project-hamster create sa processor
+serviceaccount/processor created
+Then for the Role:
+
+
+k -nproject-hamster create role -h# examples
+So we execute:
+
+
+k -n project-hamster create role processor \
+  --verb=create \
+  --resource=secret \
+  --resource=configmap
+Which will create a Role like:
+
+
+# kubectl -n project-hamster create role processor --verb=create --resource=secret --resource=configmap
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: processor
+  namespace: project-hamster
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - create
+Now we bind the Role to the ServiceAccount:
+
+
+k -nproject-hamster create rolebinding -h# examples
+So we create it:
+
+
+k -nproject-hamster create rolebinding processor \
+  --roleprocessor \
+  --serviceaccountproject-hamster:processor
+This will create a RoleBinding like:
+
+
+# kubectl -n project-hamster create rolebinding processor --role processor --serviceaccount project-hamster:processor
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: processor
+  namespace: project-hamster
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: processor
+subjects:
+- kind: ServiceAccount
+  name: processor
+  namespace: project-hamster
+To test our RBAC setup we can use kubectl auth can-i:
+
+
+k auth can-i -h# examples
+Like this:
+
+
+➜ k -n project-hamster auth can-i create secret \
+  --as system:serviceaccount:project-hamster:processor
+yes
+
+➜ k -n project-hamster auth can-i create configmap \
+  --as system:serviceaccount:project-hamster:processor
+yes
+
+➜ k -n project-hamster auth can-i create pod \
+  --as system:serviceaccount:project-hamster:processor
+no
+
+➜ k -n project-hamster auth can-i delete secret \
+  --as system:serviceaccount:project-hamster:processor
+no
+
+➜ k -n project-hamster auth can-i get configmap \
+  --as system:serviceaccount:project-hamster:processor
+no
+```
+- Creating a role in Kubernetes involves defining a Role object in a YAML file. The Role object includes the API group, the resources, and the verbs (actions) that are allowed. For example, the following role only allows ‘get’ and ‘list’ actions on pods in the core API group
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+
+kind: Role
+
+metadata:
+
+  namespace: default
+
+  name: pod-reader
+
+rules:
+
+- apiGroups: [""]
+
+  resources: ["pods"]
+
+  verbs: ["get", "list"]
+
+```
+- Once you have defined the Role object, you can create the role in your Kubernetes cluster by running the following command (assuming the YAML file was saved as role.yaml):
+
+`kubectl apply -f role.yaml`
+
+Keep in mind that roles in Kubernetes are namespace-specific. This means that the permissions granted by a role apply only within a specific namespace. If you want to grant permissions across all namespaces, you will need to create a` ClusterRole`
+
+<details><summary>Creating a clusterrole</summary>A ClusterRole is similar to a Role, except that it grants permissions across all namespaces in your Kubernetes cluster. This is useful for granting permissions to cluster-wide resources such as nodes and persistent volumes.
+
+Creating a ClusterRole involves defining a ClusterRole object in a YAML file. Like a Role object, a ClusterRole object includes the API group, the resources, and the verbs that are allowed. Here is an example of a ClusterRole:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+
+kind: ClusterRole
+
+metadata:
+
+  name: pod-reader-global
+
+rules:
+
+- apiGroups: [""]
+
+  resources: ["pods"]
+
+  verbs: ["get", "list"]
+```
+- You can create the ClusterRole in your Kubernetes cluster by running the following command (assuming the YAML file was saved as clusterrole.yaml):
+
+`kubectl apply -f clusterrole.yaml`
+
+</details>
+<details><summary>creating a Rolebinding</summary>A RoleBinding is an object that binds a Role to a subject. The subject can be a user, a group, or a service account. The RoleBinding grants the permissions defined in the Role to the subject.
+
+To create a RoleBinding, you define a RoleBinding object in a YAML file. For example:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+
+kind: RoleBinding
+
+metadata:
+
+  name: read-pods
+
+  namespace: default
+
+subjects:
+
+- kind: User
+
+  name: "janedoe"
+
+  apiGroup: rbac.authorization.k8s.io
+
+roleRef:
+
+  kind: Role
+
+  name: pod-reader
+
+  apiGroup: rbac.authorization.k8s.io
+```
+- You can create the RoleBinding in your Kubernetes cluster by running this command (again, assuming the YAML file is saved as rolebinding.yaml):
+
+`kubectl apply -f rolebinding.yaml`
+
+Once the RoleBinding is created, the subject will have the permissions granted by the Role in the namespace where the RoleBinding is created
+</details>
+
+<details><summary>Creating a clusterrolebinding</summary> a clusterolebinding is simmilar to rolebinding, but it binds a clusterrole to a subject. this grants cluster-wide permissions to the subject.
+
+you define the clusterolebinding in a yaml file, simmilar to Rolebinding. For ex:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+
+kind: ClusterRoleBinding
+
+metadata:
+
+  name: read-pods-global
+
+subjects:
+
+- kind: User
+
+  name: "janedoe"
+
+  apiGroup: rbac.authorization.k8s.io
+
+roleRef:
+
+  kind: ClusterRole
+
+  name: pod-reader-global
+
+  apiGroup: rbac.authorization.k8s.io
+```
+- To create the ClusterRoleBinding run this comment (assuming the YAML file is saved in clusterrolebinding.yaml):
+
+`kubectl apply -f clusterrolebinding.yaml`
+</details>
+
+**Common challenges and solutions in kubernetes RBAC**
+<details><summary>Complex permission mapping</summary>The first challenge that many administrators face with Kubernetes RBAC is the complexity of permissions. Kubernetes, by design, offers a granular level of access control, which can quickly become overwhelming. The way roles, role bindings, and cluster role bindings work together to control who can access what in a cluster is a complex matrix that requires careful management.
+
+To simplify this process, start by mapping out your application’s functionalities and the necessary permissions for each role. This will provide a clear overview of the permissions matrix for your application and help you manage the roles more effectively.</details>
+
+<details><summary>RBAC Misconfigurations</summary>RBAC misconfigurations are another common issue. These can occur when permissions are not properly set, leading to either excessive permissions or insufficient permissions. Both scenarios pose significant risks. Excessive permissions can lead to unauthorized access or actions, while insufficient permissions can hinder the functionality of your application.
+
+To avoid RBAC misconfigurations, ensure you thoroughly understand the principle of least privilege  and apply it diligently. Regular auditing of your RBAC configurations and rigorous testing can also help identify and rectify misconfigurations. In addition, it is critical to test TBAC configurations in a test environment before deploying in production.</details>
+
+<details><summary>Managing Serviceaccount credentials</summary> ServiceAccounts in Kubernetes are meant to provide an identity for processes that run in a pod. However, managing these ServiceAccount credentials can become a challenge as your applications grow and scale.
+
+To manage ServiceAccount credentials effectively, consider automating the process where possible. Kubernetes provides several tools and APIs that can help automate the management of ServiceAccount credentials. These tools will not only save you time but also reduce the risk of human error.
+
+It is critical to regularly review and audit the use of ServiceAccounts. They should be refreshed periodically and must be deactivated as soon as they are no longer needed.</details>
+<details><summary>Difficulty Troubleshooting Access Issues</summary>troubleshooting access issues in Kubernetes RBAC can be a complex task due to the granularity of the permissions and roles. Often, you may find yourself sifting through numerous policies and bindings to identify the root cause of an access issue.
+
+To simplify troubleshooting, consider using logging and monitoring tools that provide a comprehensive view of your access control system. These tools can help identify patterns and pinpoint issues more quickly and accurately.</details>
+
+**Best practices of using kubernetes RBAC**
+> principle of Least privilege
+> Regularly audit permissions
+> Use Namespaces wisely
+> Limit Use of clusterAdmin
 
 ## 15. Service meshes
 

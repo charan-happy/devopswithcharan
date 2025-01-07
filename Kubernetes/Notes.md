@@ -479,7 +479,7 @@ k -nproject-hamster create role -h# examples
 So we execute:
 
 
-k -nproject-hamster create role processor \
+k -n project-hamster create role processor \
   --verb=create \
   --resource=secret \
   --resource=configmap
