@@ -1,0 +1,29 @@
+How I get to know about the opportunity?
+- in naukri portal, notification poped up
+suggestion From my side ?
+- once we apply we need to register in the tcs ibegin portal there we will get EP number unique to each candidate
+
+location: Bangalore 
+time : from 10 am to till evening 6
+interview duration: 20 min for first round and ~10 minutes for second round 
+
+Round 1
+1. Tell me about your self?
+2. What is zombie process
+3. Explain lvm
+4. What is kernel paniking
+5. What is swapin
+6. What is path for login files
+7. What is path for sar
+8. What is the default path for newly installed software
+9. What will you do if user comes with application failure issue ?
+10. What is mpstat
+11. How u check the system load
+
+Round 2
+1. User not able to login (ad exists)
+2. What is patching and have u done anything?
+3. What are you doing with hp vendor ? Which hardware version u are using?
+4. What u did with Ansible ? Have u written any Ansible playbooks 
+
+Verdict : rejected in MR
