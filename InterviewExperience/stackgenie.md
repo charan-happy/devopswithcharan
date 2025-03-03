@@ -12,6 +12,8 @@ Some of the questions they asked me in the interview are :
 - In rancher, how you build clusters
 - How are you building infrastructure to the customers in rancher ?
 - what are multistage builds and how are you going to build them ?
+- How will you reduce size of docker images ?
+- is it possible to setup multistage builds for python applications ?
 
 
 Feedback : Has to focus on fundamentals. Lacking in fundamentals. We need builders not supporters
