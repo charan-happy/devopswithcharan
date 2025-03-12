@@ -1,0 +1,16 @@
+Interview Date : 11/03/2025 Time : 5.30 PM
+
+Job Description : 
+----------------
+- Key Responsibilities1. Data Center Management•	Managing Data Centre team – To ensure smooth operations, and prompt resolution of incidents. Expected to manage team working in shifts 24*7•	Ensuring daily, weekly and monthly reports preparation and submission•	Coordinate with all stakeholders and management of projects related to data centre•	Vendor coordination – OEMs and system integrators - on AMC renewals, new equipment purchases•	Team management / Leadership skills •	Continuous efforts on process improvement related to data centre operations2. DevOps and AutomationImplement and manage CI/CD pipelines for efficient code deployment and infrastructure changes.Leverage tools such as Ansible, Terraform, and Kubernetes to automate infrastructure provisioning and management.Promote the adoption of Infrastructure-as-Code (IaC) practices.Collaborate with development teams to optimize system performance and troubleshoot application issues.Integrate monitoring and logging tools like Prometheus, Grafana, and ELK for proactive incident management and performance tuning.3. Leadership and CollaborationLead, mentor, and develop a team of data center and DevOps engineers.Act as the point of escalation for critical technical issues, providing expert guidance and resolution.Foster collaboration between operations, development, and security teams to implement a DevSecOps culture.Define and track KPIs for team performance, data center uptime, and system reliability.4. Continuous ImprovementResearch and adopt emerging technologies in data center and DevOps spaces to improve scalability and reliability.Ensure documentation of processes, configurations, and incident resolution for operational transparency.Required Skills and QualificationsTechnical SkillsExpertise in DevOps tools like Kubernetes, Docker, Git, Terraform, and Ansible.Experience with monitoring and observability tools (e.g., Prometheus, Grafana, ELK).Leadership SkillsProven experience leading technical teams and managing projects.Strong communication and interpersonal skills to collaborate with cross-functional teams and stakeholders.Ability to prioritize tasks, delegate responsibilities, and ensure timely delivery of projects.Problem-solving mindset with a focus on root cause analysis and long-term solutions.Experience1+ years of experience of team managing2+ years of experience in DevOps practices and tools.2+ years of experience of Data Center operations.Certifications in relevant areas (Kubernetes CKA/CKAD) are a plus.Should having expertise in (Site Reliability Engineer)
+
+Interview Questions :
+------------------------
+1. Tell me about yourself ?
+
+2. what are you going to do in your CICD process and what are different pipelines you have in your organization ?
+3. if application is not working as expected in kubernetes cluster what you are going to and how would you do the troubleshooting ?
+4. What are different monitoring solutions we have for kubernetes monitoring ?
+5. Let's say, if deployment and services are done and what we have to do to make that application accessible to the end users ?
+
+They asked some other questions but i don't remember whenever i remember i will keep it here
