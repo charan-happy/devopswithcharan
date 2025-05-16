@@ -74,6 +74,8 @@ write a pipeline job to pull the context.html from github
 deploy to webapp server (apache2) and access it outside (web)
 and if u made any changes in index.html it should poll or trigger job automatically from jenkins.
 
+Accenture:
+--------------
 1. How you integrated the build or deployed in the pipeline?  How many instances you used in your   environment?
 2. Whatever you way created deployment? How many hosts used for the same?
 3. Why you are use webhooks?
