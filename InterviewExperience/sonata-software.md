@@ -22,3 +22,14 @@ Azure DevOps Engineer role
 14. Are you preparing for any certifications ?
 
     They are actively working on migrations from on-prem to cloud. Got positive feedback and moved me to next round of interview
+ 
+## Round 2 Date : June 4 2025 Time : 12 - 12.30 PM
+
+
+## Round 3 Client Interview Date : june 10 2025 Time : 10 - 10.30 PM
+- Showed one azure pipelines script and asked me to explain line by line, each and every component
+
+  Verdict : Selected ✅🔥🔥
+  Package Offered : 1012150 (10 LPA)
+   DOJ : 27/7/2025 Work Mode : WFH
+  
