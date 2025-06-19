@@ -21,11 +21,13 @@ Date : 19/06/2025  Time : 1.30-2.30 PM
 19. what are different deployment models in kubernetes
 20. explain differnece between canary vs blluegreen deployments
 21. why we need recreate ?
-22. which of the deployment models have downtime and if it is having downtime why we need them ?
-23. what is helm
-24. how will u check previous versions of helm
-25. what will helm history do
-26. Explain about message queues
+22. Difference between paas and saas give examples
+23. what do you know about serverless and what kind of languages will it use (python,java, go etc)
+24. which of the deployment models have downtime and if it is having downtime why we need them ?
+25. what is helm
+26. how will u check previous versions of helm
+27. what will helm history do
+28. Explain about message queues
     
 
 
