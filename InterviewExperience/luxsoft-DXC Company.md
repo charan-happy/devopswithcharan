@@ -25,6 +25,7 @@ Date : 19/06/2025  Time : 1.30-2.30 PM
 23. what is helm
 24. how will u check previous versions of helm
 25. what will helm history do
+26. Explain about message queues
     
 
 
