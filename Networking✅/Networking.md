@@ -1,3 +1,29 @@
+Linux Networking Commands Cheat Sheet  
+  
+| Command      | Description                                                | Example Command                | Example Output/Usage                           |  
+|--------------|------------------------------------------------------------|--------------------------------|------------------------------------------------|  
+| ping         | Tests host connectivity.                                   | ping google.com                | Sends ICMP echo requests to google.com        |  
+| traceroute   | Traces packet routes to a destination.                     | traceroute google.com          | Shows hops to google.com                       |  
+| mtr          | Combines ping and traceroute for diagnostics.              | mtr google.com                 | Live route and latency to google.com           |  
+| curl         | Transfers data to/from servers (HTTP, FTP, etc.).          | curl -I https://example.com     | Fetches HTTP headers from example.com           |  
+| wget         | Downloads files from the web.                              | wget https://example.com/file.txt| Downloads file.txt from example.com            |  
+| ip           | Manages network interfaces and routing.                    | ip addr show                   | Shows all assigned IP addresses                |  
+| ss           | Displays socket statistics (modern netstat).               | ss -tuln                       | Lists listening TCP/UDP ports numerically      |  
+| nmap         | Scans for open ports and services.                         | nmap 192.168.1.1               | Scans open ports on target                     |  
+| tcpdump      | Captures/analyzes network packets.                         | tcpdump -i eth0 port 80        | Captures HTTP traffic on ethe                   |  
+| dig          | Queries DNS for domain details.                             | dig example.com                | Shows DNS info for example.com                 |  
+| nslookup     | Resolves DNS queries.                                      | nslookup example.com           | Resolves example.com to IP address             |  
+| host         | Simple DNS lookup utility.                                 | host github.com                | Displays DNS information for github.com        |  
+| nmcli        | Manages NetworkManager for configuration.                  | nmcli con show                 | Lists network connections                      |  
+| lsof         | Lists open files (including network sockets).              | lsof -i :80                    | Shows processes using port 80                  |  
+| nc (netcat)  | Debugs networks and transfers data.                       | nc -l 12345                    | Listens on port 12345                          |  
+| ethtool      | Displays/configures NIC settings.                          | ethtool eth0                   | Shows info/settings for etho                   |  
+| nload        | Visualizes real-time network traffic.                      | nload eth0                     | Shows traffic stats for etho                   |  
+| iftop        | Monitors bandwidth usage by connection.                   | iftop -i eth0                  | Displays bandwidth by host on etho              |  
+| iptables     | Configures firewall rules.                                  | iptables -L                    | Lists firewall rules                           |  
+| ufw          | Simplified firewall management.                            | ufw allow ssh                  | Allows SSH through firewall                    |  
+| netstat      | Shows network connections and ports (legacy).              | netstat -tulnp                 | Lists all listening ports and connections      |  
+| ifconfig     | Configures/displays net interfaces (legacy).               | ifconfig eth0                  | Shows config for eth0 interface                |  
 1. computer Networking
 - Explain how a computer network and data transmission functions.
 - Identify and differentiate between networks based on their types and topologies.
