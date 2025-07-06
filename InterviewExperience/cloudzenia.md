@@ -3,13 +3,62 @@
 --> Got interview hands-on assignment (Refer cloudzenie-challenge)
 --> Had a technical interview for 40 minutes
 
-1. what do you do exactly at the current role ? architecting part ? and rate yourself with devops tools
-2. what is your current CTC and expected CTC ?
-3. Did you get a chance to setup self-hosted runners in github actions ?
-4. what command is used to see current path ?
-5. How to list all folder and files ?
-6. what is rt in ls -lrt ?
-7. explain anyone line in the output of ls -lrt ?
+<details><summary> 1. what do you do exactly at the current role ? architecting part ? and rate yourself with devops tools</summary>Yes. My responsibilities include:
+
+Architecting CI/CD pipelines and Infrastructure-as-Code for microservices
+
+Building and scaling Kubernetes clusters via Rancher (RKE2)
+
+Automating provisioning with Terraform & Ansible
+
+Designing cloud-native deployment strategies (blue/green, canary)
+
+Implementing monitoring/alerting with Prometheus & Grafana
+
+Leading container security hardening and cost-optimization initiatives
+
+Collaborating with developers to define infrastructure interfaces, service mesh policies, and environment setups
+
+Linux: 5/5
+
+CI/CD (GitHub Actions, Jenkins): 5/5
+
+Terraform & Infra-as-Code: 4.5/5
+
+Cloud (AWS, Azure): 4/5
+
+Kubernetes (Rancher, Helm): 4.5/5
+
+Scripting (Python, Bash): 4/5
+
+Monitoring (Prometheus/Grafana): 4.5/5
+</details>
+<details><summary>2. what is your current CTC and expected CTC ?</summary></details>
+<details><summary>3. Did you get a chance to setup self-hosted runners in github actions ?</summary>Yes. I have set up both ephemeral and persistent self-hosted runners using EC2 and Docker. The runners were auto-registered on VM boot using GitHub’s registration script, and security hardening was done to limit scope per repo. Used them for pipelines with high concurrency or dependencies like Docker-in-Docker.
+
+</details>
+<details><summary>4. what command is used to see current path ?</summary>pwd</details>
+<details><summary>5. How to list all folder and files ?</summary>ls -al or ls -R</details>
+<details><summary>6. what is rt in ls -lrt ?</summary>l: long listing format
+
+r: reverse order
+
+t: sort by time (modification)
+
+So ls -lrt shows files in order of oldest to newest.</details>
+<details><summary>7. explain anyone line in the output of ls -lrt ?</summary>-rw-r--r--  1 ubuntu ubuntu  1780 Jul  6 08:42 config.yaml
+-rw-r--r--: File permissions
+
+1: Hard link count
+
+ubuntu ubuntu: Owner and group
+
+1780: File size in bytes
+
+Jul 6 08:42: Last modified
+
+config.yaml: File name
+</details>
 8. how to find where domain is hosted ? where domain name servers are hosted for a particular website in linux server ?
 ```
 the dig or nslookup command-line tools. These tools query the DNS records. For example, dig example.com will show the nameservers associated with "example.com". You can also specify the record type, such as dig ns example.com to specifically look for NS records, which list the nameservers. The output will display the DNS servers responsible for resolving the domain.
@@ -20,8 +69,14 @@ whois example.com
 - `dig` shows A records and NS records
 - `whois` can reveal registrar, nameservers, and hosting info
 ```
-10. where is your kubernetes hosted ?
-11. is nodes are autoscaled or what ? if i need to add hosts how we have to do everytime ?
+<details><summary>10. where is your kubernetes hosted ?</summary>We use Rancher (RKE2) to manage Kubernetes clusters on top of AWS EC2 instances. The Rancher control plane is deployed in HA mode with a managed external database and reverse proxy.</details>
+<details><summary>11. is nodes are autoscaled or what ? if i need to add hosts how we have to do everytime ?</summary>We use AWS ASGs with cluster-autoscaler configured for auto-scaling worker nodes.
+
+For new environments or static clusters, hosts are added either via Rancher UI or programmatically using its API.
+
+Bootstrap scripts via Ansible are used to register new nodes on-demand.
+
+</details>
 13. How do you scale nodes in kubernetes in onprem vmware environment ?
 ```
 - In cloud (EKS), I’ve used Cluster Autoscaler and Karpenter
@@ -84,9 +139,26 @@ Possible Reasons:
 - Port not mapped properly: `docker run -p 80:80 nginx`
 - Firewall or SELinux restrictions
 ```
-19. what services and what is your prior experience on aws ?
-20. How much experience you have with terraform ?
-21. How much of code in terraform you have get from ai/forums/documentation ?
+<details><summary>19. what services and what is your prior experience on aws ?</summary>EC2, S3, EKS, IAM, Route53, RDS, CloudWatch, SNS, Lambda, ACM, ALB/NLB
+Experience:
+
+Infra provisioning via Terraform
+
+IAM policies & cross-account roles
+
+EC2 hardening and AMI lifecycle mgmt
+
+CloudWatch + SNS based alerting and logging</details>
+<details><summary>20. How much experience you have with terraform ?</summary>Over 3 years of Terraform usage across:
+
+Multi-environment setup (dev/stage/prod)
+
+VPC, EC2, IAM, RDS, S3 modules
+
+Kubernetes provisioning via Terraform
+
+Remote state via S3 + state locking using DynamoDB</details>
+<details><summary>21. How much of code in terraform you have get from ai/forums/documentation ?</summary>Initially referred official documentation and community modules, but 80%+ of production code today is custom-written and maintained by me. I follow module reusability, tagging standards, lifecycle policies, and dynamic blocks. Over time, I’ve moved away from copy-paste to abstracting common logic into reusable modules.</details>
 22. provide an example for dynamic block of code in terraform ?
 ```
 variable "ports" {
@@ -160,4 +232,4 @@ As a DevOps engineer:
   - Detach and reattach to original instance
 ```
 
-
+No Response from the recruiter. Most probably he rejected me ❌
