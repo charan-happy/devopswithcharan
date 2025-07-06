@@ -1,0 +1,90 @@
+date : 15/2/2025
+
+How I get to know about the opportunity?
+- in naukri portal, notification poped up
+suggestion From my side ?
+- once we apply we need to register in the tcs ibegin portal there we will get EP number unique to each candidate
+
+location: Bangalore 
+time : from 10 am to till evening 6
+interview duration: 20 min for first round and ~10 minutes for second round 
+
+Round 1
+1. Tell me about your self?
+<details><summary>2. What is zombie process</summary>A zombie process is a defunct process that has completed execution but still has an entry in the process table. It’s waiting for the parent to read its exit status. Usually identified with ps aux | grep Z or status Z.</details>
+<details><summary>3. Explain lvm</summary>Logical Volume Manager helps in flexible disk management:
+
+Create volume groups from physical volumes
+
+Allocate logical volumes from volume groups
+
+Resize or extend volumes dynamically without downtime
+
+Useful for managing growing application needs.</details>
+<details><summary>4. What is kernel paniking</summary>A kernel panic is a system crash at the OS kernel level. Common causes:
+
+Hardware failures
+
+Corrupt drivers
+
+Incompatible kernel modules
+Logs in /var/log/kern.log or serial console</details>
+<details><summary>5. What is swapin</summary>Swapping in means moving pages from swap (disk) back to RAM when needed. It indicates memory pressure.
+Monitor via: `vmstat 1` </details>
+<details><summary>6. What is path for login files</summary>/var/log/secure  (RHEL/CentOS)
+/var/log/auth.log  (Ubuntu/Debian) Used for login attempts, sudo, SSH</details>
+<details><summary>7. What is path for sar</summary>/var/log/sa/saXX  (XX = day number)  and we can read it via `sar -u -f /var/log/sa/sa05` </details>
+<details><summary>8. What is the default path for newly installed software</summary> System-wide apps: /usr/bin, /usr/local/bin
+
+Compiled tools (default): /usr/local/bin</details>
+<details><summary>9. What will you do if user comes with application failure issue ?</summary>Gather logs (app + system logs)
+
+Check process status, disk, RAM, CPU, network
+
+Trace app behavior using strace, journalctl, or container logs
+
+Collaborate with dev team if code related
+
+Restore from backup or restart app if infra-related</details>
+<details><summary>10. What is mpstat</summary>CPU usage monitoring tool from sysstat package. `mpstat -P ALL 1 5` shows per core usage</details>
+<details><summary>11. How u check the system load</summary>uptime or cat /proc/loadavg 
+
+op 3 values = 1, 5, 15 min load averages. Compare with CPU cores.
+</details>
+
+Round 2
+<details><summary>1. User not able to login (ad exists)</summary> Check /var/log/secure or /var/log/auth.log
+
+Validate PAM and sssd.conf
+
+Use id <username> or getent passwd to check AD binding
+
+Test with realm list or ldapsearch</details>
+<details><summary>2. What is patching and have u done anything?</summary>Patching = applying OS or app updates to fix security and bugs.
+
+OS patching using yum, apt, or Ansible
+
+Docker image patching with CVE scan (Trivy)
+
+Kubernetes patching via rolling updates
+
+Yes, I've scheduled and automated OS patching in production via Ansible + reboot checks.</details>
+<details><summary>3. What are you doing with hp vendor ? Which hardware version u are using?</summary>Example Response:
+We use HP ProLiant DL380 Gen10 servers for bare-metal Kubernetes. My work included BIOS config automation via Redfish API, firmware validation, and RAID disk provisioning. Worked closely with vendor for disk/RAID failures.</details>
+<details><summary>4. What u did with Ansible ? Have u written any Ansible playbooks</summary>Yes, I wrote and maintained 20+ Ansible playbooks for:
+
+Docker/NGINX installation
+
+Kubernetes node provisioning
+
+Jenkins deployment with plugins
+
+Log rotation
+
+Firewall/DNS/ntp config
+
+Cert renewal and patching automation
+
+Also used dynamic inventories and Ansible vault for secrets.</details>
+
+Verdict : rejected in MR ❌
