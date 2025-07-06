@@ -548,4 +548,7 @@ Feedback : It doesn't matter how much you know, how much you are answering matte
            Needs to have good networking knowledge, you are lacking even basics
            You must know whatever u mentioned in the resume
            you have to know about scripting
+
+
+Reality checking interview . ... Interviewer is from Onsite. Constructive criticism. Rejected ❌
            
