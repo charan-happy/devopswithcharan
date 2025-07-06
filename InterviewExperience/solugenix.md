@@ -245,3 +245,7 @@ s3://bucket/rotated-logs/$(date +%F)/filename.log.gz
 Compress logs with custom suffix or split size
 
 Use S3 lifecycle policy to auto-delete after X day
+
+
+
+Result : Rejection ❌ Interview even not spanned for 10 minutes😓
