@@ -288,3 +288,4 @@ In regulated environments where size + security + reproducibility matter — thi
 
 
 Feedback : Has to focus on fundamentals. Lacking in fundamentals. We need builders not supporters
+Result : Rejection ❌
