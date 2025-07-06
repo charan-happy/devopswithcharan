@@ -106,3 +106,5 @@ Symbolic links
 Use: ls -la to inspect</details>
 
 very good interviewer. very positive cooperative towards candidates. hello provides constructive criticism.
+
+Good Interview Experience but rejected ❌
