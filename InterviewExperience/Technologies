@@ -1,0 +1,173 @@
+
+Company name (client) : Akira Insights 
+Interview duration : 30 minutes 
+Date : Wed 20 Aug • 15:00 – 15:45 
+Round 2 : 
+
+This is the second round of interview
+
+1. 1. Let's say we got one user and he wanted to build a saas platform with frontend, backend, db as a devops/cloud engineer what will you ask client what is your approach to design solution for it. 
+Solution : Client Discovery Questions:
+- What is the expected user base and traffic pattern?
+- What tech stack is preferred for frontend/backend?
+- Any compliance requirements (e.g., HIPAA, GDPR)?
+- Expected uptime/SLA?
+- CI/CD expectations and release frequency?
+- Budget constraints?
+Solution Design Approach:
+- Frontend: Host on S3 + CloudFront (if static), or containerized app on ECS/EKS.
+- Backend: Microservices on ECS/EKS or serverless (Lambda) with API Gateway.
+- Database: RDS for relational, DynamoDB for NoSQL, with backups and encryption.
+- CI/CD: GitHub Actions or CodePipeline with IaC (Terraform/CDK).
+- Monitoring: CloudWatch, X-Ray, Prometheus + Grafana.
+
+2. what things you will consider w.r.to security in the cloud environment  ? 
+Solution : 
+- IAM: Least privilege access, role-based policies.
+- Encryption: Data at rest (KMS) and in transit (TLS).
+- Network: Use private subnets for backend/db, security groups, NACLs.
+- Secrets Management: AWS Secrets Manager or Parameter Store.
+- Audit & Logging: Enable CloudTrail, GuardDuty, Config.
+- WAF & Shield: Protect against common web attacks and DDoS.
+
+3. scalability, loadbalancer, autoscaling , apigateway all I discussed
+You nailed this already, but to summarize:
+- Scalability: Horizontal scaling via ECS/EKS or Lambda.
+- Load Balancer: ALB for HTTP/HTTPS, NLB for TCP.
+- Auto Scaling: Target tracking or step scaling policies.
+- API Gateway: Secure, throttle, and manage APIs with caching and usage plans.
+
+4. How will you achieve autoscaling ?
+- ECS/EKS: Use CloudWatch metrics (CPU, memory) to trigger scaling.
+- Lambda: Scales automatically based on request volume.
+- EC2: Launch templates + Auto Scaling Groups with scaling policies.
+- Kubernetes: HPA (Horizontal Pod Autoscaler) + Cluster Autoscaler.
+
+5. how will you do the cost optimization  ?
+- Right-sizing: Use Compute Optimizer to adjust instance types.
+- Spot Instances: For non-critical workloads.
+- Savings Plans/Reserved Instances: For predictable usage.
+- Storage Lifecycle Policies: Move old data to S3 Glacier.
+- Monitoring: Use Cost Explorer, Budgets, and anomaly detection.
+- Serverless: Pay-per-use model reduces idle costs.
+
+6. public subnets, private subnets,
+- Public Subnet: For ALB, NAT Gateway, bastion host.
+- Private Subnet: For app servers, databases, internal services.
+- Routing: Use route tables to control traffic flow.
+- NAT Gateway: Allows private subnet instances to access the internet securely.
+
+7. as a devops engineer, what are the metrics matters for you ? how will you measure metrics ? are you going to put loadbalancers on public subnet if not what will be the best approach ? if you put in private subnet then how the end users will access application ?
+Solution : 
+📊 Metrics That Matter for DevOps Engineers
+Key Metrics to Track:
+| Category | Metrics You Should Monitor | 
+| Infrastructure | CPU, memory, disk I/O, network throughput | 
+| Application | Latency, error rate, request rate, response time | 
+| Deployment | Build success rate, deployment frequency, MTTR | 
+| Security | Unauthorized access attempts, IAM policy changes | 
+| Cost | Daily spend, service-specific usage, idle resources | 
+| User Experience | Page load time, bounce rate, session duration | 
+
+How to Measure:
+- CloudWatch (AWS): Native metrics, custom dashboards, alarms.
+- Prometheus + Grafana: For Kubernetes and container workloads.
+- Datadog/New Relic: Full-stack observability with APM.
+- ELK Stack: Log aggregation and analysis.
+- CI/CD Tools: GitHub Actions, Jenkins, or CodePipeline metrics.
+
+🌐 Load Balancer Placement: Public vs Private Subnet
+Should Load Balancers Be in Public Subnet? Yes—Application Load Balancers (ALB) or Network Load Balancers (NLB) that serve internet-facing traffic must be in public subnets. This allows them to have public IPs and route traffic from end users.
+Best Practice Architecture:
+- Public Subnet:
+- ALB/NLB
+- NAT Gateway
+- Bastion Host (if needed)
+- Private Subnet:
+- EC2 instances, ECS tasks, Lambda functions
+- RDS, ElastiCache, internal services
+## Why Not Put LB in Private Subnet?
+If you do, it becomes an internal load balancer, only accessible within the VPC or via VPN/Direct Connect. End users won’t be able to reach it unless you expose it through another public-facing proxy or service.
+🛣️ How Do End Users Access the App?
+Flow for Public Access:
+- User hits ALB (in public subnet) via domain (e.g., app.example.com)
+- ALB routes traffic to targets (EC2/ECS/Lambda) in private subnets
+- Security Groups ensure only ALB can talk to backend services
+- Response flows back through ALB to the user
+This setup ensures:
+- Public exposure only at the edge (ALB)
+- Backend services are isolated and secure
+- You can scale, monitor, and protect each layer independently
+How will you get to know about load increase ? like this kind of follow up questions
+Solution : 
+📈 How to Detect Load Increase in a Cloud Environment
+1. Real-Time Monitoring Tools
+- AWS CloudWatch: Set up dashboards and alarms for metrics like:
+- CPU utilization
+- Memory usage (via custom metrics)
+- Network in/out
+- Request count (for ALB/API Gateway)
+- Prometheus + Grafana: Ideal for Kubernetes workloads; visualize pod-level metrics and set alert thresholds
+2. Application-Level Metrics
+- Use APM tools like Datadog, New Relic, or AWS X-Ray to track:
+- Request latency
+- Error rates
+- Throughput spikes
+- DB query performance
+3. Load Balancer Metrics
+- ALB/NLB provides:
+- RequestCount
+- TargetResponseTime
+- HTTPCode_ELB_5XX (for overload errors)
+- HealthyHostCount (to detect if targets are failing under load)
+4. Auto Scaling Triggers
+- If you’ve configured auto scaling, spikes in:
+- CPU
+- Memory
+- Custom business metrics (e.g., queue length) will automatically trigger scale-out events. You can monitor these via CloudWatch Events or scaling activity logs.
+5. Synthetic Load Testing
+- Use tools like Locust, JMeter, or Artillery to simulate traffic and observe how your system responds.
+- Helps validate thresholds before real users hit them.
+
+Bonus: Proactive Load Awareness
+- Anomaly Detection: Enable CloudWatch anomaly detection to spot unusual patterns.
+- Forecasting: Use historical data to predict peak hours/days and pre-scale resources.
+- Business Metrics Integration: Tie in metrics like user sign-ups, transactions, or API calls to anticipate load.
+
+How DevOps Engineers Detect and Handle Load Spikes
+ Step 1: Detecting Load Spikes
+1. Monitor Infrastructure Metrics
+- Use CloudWatch, Prometheus, or Datadog to track:
+- CPU, memory, disk I/O
+- Network throughput
+- Request count on ALB/API Gateway
+2. Application Performance Monitoring (APM)
+- Tools like AWS X-Ray, New Relic, or Grafana K6 help visualize:
+- Latency trends
+- Error rates
+- Throughput anomalies
+3. Logging and Alerting
+- Centralized logging via ELK Stack or Logz.io
+- Set up alerts for thresholds using CloudWatch Alarms or Prometheus Alertmanager
+Watch Monitoring and Logging for DevOps Engineers | Production ... for a solid walkthrough of how to set up and interpret monitoring and logging in production environments.
+4. Load Testing & Simulation
+- Use tools like JMeter, Locust, or Artillery to simulate traffic and validate thresholds
+Check out Performance/Load Testing with JMeter | JMeter Tutorial for a hands-on demo of building and running load tests.
+Also, Getting started with API Load Testing (Stress, Spike, Load, Soak) explains the different types of load tests and when to use each—especially spike testing for sudden traffic surges
+
+Step 2 : Handling Load Spikes
+1. Autoscaling
+- Configure Autoscaling Groups for EC2 or use kubernetes HPA for pods
+- Trigger scaling based on CPU, memory or custom metrics like queue length
+2. Load Balancing
+- use ALB/NLB to distribute traffic across healthy targets
+- Enable health checks and sticky sessions if needed
+3. Caching & CDN
+- Use CloudFront, Redis, or ElastiCache to reduce backend load
+- Cache static assets and frequent queries
+4. Throttling & Rate Limiting
+- Use API Gateway usage plans or WAF rules to prevent abuse
+- Protect backend from sudden bursts
+5. Cost-Aware Scaling
+- Use Spot Instances or Savings Plans for burst capacity
+- Monitor cost impact using AWS Budgets and Cost Explorer
