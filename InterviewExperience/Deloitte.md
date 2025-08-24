@@ -55,3 +55,4 @@ Round : 1 st round
 
 23. How many teammembers you have in your team ?
 
+Verdict : Selected in 1st round. Will get further updates on 2nd round.
