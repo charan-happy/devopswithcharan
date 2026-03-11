@@ -12,7 +12,9 @@ Interview scheduled : 2-3 PM but it was ended in 30 minutes itself.
 9. Let's say some http request comes into your ec2 instance from loadbalancer then response goes directly to loadbalancer or NAT gateway ?
 10. Explain me let's say you typed something in your laptop and how will it reachout to your pod inside a cluster i need to understand about complete DNS resolution process
 11. you told you are dealing with multiple clients right, tell me what is the end to end process that you are involving in app deployment
+12. For same file for ravi we need read,write charan only execute how will you do it ? difference between chmod and chown ?
 
+    
 
 lesson: i myself get into cage, i told we are small company then again told eks cluster, small userbase 10000 , what is the prodution issue that you resolved i answered that react vulnerability and how did you resolved i told like googled fixed, removed cronjobs, system services there i caught myself that server deployment 
         i myself has no clarity what to lie , scaling i told we are using karpenter. 
