@@ -42,3 +42,41 @@ Overall, my experience has given me exposure to both infrastructure operations a
 
 
     Result : Selected waiting for 2nd round
+
+    ## ROund 2. Nov 3 2026 5-6 PM
+    1. what are you working on in daily basis ?
+    2. depends upon the things that i mentioned and project he digged deeper into them as in let's say i mentioned used azure devops to connect with gcp vm how you did it ? what you configured like that
+    3. what did you understand by the term multi-Az ?
+    4. How did you done cost optimization ?
+    5. Let's say you have to do RDS cost optimization then what are all the things will you consider ?
+    6. i have one third party tool and my application using it and suddenly i am getting SSL not found how will you debug it ? where will be the ssl certificate ? you are using distroless image ?
+    7. Let's say they have renewed certificate and shared public and private certificate then how will you proceed ?
+    8. how many ways we can connect to RDS DB ?
+
+       Result : selected waiting for 3 rd round
+
+       ## Round 3 : Nov 4 2-2.40 PM
+       1. Tell me about yourself
+       2. what is the difference between transit gateway, private link, vpc peering
+       3. walk me through all the services that you use in aws ?
+       4. what is your experience with azure ?
+       5. what is your experience with terraform ?
+       6. what all CI/CD tools have you worked ?
+       7. what is the difference between composite actions and resuable workflows
+       8. in your resume you mentioned reducted 22% of cloud cost, how you did what parameters you have considered ?
+       9. what do you know about system manager ?
+       10. what are all monitoring services that we have in aws ?
+       11. Do you know about blue-green deployment in rds
+       12. how will you upgrade the RDS and what parameters will you consider ?
+       13. what do you know about parameter store ?
+       14. from one aws account to another aws account how will you connect the workloads ?
+       15. how can you achieve zero-downtime, what's your rollback plan, within same region in aws ?
+       16. what is the difference between user managed KMS and AWS managed KMS ?
+       17. how many ways will you handle application secrets in aws ?
+       18. how will you manage state files ? like let's say somebody edited something in aws console how will you resolve this terraform drift ?
+       19. some resource was created on console and how will you manage it with terraform ?
+       20. what do you understand about IRSA, how will it works ?
+       21. let's say you are inside a pod and suddenly not able to access some third party api how will you trouble shoot it ?
+       22. How many ways we have to upgrade RDS DB ?
+
+           Result : waiting for an update
